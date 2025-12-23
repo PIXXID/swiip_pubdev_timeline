@@ -125,3 +125,8 @@ app.*.symbols
 .dart_tool/
 build/
 .idea/
+.vscode/
+.macos/
+web/
+ios/
+.env
