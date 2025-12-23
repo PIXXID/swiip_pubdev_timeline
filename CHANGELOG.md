@@ -1,4 +1,4 @@
-## 1.0.1 - 23/12/2025
+## 1.1.0 - 23/12/2025
 
 * Fix dependencies for Scoring
 
