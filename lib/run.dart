@@ -138,13 +138,13 @@ void openDayDetail(String date, double? dayProgress, List<String>? preIds,
 
 
 void openEditStage(String? prsId, String? prsName, String? prsType, String? startDate, String? endDate, double? progress, String? prjId) {
-      debugPrint('${prsId} ${prsName} ${prsType} ${startDate} ${endDate} ${progress} ${prjId}');
+      debugPrint('$prsId $prsName $prsType $startDate $endDate $progress $prjId');
 }
 
 
 void openEditElement(String? entityId,  String? label, String? type, String? startDate, String? endDate, double? progress, String? prjId) {
   debugPrint(
-      '${entityId} ${label} ${type} ${startDate} ${endDate} ${progress} ${prjId}');
+      '$entityId $label $type $startDate $endDate $progress $prjId');
 }
 
 void selectDay(String? date) {
