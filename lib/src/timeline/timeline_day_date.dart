@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class TimelineDayDate extends StatefulWidget {
-  final Map<String, Color> colors;
   final String lang;
+  final Map<String, Color> colors;
   final int index;
   final int centerItemIndex;
   final int nowIndex;
@@ -14,8 +14,8 @@ class TimelineDayDate extends StatefulWidget {
 
   const TimelineDayDate(
       {super.key,
-      required this.colors,
       required this.lang,
+      required this.colors,
       required this.index,
       required this.centerItemIndex,
       required this.nowIndex,

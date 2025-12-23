@@ -8,16 +8,16 @@ import 'package:intl/intl.dart';
 class TimelineDayInfo extends StatelessWidget {
   const TimelineDayInfo({
     super.key,
+    required this.lang,
     required this.day,
     required this.colors,
-    required this.lang,
     required this.elements,
     required this.openDayDetail
   });
 
+  final String lang;
   final Map<String, Color> colors;
   final dynamic day;
-  final String lang;
   final List elements;
   final Function(String, double?, List<String>?, List<dynamic>, dynamic)?
       openDayDetail;

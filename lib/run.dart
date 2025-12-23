@@ -70,7 +70,6 @@ class MyApp extends StatelessWidget {
                       width: width,
                       height: height,
                       colors: colors,
-                      lang: 'fr_FR',
                       projectCount: 1,
                       mode : 'chronology',
                       infos: timelineData['infos'],

@@ -10,13 +10,11 @@ class TimelineDayIndicators extends StatelessWidget {
     super.key,
     required this.day,
     required this.colors,
-    required this.lang,
     required this.elements,
   });
 
   final Map<String, Color> colors;
   final dynamic day;
-  final String lang;
   final List elements;
 
   @override
