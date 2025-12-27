@@ -132,7 +132,7 @@ Ce plan d'implémentation transforme la conception en tâches concrètes pour op
     - **Property 7: Conditional Calculations**
     - **Validates: Requirements 5.5, 7.2**
 
-- [ ] 10. Checkpoint - Vérifier l'intégration
+- [x] 10. Checkpoint - Vérifier l'intégration
   - S'assurer que tous les tests passent
   - Vérifier que la timeline fonctionne avec les nouveaux composants
   - Tester manuellement le scroll et les interactions
