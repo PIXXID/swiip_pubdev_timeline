@@ -34,32 +34,32 @@ Ce plan d'implémentation transforme la conception en tâches concrètes pour op
     - **Property 4: Resource Cleanup**
     - **Validates: Requirements 3.3, 7.3, 9.5**
 
-- [ ] 3. Créer TimelineDataManager avec cache
-  - [ ] 3.1 Implémenter TimelineDataManager
+- [x] 3. Créer TimelineDataManager avec cache
+  - [x] 3.1 Implémenter TimelineDataManager
     - Créer les variables de cache (_cachedDays, _cachedStageRows, _lastDataHash)
     - Implémenter getFormattedDays avec détection de changement via hash
     - Implémenter getFormattedStageRows avec cache
     - Ajouter la méthode clearCache
     - _Requirements: 4.1, 4.5_
 
-  - [ ] 3.2 Optimiser _formatElementsOptimized
+  - [x] 3.2 Optimiser _formatElementsOptimized
     - Créer des maps pour accès O(1) (elementsByDate, capacitiesByDate)
     - Pré-indexer les éléments par date
     - Utiliser List.generate pour créer les jours
     - Extraire _createEmptyDay et _processElementsForDay
     - _Requirements: 4.1, 4.4_
 
-  - [ ] 3.3 Optimiser _formatStagesRowsOptimized
+  - [x] 3.3 Optimiser _formatStagesRowsOptimized
     - Créer un index des éléments par pre_id
     - Utiliser des Sets pour éviter les doublons
     - Optimiser _organizeIntoRows avec recherche efficace
     - _Requirements: 4.1_
 
-  - [ ] 3.4 Écrire le test de propriété pour le cache des données
+  - [x] 3.4 Écrire le test de propriété pour le cache des données
     - **Property 5: Data Caching**
     - **Validates: Requirements 4.1, 4.5**
 
-- [ ] 4. Checkpoint - Vérifier les fondations
+- [x] 4. Checkpoint - Vérifier les fondations
   - S'assurer que tous les tests passent
   - Vérifier que les modèles et le controller fonctionnent correctement
   - Demander à l'utilisateur si des questions se posent
