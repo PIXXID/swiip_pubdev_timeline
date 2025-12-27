@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -110,6 +111,10 @@ class _Timeline extends State<Timeline> {
 
   bool isUniqueProject = false;
 
+  // Debouncing timer for vertical scroll calculations
+  Timer? _verticalScrollDebounceTimer;
+  static const _verticalScrollDebounceDuration = Duration(milliseconds: 100);
+
   // Initialisation
   @override
   void initState() {
@@ -201,47 +206,13 @@ class _Timeline extends State<Timeline> {
 
         // On fait le croll vertical automatique uniquement si l'élément du centre a changé. (optimisation)
         if (oldCenterItemIndex != centerItemIndex) {
-          bool enableAutoScroll = false;
-
-          // Index à gauche de l'écran
-          int leftItemIndex = centerItemIndex - 4;
-          // On récupère l'index de la ligne du stage/élément la plus haute
-          int higherRowIndex = getHigherStageRowIndex(stagesRows,leftItemIndex > 0 ? leftItemIndex : 0);
-          // On calcule la hauteur de la ligne du stage/élément la plus haute
-          double higherRowHeight = (higherRowIndex * (rowHeight + (rowMargin * 2)));
-          // On vérifie si on est pas en bas du scroll pour éviter l'effet  rebomb du scroll en bas
-          double totalRowsHeight = (rowHeight + rowMargin) * stagesRows.length;
-          // On active le scroll si l'utilisateur a fait un scroll vertical et si, quand on scroll vers la droite,
-          // le stage/élément le plus haut est plus bas que le niveau de scroll de l'utilisateur
-          enableAutoScroll = userScrollOffset == null || userScrollOffset != null && (userScrollOffset! < higherRowHeight);
-
-          // On ne calcule l'élément le plus bas que si on scroll vers la gauche
-          // et que l'utilsateur a scrollé à la main (optimisation)
-          if (sliderValue < oldSliderValue && userScrollOffset != null && widget.mode == 'chronology') {
-            // Index à droite de l'écran
-            int rightItemIndex = centerItemIndex + 4;
-            // On récupère l'index de la ligne du stage/élément la plus basse
-            int lowerRowIndex = getLowerStageRowIndex(
-                stagesRows, rightItemIndex > 0 ? rightItemIndex : 0);
-            // On calcule la hauteur de la ligne du stage/élément la plus basse
-            double lowerRowHeight = (lowerRowIndex * (rowHeight + (rowMargin * 2)));
-            // On active le scroll si l'utilisateur a fait un scroll vertical et si, quand on scroll vers la gauche,
-            // le stage/élément le plus bas est plus haut que le niveau de scroll de l'utilisateur
-            enableAutoScroll = userScrollOffset == null || userScrollOffset != null && (userScrollOffset! > lowerRowHeight);
-          }
-
-          // On vérifie si l'utilisateur a fait un scroll manuel pour éviter de le perdre
-          // On ne reprend le scroll automatique que si le stage/élément le plus haut est plus bas que le scroll de l'utilisateur
-          if (enableAutoScroll && widget.mode == 'chronology') {
-            if (totalRowsHeight - higherRowHeight > timelineHeight / 2) {
-              // On déclenche le scroll
-              _scrollV(higherRowHeight);
-            } else {
-              _scrollV(_controllerVerticalStages.position.maxScrollExtent);
-            }
-            // Réinitialise le scroll saisi par l'utilisateur
-            userScrollOffset = null;
-          }
+          // Cancel any pending debounce timer
+          _verticalScrollDebounceTimer?.cancel();
+          
+          // Debounce the vertical scroll calculations
+          _verticalScrollDebounceTimer = Timer(_verticalScrollDebounceDuration, () {
+            _performAutoScroll(centerItemIndex, oldSliderValue);
+          });
 
           // Mise à jour du centre précédent
           oldCenterItemIndex = centerItemIndex;
@@ -298,6 +269,8 @@ class _Timeline extends State<Timeline> {
   // Destruction du widget
   @override
   void dispose() {
+    // Cancel debounce timer
+    _verticalScrollDebounceTimer?.cancel();
     // On enlève les écoutes du scroll de la timeline et vertical
     _controllerTimeline.removeListener(() {});
     _controllerVerticalStages.removeListener(() {});
@@ -342,6 +315,59 @@ class _Timeline extends State<Timeline> {
     // gestion du scroll via le slide
     _controllerVerticalStages.animateTo(sliderValue,
         duration: const Duration(milliseconds: 220), curve: Curves.easeInOut);
+  }
+
+  // Perform auto-scroll with optimized calculations
+  void _performAutoScroll(int centerItemIndex, double oldSliderValue) {
+    if (widget.mode != 'chronology') return;
+
+    bool enableAutoScroll = false;
+
+    // Index à gauche de l'écran
+    int leftItemIndex = centerItemIndex - 4;
+    // On récupère l'index de la ligne du stage/élément la plus haute (optimized)
+    int higherRowIndex = getHigherStageRowIndexOptimized(stagesRows, leftItemIndex > 0 ? leftItemIndex : 0);
+    
+    if (higherRowIndex == -1) return; // No matching row found
+    
+    // On calcule la hauteur de la ligne du stage/élément la plus haute
+    double higherRowHeight = (higherRowIndex * (rowHeight + (rowMargin * 2)));
+    // On vérifie si on est pas en bas du scroll pour éviter l'effet rebond du scroll en bas
+    double totalRowsHeight = (rowHeight + rowMargin) * stagesRows.length;
+    // On active le scroll si l'utilisateur a fait un scroll vertical et si, quand on scroll vers la droite,
+    // le stage/élément le plus haut est plus bas que le niveau de scroll de l'utilisateur
+    enableAutoScroll = userScrollOffset == null || userScrollOffset != null && (userScrollOffset! < higherRowHeight);
+
+    // On ne calcule l'élément le plus bas que si on scroll vers la gauche
+    // et que l'utilisateur a scrollé à la main (optimisation)
+    if (sliderValue < oldSliderValue && userScrollOffset != null) {
+      // Index à droite de l'écran
+      int rightItemIndex = centerItemIndex + 4;
+      // On récupère l'index de la ligne du stage/élément la plus basse (optimized)
+      int lowerRowIndex = getLowerStageRowIndexOptimized(
+          stagesRows, rightItemIndex > 0 ? rightItemIndex : 0);
+      
+      if (lowerRowIndex != -1) {
+        // On calcule la hauteur de la ligne du stage/élément la plus basse
+        double lowerRowHeight = (lowerRowIndex * (rowHeight + (rowMargin * 2)));
+        // On active le scroll si l'utilisateur a fait un scroll vertical et si, quand on scroll vers la gauche,
+        // le stage/élément le plus bas est plus haut que le niveau de scroll de l'utilisateur
+        enableAutoScroll = userScrollOffset == null || userScrollOffset != null && (userScrollOffset! > lowerRowHeight);
+      }
+    }
+
+    // On vérifie si l'utilisateur a fait un scroll manuel pour éviter de le perdre
+    // On ne reprend le scroll automatique que si le stage/élément le plus haut est plus bas que le scroll de l'utilisateur
+    if (enableAutoScroll) {
+      if (totalRowsHeight - higherRowHeight > timelineHeight / 2) {
+        // On déclenche le scroll
+        _scrollV(higherRowHeight);
+      } else {
+        _scrollV(_controllerVerticalStages.position.maxScrollExtent);
+      }
+      // Réinitialise le scroll saisi par l'utilisateur
+      userScrollOffset = null;
+    }
   }
 
   @override

@@ -165,14 +165,14 @@ Ce plan d'implémentation transforme la conception en tâches concrètes pour op
     - Ajuster le scroll vertical pour fonctionner avec le lazy loading
     - _Requirements: 8.2_
 
-- [ ] 13. Optimiser le scroll automatique avec debouncing
-  - [ ] 13.1 Implémenter le debouncing dans le scroll listener
+- [x] 13. Optimiser le scroll automatique avec debouncing
+  - [x] 13.1 Implémenter le debouncing dans le scroll listener
     - Ajouter un Timer pour debouncer les calculs de scroll vertical
     - Implémenter la logique de désactivation/réactivation de l'auto-scroll
     - Optimiser getHigherStageRowIndex et getLowerStageRowIndex
     - _Requirements: 5.1, 5.3_
 
-  - [ ] 13.2 Écrire le test de propriété pour la gestion de l'auto-scroll
+  - [x] 13.2 Écrire le test de propriété pour la gestion de l'auto-scroll
     - **Property 8: Auto-Scroll State Management**
     - **Validates: Requirements 5.3**
 

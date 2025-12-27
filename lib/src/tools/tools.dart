@@ -347,6 +347,43 @@ int getHigherStageRowIndex(List stagesRows, int centerItemIndex) {
   return -1;
 }
 
+/// ------
+/// Récupère la row qui a le stage/élément le plus haut pour adapter le scroll vertical (optimized)
+/// Uses early exit and avoids redundant checks
+///
+/// [stagesRows]        Tableau des séquences et étapes associés aux élements
+/// [centerItemIndex]   Idex de l'item à centrer
+/// ------
+int getHigherStageRowIndexOptimized(List stagesRows, int centerItemIndex) {
+  final int rowCount = stagesRows.length;
+
+  for (int i = 0; i < rowCount; i++) {
+    final row = stagesRows[i];
+    final int stageCount = row.length;
+
+    // On parcourt les stages de chaque ligne
+    for (int j = 0; j < stageCount; j++) {
+      final stage = row[j];
+      final int startIndex = stage['startDateIndex'];
+      final int endIndex = stage['endDateIndex'];
+
+      // On Vérifie si l'index est dans la plage de date
+      if (centerItemIndex >= startIndex && centerItemIndex <= endIndex) {
+        return i;
+      }
+      
+      // Early exit: if centerItemIndex is before this stage's start, 
+      // it won't be in any subsequent stages in this row (assuming sorted)
+      if (centerItemIndex < startIndex) {
+        break;
+      }
+    }
+  }
+
+  // Aucune correspondance trouvée
+  return -1;
+}
+
 
 /// ------
 /// Récupère la row qui a le stage/élément le plus haut pour adapter le scroll vertical
@@ -369,6 +406,44 @@ int getLowerStageRowIndex(List stagesRows, int centerItemIndex) {
       // On Vérifie si l'index est dans la plage de date
       if (centerItemIndex >= startIndex && centerItemIndex <= endIndex) {
         return i + 1;
+      }
+    }
+  }
+
+  // Aucune correspondance trouvée
+  return -1;
+}
+
+/// ------
+/// Récupère la row qui a le stage/élément le plus bas pour adapter le scroll vertical (optimized)
+/// Uses early exit and avoids redundant checks
+///
+/// [stagesRows]        Tableau des séquences et étapes associés aux élements
+/// [centerItemIndex]   Idex de l'item à centrer
+/// ------
+int getLowerStageRowIndexOptimized(List stagesRows, int centerItemIndex) {
+  final int rowCount = stagesRows.length;
+
+  // On parcourt les lignes en ordre inverse
+  for (int i = rowCount - 1; i >= 0; i--) {
+    final row = stagesRows[i];
+    final int stageCount = row.length;
+
+    // On parcourt les stages de chaque ligne en ordre inverse
+    for (int j = stageCount - 1; j >= 0; j--) {
+      final stage = row[j];
+      final int startIndex = stage['startDateIndex'];
+      final int endIndex = stage['endDateIndex'];
+
+      // On Vérifie si l'index est dans la plage de date
+      if (centerItemIndex >= startIndex && centerItemIndex <= endIndex) {
+        return i + 1;
+      }
+      
+      // Early exit: if centerItemIndex is after this stage's end,
+      // it won't be in any previous stages in this row (assuming sorted)
+      if (centerItemIndex > endIndex) {
+        break;
       }
     }
   }
