@@ -129,4 +129,9 @@ build/
 .macos/
 web/
 ios/
+android/
+linux/
+macos/
+windows/
+.metadata
 .env

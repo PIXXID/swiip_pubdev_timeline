@@ -45,7 +45,7 @@ class _BouncingTimelineItem extends State<TimelineItem>
     Color dayTextColor = colors['primaryText'] ?? Colors.white;
 
     // Hauteur MAX
-    double heightLmax = widget.height - 90;
+    double heightLmax = widget.height;
 
     // On calcule la hauteur de chaque barre
     double heightCapeff = 0, heightBuseff = 0, heightCompeff = 0;

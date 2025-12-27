@@ -38,7 +38,6 @@ Color? formatStringToColor(String? color) {
 /// [elements]        Tableau d'élements
 /// [elementsDone]    Tableau d'élements terminés
 /// [capacities]      Tableau des capacités utilisateur
-/// [notifications]   Notifications de l'utilisateur
 /// [stages]          Séquence et étapes associés aux élements
 /// [maxCapacity]     Capacité maximum pour la calcul du graphique
 /// ------
@@ -47,7 +46,6 @@ List formatElements(DateTime startDate,
   List elements,
   List elementsDone, 
   List capacities, 
-  List notifications, 
   List stages, 
   int maxCapacity) {
 

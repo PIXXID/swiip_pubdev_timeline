@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:http/http.dart' as http;
-import 'package:swiip_pubdev_timeline/main.dart';
+import 'package:swiip_pubdev_timeline/src/timeline/timeline.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); 
+
   await initializeDateFormatting('fr_FR', null);
   await dotenv.load(fileName: ".env");
 
@@ -70,14 +72,12 @@ class MyApp extends StatelessWidget {
                       width: width,
                       height: height,
                       colors: colors,
-                      projectCount: 1,
                       mode : 'chronology',
                       infos: timelineData['infos'],
                       elements: timelineData['elements'],
                       elementsDone: timelineData['elementsDone'],
                       capacities: timelineData['capacities'],
                       stages: timelineData['stages'],
-                      notifications: timelineData['notifications'],
                       openDayDetail: openDayDetail,
                       openEditStage: openEditStage,
                       openEditElement: openEditElement
@@ -109,7 +109,7 @@ Future<Map<String, dynamic>> fetchTimelineData() async {
     },
   );
   if (response.statusCode == 200) {
-    //debugPrint(response.body);
+    debugPrint(response.body);
     return jsonDecode(response.body) as Map<String, dynamic>;
   } else {
     debugPrint(response.body);

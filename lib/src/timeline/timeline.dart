@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:web/web.dart' as web;
 
 // Widgets
 import 'timeline_item.dart';
@@ -11,9 +9,7 @@ import 'timeline_day_date.dart';
 import 'stage_row.dart';
 
 import 'package:swiip_pubdev_timeline/src/tools/tools.dart';
-
-// Local
-Locale getAppLocale(BuildContext context) => Localizations.localeOf(context);
+import 'package:swiip_pubdev_timeline/src/platform/platform_language.dart';
 
 class Timeline extends StatefulWidget {
   const Timeline(
@@ -21,14 +17,12 @@ class Timeline extends StatefulWidget {
       required this.width,
       required this.height,
       required this.colors,
-      required this.projectCount,
       required this.mode,
       required this.infos,
       required this.elements,
       required this.elementsDone,
       required this.capacities,
       required this.stages,
-      required this.notifications,
       this.defaultDate,
       required this.openDayDetail,
       this.openEditStage,
@@ -38,14 +32,12 @@ class Timeline extends StatefulWidget {
   final double width;
   final double height;
   final Map<String, Color> colors;
-  final int projectCount;
   final String mode;
   final dynamic infos;
   final dynamic elements;
   final dynamic elementsDone;
   final dynamic capacities;
   final dynamic stages;
-  final dynamic notifications;
   final String? defaultDate;
   final Function(String, double?, List<String>?, List<dynamic>?, dynamic)? openDayDetail;
   final Function(String?, String?, String?, String?, String?, double?, String?)? openEditStage;
@@ -57,6 +49,7 @@ class Timeline extends StatefulWidget {
 }
 
 class _Timeline extends State<Timeline> {
+
   // Liste des jours formatés
   List days = [];
 
@@ -138,7 +131,6 @@ class _Timeline extends State<Timeline> {
             ? List.empty()
             : widget.elementsDone,
         widget.capacities,
-        widget.notifications,
         widget.stages,
         widget.infos['lmax'] ?? 0);
 
@@ -332,13 +324,7 @@ class _Timeline extends State<Timeline> {
     double screenCenter = (screenWidth / 2);
 
     // Langue et locale
-    String lang = 'fr_FR';
-    if (kIsWeb) {
-      lang = web.window.navigator.language;
-    } else {
-      final locale = Localizations.localeOf(context);
-      lang = '${locale.languageCode}_${locale.countryCode}';
-    }
+    final String lang = platformLanguage();
 
     return Scaffold(
         backgroundColor: widget.colors['primaryBackground'],
@@ -406,72 +392,67 @@ class _Timeline extends State<Timeline> {
                                       )
                                     ),
                                   ),
-                                  if (widget.mode == 'effort')
-                                    // TIMELINE DYNAMIQUE
-                                    SizedBox(
-                                      width: days.length * (dayWidth),
-                                      height: timelineHeightContainer,
-                                      child: Row(
+                                  // STAGES/ELEMENTS DYNAMIQUES
+                                  SizedBox(
+                                    height: timelineHeightContainer, // Hauteur fixe pour la zone des stages
+                                    child: SingleChildScrollView(
+                                      controller: _controllerVerticalStages,
+                                      scrollDirection: Axis.vertical,
+                                      physics: const ClampingScrollPhysics(), // Permet un scroll fluide
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: List.generate(
-                                          days.length,
-                                          (index) => TimelineItem(
-                                            colors: widget.colors,
-                                            index: index,
-                                            centerItemIndex: centerItemIndex,
-                                            nowIndex: nowIndex,
-                                            days: days,
-                                            elements: widget.elements,
-                                            dayWidth: dayWidth,
-                                            dayMargin: dayMargin,
-                                            height: timelineHeight,
-                                            openDayDetail: widget.openDayDetail,
-                                          ),
+                                          stagesRows.length,
+                                          (rowIndex) => Container(
+                                            margin: EdgeInsets.symmetric(vertical: rowMargin),
+                                            width: days.length * (dayWidth - dayMargin),
+                                            height: rowHeight,
+                                            child: StageRow(
+                                              colors: widget.colors,
+                                              stagesList: stagesRows[rowIndex],
+                                              centerItemIndex: centerItemIndex,
+                                              dayWidth: dayWidth,
+                                              dayMargin: dayMargin,
+                                              height: rowHeight,
+                                              isUniqueProject: isUniqueProject,
+                                              openEditStage: widget.openEditStage,
+                                              openEditElement: widget.openEditElement,
+                                            ),
+                                          )
+                                        ),
+                                      ),
+                                    )
+                                  ),
+                                  // TIMELINE DYNAMIQUE
+                                  SizedBox(
+                                    width: days.length * (dayWidth),
+                                    height: 140,
+                                    child: Row(
+                                      children: List.generate(
+                                        days.length,
+                                        (index) => TimelineItem(
+                                          colors: widget.colors,
+                                          index: index,
+                                          centerItemIndex: centerItemIndex,
+                                          nowIndex: nowIndex,
+                                          days: days,
+                                          elements: widget.elements,
+                                          dayWidth: dayWidth,
+                                          dayMargin: dayMargin,
+                                          height: 120,
+                                          openDayDetail: widget.openDayDetail,
                                         ),
                                       ),
                                     ),
-                                  if (widget.mode == 'chronology')
-                                    // STAGES/ELEMENTS DYNAMIQUES
-                                    SizedBox(
-                                      height: timelineHeightContainer, // Hauteur fixe pour la zone des stages
-                                      child: NotificationListener<UserScrollNotification>(
-                                        onNotification: (notification) {
-                                          userScrollOffset = _controllerVerticalStages.position.pixels;
-                                          return false;
-                                        },
-                                        child: SingleChildScrollView(
-                                          controller: _controllerVerticalStages,
-                                          scrollDirection: Axis.vertical,
-                                          physics: const ClampingScrollPhysics(), // Permet un scroll fluide
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: List.generate(
-                                              stagesRows.length,
-                                              (rowIndex) => Container(
-                                                margin: EdgeInsets.symmetric(vertical: rowMargin),
-                                                width: days.length * (dayWidth - dayMargin),
-                                                height: rowHeight,
-                                                child: StageRow(
-                                                  colors: widget.colors,
-                                                  stagesList: stagesRows[rowIndex],
-                                                  centerItemIndex: centerItemIndex,
-                                                  dayWidth: dayWidth,
-                                                  dayMargin: dayMargin,
-                                                  height: rowHeight,
-                                                  isUniqueProject: isUniqueProject,
-                                                  openEditStage: widget.openEditStage,
-                                                  openEditElement: widget.openEditElement,
-                                                ),
-                                              )
-                                            ),
-                                          ),
-                                        )
-                                      )
-                                    ),
+                                  ),
                                 ],
                               ),
                             ),
                           ),
                         ),
+
+
+                        
                         // JOUR ET ICONES ELEMENTS
                         TimelineDayInfo(
                           lang: lang,
