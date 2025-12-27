@@ -76,8 +76,8 @@ Ce plan d'implémentation transforme la conception en tâches concrètes pour op
     - **Property 3: Viewport-Based Rendering**
     - **Validates: Requirements 3.2, 8.2**
 
-- [ ] 6. Créer OptimizedTimelineItem avec RepaintBoundary
-  - [ ] 6.1 Implémenter OptimizedTimelineItem
+- [x] 6. Créer OptimizedTimelineItem avec RepaintBoundary
+  - [x] 6.1 Implémenter OptimizedTimelineItem
     - Convertir TimelineItem en StatelessWidget
     - Utiliser ValueListenableBuilder pour centerItemIndex
     - Ajouter RepaintBoundary autour du contenu
@@ -85,11 +85,11 @@ Ce plan d'implémentation transforme la conception en tâches concrètes pour op
     - Utiliser const constructors où possible
     - _Requirements: 1.4, 1.5, 2.1_
 
-  - [ ] 6.2 Écrire le test de propriété pour les rebuilds sélectifs
+  - [x] 6.2 Écrire le test de propriété pour les rebuilds sélectifs
     - **Property 2: Selective Widget Rebuilds**
     - **Validates: Requirements 1.3, 2.1, 3.1**
 
-  - [ ] 6.3 Écrire les tests unitaires pour la structure du widget
+  - [x] 6.3 Écrire les tests unitaires pour la structure du widget
     - Vérifier l'utilisation de const constructors
     - Vérifier la présence de RepaintBoundary
     - Vérifier l'utilisation de ValueListenableBuilder
