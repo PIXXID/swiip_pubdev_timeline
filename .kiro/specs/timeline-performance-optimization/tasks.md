@@ -64,15 +64,15 @@ Ce plan d'implémentation transforme la conception en tâches concrètes pour op
   - Vérifier que les modèles et le controller fonctionnent correctement
   - Demander à l'utilisateur si des questions se posent
 
-- [ ] 5. Implémenter LazyTimelineViewport pour le rendu lazy
-  - [ ] 5.1 Créer LazyTimelineViewport widget
+- [x] 5. Implémenter LazyTimelineViewport pour le rendu lazy
+  - [x] 5.1 Créer LazyTimelineViewport widget
     - Implémenter le widget avec ValueListenableBuilder sur visibleRange
     - Calculer les widgets visibles basés sur la plage
     - Utiliser Positioned pour placer les widgets
     - Rendre uniquement les éléments dans la plage visible
     - _Requirements: 3.1, 3.2, 8.2_
 
-  - [ ] 5.2 Écrire le test de propriété pour le rendu viewport-based
+  - [x] 5.2 Écrire le test de propriété pour le rendu viewport-based
     - **Property 3: Viewport-Based Rendering**
     - **Validates: Requirements 3.2, 8.2**
 
