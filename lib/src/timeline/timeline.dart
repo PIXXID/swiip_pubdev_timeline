@@ -13,6 +13,7 @@ import 'optimized_timeline_item.dart';
 // Models
 import 'models/timeline_controller.dart';
 import 'models/timeline_data_manager.dart';
+import 'models/timeline_error_handler.dart';
 
 import 'package:swiip_pubdev_timeline/src/tools/tools.dart';
 import 'package:swiip_pubdev_timeline/src/platform/platform_language.dart';
@@ -134,30 +135,47 @@ class _Timeline extends State<Timeline> {
       if (widget.infos['endDate'] != null) {
         endDate = DateTime.parse(widget.infos['endDate']!);
       }
+      
+      // Validate date range
+      TimelineErrorHandler.withErrorHandling(
+        'validateDateRange',
+        () => TimelineErrorHandler.validateDateRange(startDate, endDate),
+        endDate,
+      );
     } else {
        // Indique qu'il n'y a pas de données pour cette requete.
       timelineIsEmpty = true;
     }
 
-    // Use TimelineDataManager for formatting with caching
-    days = _dataManager.getFormattedDays(
+    // Use TimelineDataManager for formatting with caching and error handling
+    days = TimelineErrorHandler.withErrorHandling(
+      'getFormattedDays',
+      () => _dataManager.getFormattedDays(
         startDate: startDate,
         endDate: endDate,
-        elements: widget.elements,
+        elements: widget.elements ?? [],
         elementsDone: (widget.elementsDone == null || widget.elementsDone.isEmpty)
             ? List.empty()
             : widget.elementsDone,
-        capacities: widget.capacities,
-        stages: widget.stages,
-        maxCapacity: widget.infos['lmax'] ?? 0);
+        capacities: widget.capacities ?? [],
+        stages: widget.stages ?? [],
+        maxCapacity: widget.infos['lmax'] ?? 0,
+      ),
+      [], // Fallback to empty list on error
+    );
 
-    // Use TimelineDataManager for formatting stage rows with caching
-    stagesRows = _dataManager.getFormattedStageRows(
+    // Use TimelineDataManager for formatting stage rows with caching and error handling
+    stagesRows = TimelineErrorHandler.withErrorHandling(
+      'getFormattedStageRows',
+      () => _dataManager.getFormattedStageRows(
         startDate: startDate,
         endDate: endDate,
         days: days,
-        stages: widget.stages,
-        elements: widget.elements);
+        stages: widget.stages ?? [],
+        elements: widget.elements ?? [],
+      ),
+      [], // Fallback to empty list on error
+    );
 
     // On positionne le stage de la première ligne par jour
     days = getStageByDay(days, stagesRows);
@@ -221,9 +239,13 @@ class _Timeline extends State<Timeline> {
         // Mise à jour de la position précédente
         oldSliderValue = sliderValue;
 
-        if (widget.updateCurrentDate != null && days[centerItemIndex] != null && days[centerItemIndex]['date'] != null) {
-          String dayDate = DateFormat('yyyy-MM-dd').format(days[centerItemIndex]['date']);
-          widget.updateCurrentDate!.call(dayDate);
+        if (widget.updateCurrentDate != null && days.isNotEmpty) {
+          // Use clampIndex to ensure safe array access
+          final safeIndex = TimelineErrorHandler.clampIndex(centerItemIndex, 0, days.length - 1);
+          if (days[safeIndex] != null && days[safeIndex]['date'] != null) {
+            String dayDate = DateFormat('yyyy-MM-dd').format(days[safeIndex]['date']);
+            widget.updateCurrentDate!.call(dayDate);
+          }
         }
       }
     });
@@ -281,9 +303,15 @@ class _Timeline extends State<Timeline> {
 
   // Scroll à une date
   void scrollTo(int dateIndex, { bool animated = false }) {
-    if (dateIndex >= 0) {
+    // Clamp the index to valid range
+    final safeIndex = TimelineErrorHandler.clampIndex(dateIndex, 0, days.length - 1);
+    
+    if (safeIndex >= 0 && days.isNotEmpty) {
       // On calcule la valeur du scroll en fonction de la date
-      double scroll = dateIndex * (dayWidth - dayMargin);
+      double scroll = safeIndex * (dayWidth - dayMargin);
+      
+      // Clamp scroll offset to valid range
+      scroll = TimelineErrorHandler.clampScrollOffset(scroll, sliderMaxValue);
 
       // Met à jour la valeur du scroll et scroll
       setState(() {
@@ -320,15 +348,20 @@ class _Timeline extends State<Timeline> {
   // Perform auto-scroll with optimized calculations
   void _performAutoScroll(int centerItemIndex, double oldSliderValue) {
     if (widget.mode != 'chronology') return;
+    if (stagesRows.isEmpty) return; // Guard against empty stages
 
     bool enableAutoScroll = false;
 
-    // Index à gauche de l'écran
-    int leftItemIndex = centerItemIndex - 4;
+    // Index à gauche de l'écran - clamp to valid range
+    int leftItemIndex = TimelineErrorHandler.clampIndex(centerItemIndex - 4, 0, days.length - 1);
+    
     // On récupère l'index de la ligne du stage/élément la plus haute (optimized)
-    int higherRowIndex = getHigherStageRowIndexOptimized(stagesRows, leftItemIndex > 0 ? leftItemIndex : 0);
+    int higherRowIndex = getHigherStageRowIndexOptimized(stagesRows, leftItemIndex);
     
     if (higherRowIndex == -1) return; // No matching row found
+    
+    // Clamp higherRowIndex to valid range
+    higherRowIndex = TimelineErrorHandler.clampIndex(higherRowIndex, 0, stagesRows.length - 1);
     
     // On calcule la hauteur de la ligne du stage/élément la plus haute
     double higherRowHeight = (higherRowIndex * (rowHeight + (rowMargin * 2)));
@@ -341,13 +374,16 @@ class _Timeline extends State<Timeline> {
     // On ne calcule l'élément le plus bas que si on scroll vers la gauche
     // et que l'utilisateur a scrollé à la main (optimisation)
     if (sliderValue < oldSliderValue && userScrollOffset != null) {
-      // Index à droite de l'écran
-      int rightItemIndex = centerItemIndex + 4;
+      // Index à droite de l'écran - clamp to valid range
+      int rightItemIndex = TimelineErrorHandler.clampIndex(centerItemIndex + 4, 0, days.length - 1);
+      
       // On récupère l'index de la ligne du stage/élément la plus basse (optimized)
-      int lowerRowIndex = getLowerStageRowIndexOptimized(
-          stagesRows, rightItemIndex > 0 ? rightItemIndex : 0);
+      int lowerRowIndex = getLowerStageRowIndexOptimized(stagesRows, rightItemIndex);
       
       if (lowerRowIndex != -1) {
+        // Clamp lowerRowIndex to valid range
+        lowerRowIndex = TimelineErrorHandler.clampIndex(lowerRowIndex, 0, stagesRows.length - 1);
+        
         // On calcule la hauteur de la ligne du stage/élément la plus basse
         double lowerRowHeight = (lowerRowIndex * (rowHeight + (rowMargin * 2)));
         // On active le scroll si l'utilisateur a fait un scroll vertical et si, quand on scroll vers la gauche,

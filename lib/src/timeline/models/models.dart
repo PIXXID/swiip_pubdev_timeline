@@ -6,3 +6,4 @@ export 'timeline_configuration.dart';
 export 'performance_metrics.dart';
 export 'timeline_controller.dart';
 export 'timeline_data_manager.dart';
+export 'timeline_error_handler.dart';

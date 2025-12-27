@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import 'timeline_error_handler.dart';
 
 /// Manages timeline data formatting and caching for performance optimization.
 ///
@@ -47,6 +48,14 @@ class TimelineDataManager {
     required List stages,
     required int maxCapacity,
   }) {
+    // Validate date range
+    try {
+      TimelineErrorHandler.validateDateRange(startDate, endDate);
+    } catch (e, stack) {
+      TimelineErrorHandler.handleDataError('validateDateRange', e, stack);
+      return [];
+    }
+    
     // Calculate a hash of the input data
     final dataHash = Object.hash(
       startDate,
@@ -63,16 +72,20 @@ class TimelineDataManager {
       return _cachedDays!;
     }
 
-    // Otherwise, recompute and cache
+    // Otherwise, recompute and cache with error handling
     _lastDataHash = dataHash;
-    _cachedDays = _formatElementsOptimized(
-      startDate,
-      endDate,
-      elements,
-      elementsDone,
-      capacities,
-      stages,
-      maxCapacity,
+    _cachedDays = TimelineErrorHandler.withErrorHandling(
+      'formatElementsOptimized',
+      () => _formatElementsOptimized(
+        startDate,
+        endDate,
+        elements,
+        elementsDone,
+        capacities,
+        stages,
+        maxCapacity,
+      ),
+      [], // Fallback to empty list on error
     );
 
     return _cachedDays!;
@@ -106,13 +119,17 @@ class TimelineDataManager {
       return _cachedStageRows!;
     }
 
-    // Otherwise, compute and cache
-    _cachedStageRows = _formatStagesRowsOptimized(
-      startDate,
-      endDate,
-      days,
-      stages,
-      elements,
+    // Otherwise, compute and cache with error handling
+    _cachedStageRows = TimelineErrorHandler.withErrorHandling(
+      'formatStagesRowsOptimized',
+      () => _formatStagesRowsOptimized(
+        startDate,
+        endDate,
+        days,
+        stages,
+        elements,
+      ),
+      [], // Fallback to empty list on error
     );
 
     return _cachedStageRows!;
@@ -350,18 +367,26 @@ class TimelineDataManager {
     var lastStageRowIndex = 0;
 
     for (final item in items) {
-      final stageStartDate = DateTime.parse(item['sdate']);
-      final stageEndDate = DateTime.parse(item['edate']);
+      // Safely access date fields with error handling
+      final sdateStr = item['sdate'];
+      final edateStr = item['edate'];
+      
+      if (sdateStr == null || edateStr == null) continue;
+      
+      final stageStartDate = DateTime.parse(sdateStr);
+      final stageEndDate = DateTime.parse(edateStr);
 
       // Clamp start date to timeline start
       final clampedStartDate =
           stageStartDate.isBefore(startDate) ? startDate : stageStartDate;
 
       final startDateIndex = days.indexWhere((d) =>
+          d['date'] != null &&
           DateFormat('yyyy-MM-dd').format(d['date']) ==
           DateFormat('yyyy-MM-dd').format(clampedStartDate));
 
       final endDateIndex = days.indexWhere((d) =>
+          d['date'] != null &&
           DateFormat('yyyy-MM-dd').format(d['date']) ==
           DateFormat('yyyy-MM-dd').format(stageEndDate));
 
@@ -384,9 +409,12 @@ class TimelineDataManager {
         var placed = false;
 
         // Try to place in existing rows starting from lastStageRowIndex
+        // Clamp lastStageRowIndex to valid range
+        lastStageRowIndex = TimelineErrorHandler.clampIndex(lastStageRowIndex, 0, rows.length - 1);
+        
         for (var j = lastStageRowIndex; j < rows.length; j++) {
           final hasOverlap =
-              rows[j].any((r) => r['endDateIndex'] + 1 > startDateIndex);
+              rows[j].any((r) => (r['endDateIndex'] ?? -1) + 1 > startDateIndex);
 
           if (!hasOverlap) {
             if (isStage) lastStageRowIndex = j;

@@ -176,25 +176,25 @@ Ce plan d'implémentation transforme la conception en tâches concrètes pour op
     - **Property 8: Auto-Scroll State Management**
     - **Validates: Requirements 5.3**
 
-- [ ] 14. Implémenter la gestion des erreurs
-  - [ ] 14.1 Créer TimelineErrorHandler
+- [x] 14. Implémenter la gestion des erreurs
+  - [x] 14.1 Créer TimelineErrorHandler
     - Implémenter handleDataError pour le logging
     - Implémenter withErrorHandling pour les opérations à risque
     - Implémenter validateDays, clampIndex, validateDateRange
     - _Requirements: 6.4_
 
-  - [ ] 14.2 Intégrer la gestion d'erreurs dans Timeline
+  - [x] 14.2 Intégrer la gestion d'erreurs dans Timeline
     - Entourer les calculs critiques avec withErrorHandling
     - Valider les données d'entrée avec validateDays
     - Utiliser clampIndex pour tous les accès aux tableaux
     - Valider les plages de dates avec validateDateRange
     - _Requirements: 6.4_
 
-  - [ ] 14.3 Écrire le test de propriété pour la gestion des cas limites
+  - [x] 14.3 Écrire le test de propriété pour la gestion des cas limites
     - **Property 11: Edge Case Handling**
     - **Validates: Requirements 6.4**
 
-  - [ ] 14.4 Écrire les tests unitaires pour les cas limites
+  - [x] 14.4 Écrire les tests unitaires pour les cas limites
     - Tester avec des données nulles ou vides
     - Tester avec des plages de dates invalides
     - Tester avec des indices négatifs
