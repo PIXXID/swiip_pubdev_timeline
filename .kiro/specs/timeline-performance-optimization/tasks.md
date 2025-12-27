@@ -18,19 +18,19 @@ Ce plan d'implémentation transforme la conception en tâches concrètes pour op
   - Tester l'égalité et le hashCode des modèles
   - _Requirements: 3.2, 8.4_
 
-- [ ] 2. Implémenter TimelineController avec gestion d'état granulaire
-  - [ ] 2.1 Créer TimelineController avec ValueNotifiers
+- [x] 2. Implémenter TimelineController avec gestion d'état granulaire
+  - [x] 2.1 Créer TimelineController avec ValueNotifiers
     - Implémenter scrollOffset, centerItemIndex, et visibleRange comme ValueNotifiers
     - Ajouter le throttling pour updateScrollOffset avec Timer
     - Implémenter _updateCenterItemIndex et _updateVisibleRange
     - Ajouter la méthode dispose pour nettoyer les ressources
     - _Requirements: 2.3, 5.1, 7.1, 7.3_
 
-  - [ ] 2.2 Écrire le test de propriété pour le throttling du scroll
+  - [x] 2.2 Écrire le test de propriété pour le throttling du scroll
     - **Property 6: Scroll Throttling**
     - **Validates: Requirements 5.1, 7.1**
 
-  - [ ] 2.3 Écrire le test de propriété pour le nettoyage des ressources
+  - [x] 2.3 Écrire le test de propriété pour le nettoyage des ressources
     - **Property 4: Resource Cleanup**
     - **Validates: Requirements 3.3, 7.3, 9.5**
 
