@@ -108,15 +108,15 @@ Ce plan d'implémentation transforme la conception en tâches concrètes pour op
     - **Property 9: Stage Row Conditional Rebuild**
     - **Validates: Requirements 2.2**
 
-- [ ] 8. Intégrer TimelineController dans Timeline widget
-  - [ ] 8.1 Refactoriser Timeline pour utiliser TimelineController
+- [x] 8. Intégrer TimelineController dans Timeline widget
+  - [x] 8.1 Refactoriser Timeline pour utiliser TimelineController
     - Remplacer les variables d'état par TimelineController
     - Utiliser controller.updateScrollOffset dans le listener
     - Remplacer setState par des mises à jour de ValueNotifier
     - Passer les ValueNotifiers aux widgets enfants
     - _Requirements: 2.3, 2.5_
 
-  - [ ] 8.2 Écrire le test de propriété pour l'isolation du slider
+  - [x] 8.2 Écrire le test de propriété pour l'isolation du slider
     - **Property 10: Slider Isolation**
     - **Validates: Requirements 2.5**
 
