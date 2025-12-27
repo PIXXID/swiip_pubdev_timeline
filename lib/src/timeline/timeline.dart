@@ -10,6 +10,7 @@ import 'stage_row.dart';
 
 // Models
 import 'models/timeline_controller.dart';
+import 'models/timeline_data_manager.dart';
 
 import 'package:swiip_pubdev_timeline/src/tools/tools.dart';
 import 'package:swiip_pubdev_timeline/src/platform/platform_language.dart';
@@ -58,6 +59,9 @@ class _Timeline extends State<Timeline> {
 
   // TimelineController for state management
   late TimelineController _timelineController;
+
+  // TimelineDataManager for data formatting and caching
+  late TimelineDataManager _dataManager;
 
   // Valeur du slider
   double sliderValue = 0.0;
@@ -111,6 +115,9 @@ class _Timeline extends State<Timeline> {
     super.initState();
     debugPrint('------ Timeline InitState');
     
+    // Initialize TimelineDataManager
+    _dataManager = TimelineDataManager();
+    
     // Vérifie que la timleline recoit bien des élement
     if (widget.elements != null && widget.elements.isNotEmpty) {
       // On positionne les dates de début et de fin
@@ -126,20 +133,25 @@ class _Timeline extends State<Timeline> {
       timelineIsEmpty = true;
     }
 
-    // Formate la liste des jours pour positionner les éléments correctement
-    days = formatElements(
-        startDate,
-        endDate,
-        widget.elements,
-        (widget.elementsDone == null || widget.elementsDone.isEmpty)
+    // Use TimelineDataManager for formatting with caching
+    days = _dataManager.getFormattedDays(
+        startDate: startDate,
+        endDate: endDate,
+        elements: widget.elements,
+        elementsDone: (widget.elementsDone == null || widget.elementsDone.isEmpty)
             ? List.empty()
             : widget.elementsDone,
-        widget.capacities,
-        widget.stages,
-        widget.infos['lmax'] ?? 0);
+        capacities: widget.capacities,
+        stages: widget.stages,
+        maxCapacity: widget.infos['lmax'] ?? 0);
 
-    // Formate la liste des étapes en plusieurs lignes selon les dates
-    stagesRows = formatStagesRows(startDate, endDate, days, widget.stages, widget.elements);
+    // Use TimelineDataManager for formatting stage rows with caching
+    stagesRows = _dataManager.getFormattedStageRows(
+        startDate: startDate,
+        endDate: endDate,
+        days: days,
+        stages: widget.stages,
+        elements: widget.elements);
 
     // On positionne le stage de la première ligne par jour
     days = getStageByDay(days, stagesRows);

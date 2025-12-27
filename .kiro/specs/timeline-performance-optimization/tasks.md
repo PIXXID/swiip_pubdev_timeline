@@ -120,15 +120,15 @@ Ce plan d'implémentation transforme la conception en tâches concrètes pour op
     - **Property 10: Slider Isolation**
     - **Validates: Requirements 2.5**
 
-- [ ] 9. Intégrer TimelineDataManager dans Timeline
-  - [ ] 9.1 Utiliser TimelineDataManager pour le formatage
+- [x] 9. Intégrer TimelineDataManager dans Timeline
+  - [x] 9.1 Utiliser TimelineDataManager pour le formatage
     - Créer une instance de TimelineDataManager dans initState
     - Remplacer les appels à formatElements par dataManager.getFormattedDays
     - Remplacer les appels à formatStagesRows par dataManager.getFormattedStageRows
     - Vérifier que le cache fonctionne lors des rebuilds
     - _Requirements: 4.1, 4.5_
 
-  - [ ] 9.2 Écrire le test de propriété pour les calculs conditionnels
+  - [x] 9.2 Écrire le test de propriété pour les calculs conditionnels
     - **Property 7: Conditional Calculations**
     - **Validates: Requirements 5.5, 7.2**
 
