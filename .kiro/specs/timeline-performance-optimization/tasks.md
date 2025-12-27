@@ -95,8 +95,8 @@ Ce plan d'implémentation transforme la conception en tâches concrètes pour op
     - Vérifier l'utilisation de ValueListenableBuilder
     - _Requirements: 1.4, 1.5, 2.3_
 
-- [ ] 7. Implémenter OptimizedStageRow avec rebuild conditionnel
-  - [ ] 7.1 Créer OptimizedStageRow widget
+- [x] 7. Implémenter OptimizedStageRow avec rebuild conditionnel
+  - [x] 7.1 Créer OptimizedStageRow widget
     - Convertir StageRow pour utiliser ValueNotifiers
     - Implémenter _shouldRebuildForCenterChange et _shouldRebuildForRangeChange
     - Ajouter des listeners avec rebuild conditionnel
@@ -104,7 +104,7 @@ Ce plan d'implémentation transforme la conception en tâches concrètes pour op
     - Implémenter _buildStageWidgets et _updateLabelsVisibility
     - _Requirements: 2.2, 2.4_
 
-  - [ ] 7.2 Écrire le test de propriété pour le rebuild conditionnel des Stage_Rows
+  - [x] 7.2 Écrire le test de propriété pour le rebuild conditionnel des Stage_Rows
     - **Property 9: Stage Row Conditional Rebuild**
     - **Validates: Requirements 2.2**
 
