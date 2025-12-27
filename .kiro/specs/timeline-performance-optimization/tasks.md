@@ -138,14 +138,14 @@ Ce plan d'implémentation transforme la conception en tâches concrètes pour op
   - Tester manuellement le scroll et les interactions
   - Demander à l'utilisateur si des questions se posent
 
-- [ ] 11. Implémenter LazyTimelineViewport pour les dates et la timeline
-  - [ ] 11.1 Intégrer LazyTimelineViewport pour TimelineDayDate
+- [x] 11. Implémenter LazyTimelineViewport pour les dates et la timeline
+  - [x] 11.1 Intégrer LazyTimelineViewport pour TimelineDayDate
     - Remplacer List.generate par LazyTimelineViewport
     - Passer le controller et les données nécessaires
     - Créer un itemBuilder pour TimelineDayDate
     - _Requirements: 3.1, 3.2_
 
-  - [ ] 11.2 Intégrer LazyTimelineViewport pour TimelineItem
+  - [x] 11.2 Intégrer LazyTimelineViewport pour TimelineItem
     - Remplacer List.generate par LazyTimelineViewport
     - Utiliser OptimizedTimelineItem au lieu de TimelineItem
     - Passer le controller et les données nécessaires

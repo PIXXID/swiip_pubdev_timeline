@@ -7,6 +7,8 @@ import 'timeline_day_info.dart';
 import 'timeline_day_indicators.dart';
 import 'timeline_day_date.dart';
 import 'stage_row.dart';
+import 'lazy_timeline_viewport.dart';
+import 'optimized_timeline_item.dart';
 
 // Models
 import 'models/timeline_controller.dart';
@@ -402,27 +404,25 @@ class _Timeline extends State<Timeline> {
                                     SizedBox(
                                       width: days.length * (dayWidth),
                                       height: datesHeight,
-                                      child: ValueListenableBuilder<int>(
-                                        valueListenable: _timelineController.centerItemIndex,
-                                        builder: (context, centerItemIndex, _) {
-                                          return Row(
-                                            children: List.generate(
-                                              days.length,
-                                              (index) => TimelineDayDate(
-                                                lang: lang,
-                                                colors: widget.colors,
-                                                index: index,
-                                                centerItemIndex: centerItemIndex,
-                                                nowIndex: nowIndex,
-                                                days: days,
-                                                dayWidth: dayWidth,
-                                                dayMargin: dayMargin,
-                                                height: datesHeight,
-                                              )
-                                            )
+                                      child: LazyTimelineViewport(
+                                        controller: _timelineController,
+                                        items: days,
+                                        itemWidth: dayWidth,
+                                        itemMargin: dayMargin,
+                                        itemBuilder: (context, index) {
+                                          return TimelineDayDate(
+                                            lang: lang,
+                                            colors: widget.colors,
+                                            index: index,
+                                            centerItemIndex: _timelineController.centerItemIndex.value,
+                                            nowIndex: nowIndex,
+                                            days: days,
+                                            dayWidth: dayWidth,
+                                            dayMargin: dayMargin,
+                                            height: datesHeight,
                                           );
                                         },
-                                      )
+                                      ),
                                     ),
                                   ),
                                   // STAGES/ELEMENTS DYNAMIQUES
@@ -465,25 +465,23 @@ class _Timeline extends State<Timeline> {
                                   SizedBox(
                                     width: days.length * (dayWidth),
                                     height: 140,
-                                    child: ValueListenableBuilder<int>(
-                                      valueListenable: _timelineController.centerItemIndex,
-                                      builder: (context, centerItemIndex, _) {
-                                        return Row(
-                                          children: List.generate(
-                                            days.length,
-                                            (index) => TimelineItem(
-                                              colors: widget.colors,
-                                              index: index,
-                                              centerItemIndex: centerItemIndex,
-                                              nowIndex: nowIndex,
-                                              days: days,
-                                              elements: widget.elements,
-                                              dayWidth: dayWidth,
-                                              dayMargin: dayMargin,
-                                              height: 120,
-                                              openDayDetail: widget.openDayDetail,
-                                            ),
-                                          ),
+                                    child: LazyTimelineViewport(
+                                      controller: _timelineController,
+                                      items: days,
+                                      itemWidth: dayWidth,
+                                      itemMargin: dayMargin,
+                                      itemBuilder: (context, index) {
+                                        return OptimizedTimelineItem(
+                                          colors: widget.colors,
+                                          index: index,
+                                          centerItemIndexNotifier: _timelineController.centerItemIndex,
+                                          nowIndex: nowIndex,
+                                          day: days[index],
+                                          elements: widget.elements,
+                                          dayWidth: dayWidth,
+                                          dayMargin: dayMargin,
+                                          height: 120,
+                                          openDayDetail: widget.openDayDetail,
                                         );
                                       },
                                     ),
