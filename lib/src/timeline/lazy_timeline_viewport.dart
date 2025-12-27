@@ -16,7 +16,7 @@ class LazyTimelineViewport extends StatelessWidget {
   final TimelineController controller;
 
   /// The complete list of data items (e.g., days) to be rendered.
-  final List<Map<String, dynamic>> items;
+  final List<dynamic> items;
 
   /// Width of each item in the timeline.
   final double itemWidth;

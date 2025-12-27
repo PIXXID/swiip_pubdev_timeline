@@ -151,15 +151,15 @@ Ce plan d'implémentation transforme la conception en tâches concrètes pour op
     - Passer le controller et les données nécessaires
     - _Requirements: 3.1, 3.2_
 
-- [ ] 12. Implémenter le rendu viewport-based pour Stage_Rows
-  - [ ] 12.1 Créer LazyStageRowsViewport
+- [x] 12. Implémenter le rendu viewport-based pour Stage_Rows
+  - [x] 12.1 Créer LazyStageRowsViewport
     - Implémenter un widget similaire à LazyTimelineViewport pour les lignes
     - Calculer quelles lignes sont visibles verticalement
     - Rendre uniquement les lignes visibles + buffer
     - Utiliser OptimizedStageRow pour chaque ligne
     - _Requirements: 8.2_
 
-  - [ ] 12.2 Intégrer LazyStageRowsViewport dans Timeline
+  - [x] 12.2 Intégrer LazyStageRowsViewport dans Timeline
     - Remplacer List.generate des Stage_Rows par LazyStageRowsViewport
     - Passer le controller vertical et les données
     - Ajuster le scroll vertical pour fonctionner avec le lazy loading

@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 // Widgets
-import 'timeline_item.dart';
 import 'timeline_day_info.dart';
 import 'timeline_day_indicators.dart';
 import 'timeline_day_date.dart';
-import 'stage_row.dart';
 import 'lazy_timeline_viewport.dart';
+import 'lazy_stage_rows_viewport.dart';
 import 'optimized_timeline_item.dart';
 
 // Models
@@ -432,32 +431,20 @@ class _Timeline extends State<Timeline> {
                                       controller: _controllerVerticalStages,
                                       scrollDirection: Axis.vertical,
                                       physics: const ClampingScrollPhysics(), // Permet un scroll fluide
-                                      child: ValueListenableBuilder<int>(
-                                        valueListenable: _timelineController.centerItemIndex,
-                                        builder: (context, centerItemIndex, _) {
-                                          return Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: List.generate(
-                                              stagesRows.length,
-                                              (rowIndex) => Container(
-                                                margin: EdgeInsets.symmetric(vertical: rowMargin),
-                                                width: days.length * (dayWidth - dayMargin),
-                                                height: rowHeight,
-                                                child: StageRow(
-                                                  colors: widget.colors,
-                                                  stagesList: stagesRows[rowIndex],
-                                                  centerItemIndex: centerItemIndex,
-                                                  dayWidth: dayWidth,
-                                                  dayMargin: dayMargin,
-                                                  height: rowHeight,
-                                                  isUniqueProject: isUniqueProject,
-                                                  openEditStage: widget.openEditStage,
-                                                  openEditElement: widget.openEditElement,
-                                                ),
-                                              )
-                                            ),
-                                          );
-                                        },
+                                      child: LazyStageRowsViewport(
+                                        controller: _timelineController,
+                                        stagesRows: stagesRows,
+                                        rowHeight: rowHeight,
+                                        rowMargin: rowMargin,
+                                        dayWidth: dayWidth,
+                                        dayMargin: dayMargin,
+                                        totalDays: days.length,
+                                        colors: widget.colors,
+                                        isUniqueProject: isUniqueProject,
+                                        verticalScrollController: _controllerVerticalStages,
+                                        viewportHeight: timelineHeightContainer,
+                                        openEditStage: widget.openEditStage,
+                                        openEditElement: widget.openEditElement,
                                       ),
                                     )
                                   ),
