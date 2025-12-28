@@ -32,14 +32,14 @@ This implementation plan breaks down the refactoring of the Timeline component t
     - Verify scroll offset = dateIndex * (dayWidth - dayMargin)
     - Run 100 iterations
 
-- [ ] 3. Verify scroll position tracking still works
-  - [ ] 3.1 Ensure horizontal scroll listener updates TimelineController
+- [x] 3. Verify scroll position tracking still works
+  - [x] 3.1 Ensure horizontal scroll listener updates TimelineController
     - Verify scroll listener still calls `_timelineController.updateScrollOffset()`
     - Verify center item index calculation still works
     - Verify updateCurrentDate callback still triggered
     - _Requirements: 4.1, 4.2, 4.3, 4.4_
 
-  - [ ] 3.2 Write property test for horizontal scroll position updates
+  - [x] 3.2 Write property test for horizontal scroll position updates
     - **Property 1: Horizontal Scroll Position Updates**
     - **Validates: Requirements 2.1, 1.5**
     - Generate random scroll offsets (0 to maxScrollExtent)
@@ -47,7 +47,7 @@ This implementation plan breaks down the refactoring of the Timeline component t
     - Verify _controllerTimeline.offset matches expected value
     - Run 100 iterations
 
-  - [ ] 3.3 Write property test for TimelineController updates
+  - [x] 3.3 Write property test for TimelineController updates
     - **Property 4: TimelineController Updates**
     - **Validates: Requirements 4.1, 4.4**
     - Generate random horizontal scroll positions
@@ -55,7 +55,7 @@ This implementation plan breaks down the refactoring of the Timeline component t
     - Verify visible range recalculated correctly
     - Run 100 iterations
 
-  - [ ] 3.4 Write property test for center item calculation
+  - [x] 3.4 Write property test for center item calculation
     - **Property 5: Center Item Calculation**
     - **Validates: Requirements 4.2, 4.5**
     - Generate random scroll positions
@@ -63,7 +63,7 @@ This implementation plan breaks down the refactoring of the Timeline component t
     - Verify TimelineController reports same center index (within 1 day tolerance)
     - Run 100 iterations
 
-  - [ ] 3.5 Write property test for current date callback
+  - [x] 3.5 Write property test for current date callback
     - **Property 6: Current Date Callback Invocation**
     - **Validates: Requirements 4.3**
     - Generate random scroll positions that change center item

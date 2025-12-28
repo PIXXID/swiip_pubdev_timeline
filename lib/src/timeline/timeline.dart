@@ -189,24 +189,23 @@ class _Timeline extends State<Timeline> {
     rowHeight = _config.rowHeight;
     rowMargin = _config.rowMargin;
 
-    // Vérifie que la timleline recoit bien des élement
-    if (widget.elements != null && widget.elements.isNotEmpty) {
-      // On positionne les dates de début et de fin
-      if (widget.infos['startDate'] != null) {
-        startDate = DateTime.parse(widget.infos['startDate']!);
-      }
-      // Si la timeline n'a aucun élement
-      if (widget.infos['endDate'] != null) {
-        endDate = DateTime.parse(widget.infos['endDate']!);
-      }
+    // Parse dates from infos if provided
+    if (widget.infos['startDate'] != null) {
+      startDate = DateTime.parse(widget.infos['startDate']!);
+    }
+    if (widget.infos['endDate'] != null) {
+      endDate = DateTime.parse(widget.infos['endDate']!);
+    }
 
-      // Validate date range
-      TimelineErrorHandler.withErrorHandling(
-        'validateDateRange',
-        () => TimelineErrorHandler.validateDateRange(startDate, endDate),
-        endDate,
-      );
-    } else {
+    // Validate date range
+    TimelineErrorHandler.withErrorHandling(
+      'validateDateRange',
+      () => TimelineErrorHandler.validateDateRange(startDate, endDate),
+      endDate,
+    );
+
+    // Vérifie que la timleline recoit bien des élement
+    if (widget.elements == null || widget.elements.isEmpty) {
       // Indique qu'il n'y a pas de données pour cette requete.
       timelineIsEmpty = true;
     }
@@ -285,8 +284,12 @@ class _Timeline extends State<Timeline> {
         // Update TimelineController with throttling
         _timelineController.updateScrollOffset(_controllerTimeline.offset);
 
-        // Get centerItemIndex from controller
-        final centerItemIndex = _timelineController.centerItemIndex.value;
+        // Calculate center item index directly (don't wait for throttled update)
+        final viewportWidth = _timelineController.viewportWidth.value;
+        final centerPosition = _controllerTimeline.offset + (viewportWidth / 2);
+        final centerItemIndex = (centerPosition / (dayWidth - dayMargin))
+            .round()
+            .clamp(0, days.length - 1);
 
         // On fait le croll vertical automatique uniquement si l'élément du centre a changé. (optimisation)
         if (oldCenterItemIndex != centerItemIndex) {

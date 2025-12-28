@@ -109,7 +109,10 @@ class TimelineController extends ChangeNotifier {
 
   /// Updates the center item index based on current scroll offset.
   void _updateCenterItemIndex() {
-    final newIndex = (scrollOffset.value / (dayWidth - dayMargin)).round();
+    // Calculate which item is at the center of the viewport
+    // Center position = scrollOffset + (viewportWidth / 2)
+    final centerPosition = scrollOffset.value + (_viewportWidth ?? 0) / 2;
+    final newIndex = (centerPosition / (dayWidth - dayMargin)).round();
     if (newIndex != centerItemIndex.value) {
       centerItemIndex.value = newIndex.clamp(0, totalDays - 1);
     }

@@ -171,18 +171,27 @@ class TimelineDataManager {
 
     // Pre-index elements by date
     for (final element in elements) {
-      final date = element['date'] as String;
-      elementsByDate.putIfAbsent(date, () => []).add(element);
+      if (element == null) continue;
+      final date = element['date'] as String?;
+      if (date != null && date.isNotEmpty) {
+        elementsByDate.putIfAbsent(date, () => []).add(element);
+      }
     }
 
     for (final capacity in capacities) {
-      final date = capacity['date'] as String;
-      capacitiesByDate[date] = capacity;
+      if (capacity == null) continue;
+      final date = capacity['date'] as String?;
+      if (date != null && date.isNotEmpty) {
+        capacitiesByDate[date] = capacity;
+      }
     }
 
     for (final element in elementsDone) {
-      final date = element['date'] as String;
-      elementsDoneByDate.putIfAbsent(date, () => []).add(element);
+      if (element == null) continue;
+      final date = element['date'] as String?;
+      if (date != null && date.isNotEmpty) {
+        elementsDoneByDate.putIfAbsent(date, () => []).add(element);
+      }
     }
 
     // Generate the list of days efficiently
@@ -263,29 +272,31 @@ class TimelineDataManager {
     final seenPreIds = <String>{};
 
     for (final element in elements) {
-      final preId = element['pre_id'] as String;
-      if (seenPreIds.contains(preId)) continue;
+      final preId = element['pre_id'] as String?;
+      if (preId == null || seenPreIds.contains(preId)) continue;
 
       seenPreIds.add(preId);
       day['preIds'].add(preId);
 
       // Count by type
-      final nat = element['nat'] as String;
-      final status = element['status'] as String;
+      final nat = element['nat'] as String?;
+      final status = element['status'] as String?;
 
-      switch (nat) {
-        case 'activity':
-          day['activityTotal']++;
-          if (status == 'status') day['activityCompleted']++;
-          break;
-        case 'delivrable':
-          day['delivrableTotal']++;
-          if (status == 'status') day['delivrableCompleted']++;
-          break;
-        case 'task':
-          day['taskTotal']++;
-          if (status == 'status') day['taskCompleted']++;
-          break;
+      if (nat != null) {
+        switch (nat) {
+          case 'activity':
+            day['activityTotal']++;
+            if (status == 'status') day['activityCompleted']++;
+            break;
+          case 'delivrable':
+            day['delivrableTotal']++;
+            if (status == 'status') day['delivrableCompleted']++;
+            break;
+          case 'task':
+            day['taskTotal']++;
+            if (status == 'status') day['taskCompleted']++;
+            break;
+        }
       }
 
       // Count by status
@@ -313,13 +324,18 @@ class TimelineDataManager {
     // Create an index of elements by pre_id for O(1) access
     final elementsByPreId = <String, Map<String, dynamic>>{};
     for (final element in elements) {
-      elementsByPreId[element['pre_id']] = element;
+      if (element == null) continue;
+      final preId = element['pre_id'];
+      if (preId != null && preId is String && preId.isNotEmpty) {
+        elementsByPreId[preId] = element;
+      }
     }
 
     final mergedList = <Map<String, dynamic>>[];
 
     // Merge stages and their associated elements
     for (final stage in stages) {
+      if (stage == null) continue;
       mergedList.add(stage);
 
       final elmFiltered = stage['elm_filtered'] as List?;
@@ -328,7 +344,8 @@ class TimelineDataManager {
         final seenPreIds = <String>{};
 
         for (final preId in elmFiltered) {
-          if (seenPreIds.contains(preId)) continue;
+          if (preId == null || preId is! String || seenPreIds.contains(preId))
+            continue;
 
           final element = elementsByPreId[preId];
           if (element != null) {
@@ -341,9 +358,14 @@ class TimelineDataManager {
           }
         }
 
-        // Sort by start date
-        stageElements.sort(
-            (a, b) => (a['sdate'] as String).compareTo(b['sdate'] as String));
+        // Sort by start date - with null safety
+        stageElements.sort((a, b) {
+          final aDate = a['sdate'];
+          final bDate = b['sdate'];
+          if (aDate == null || bDate == null) return 0;
+          if (aDate is! String || bDate is! String) return 0;
+          return aDate.compareTo(bDate);
+        });
 
         mergedList.addAll(stageElements);
       }
@@ -366,14 +388,28 @@ class TimelineDataManager {
     var lastStageRowIndex = 0;
 
     for (final item in items) {
+      if (item == null) continue;
+
       // Safely access date fields with error handling
       final sdateStr = item['sdate'];
       final edateStr = item['edate'];
 
       if (sdateStr == null || edateStr == null) continue;
 
-      final stageStartDate = DateTime.parse(sdateStr);
-      final stageEndDate = DateTime.parse(edateStr);
+      // Validate that date strings are not empty
+      if (sdateStr is! String || edateStr is! String) continue;
+      if (sdateStr.isEmpty || edateStr.isEmpty) continue;
+
+      DateTime stageStartDate;
+      DateTime stageEndDate;
+
+      try {
+        stageStartDate = DateTime.parse(sdateStr);
+        stageEndDate = DateTime.parse(edateStr);
+      } catch (e) {
+        // Skip items with invalid date formats
+        continue;
+      }
 
       // Clamp start date to timeline start
       final clampedStartDate =
