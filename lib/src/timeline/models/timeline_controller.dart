@@ -39,6 +39,9 @@ class TimelineController extends ChangeNotifier {
   /// Viewport width for calculating visible range
   double? _viewportWidth;
 
+  /// First element margin for centering calculations
+  double? _firstElementMargin;
+
   /// Timer for throttling scroll updates
   Timer? _scrollThrottleTimer;
 
@@ -77,6 +80,8 @@ class TimelineController extends ChangeNotifier {
         '📐 setViewportWidth called: $width (previous: $_viewportWidth)');
     _viewportWidth = width;
     viewportWidth.value = width;
+    // Recalculate firstElementMargin when viewport width changes
+    _firstElementMargin = (width - (dayWidth - dayMargin)) / 2;
     _updateVisibleRange();
   }
 
@@ -109,10 +114,18 @@ class TimelineController extends ChangeNotifier {
 
   /// Updates the center item index based on current scroll offset.
   void _updateCenterItemIndex() {
+    // Handle empty timeline
+    if (totalDays == 0) {
+      if (centerItemIndex.value != 0) {
+        centerItemIndex.value = 0;
+      }
+      return;
+    }
+
     // Calculate which item is at the center of the viewport
-    // Center position = scrollOffset + (viewportWidth / 2)
-    final centerPosition = scrollOffset.value + (_viewportWidth ?? 0) / 2;
-    final newIndex = (centerPosition / (dayWidth - dayMargin)).round();
+    // The scrollOffset already accounts for the visual padding (firstElementMargin)
+    // applied in the SingleChildScrollView, so we don't add it here
+    final newIndex = (scrollOffset.value / (dayWidth - dayMargin)).round();
     if (newIndex != centerItemIndex.value) {
       centerItemIndex.value = newIndex.clamp(0, totalDays - 1);
     }

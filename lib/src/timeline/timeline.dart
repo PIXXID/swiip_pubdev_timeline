@@ -160,6 +160,9 @@ class _Timeline extends State<Timeline> {
   double _previousScrollOffset = 0.0;
   int _previousCenterIndex = 0;
 
+  // First element margin for centering calculations
+  double _firstElementMargin = 0.0;
+
   bool isUniqueProject = false;
 
   // Debouncing timer for vertical scroll calculations
@@ -335,19 +338,28 @@ class _Timeline extends State<Timeline> {
           previousScrollOffset: _previousScrollOffset,
         );
 
-        // 3. Vérification si le centre a changé
+        // 3. Vérification si le centre a changé de manière significative
+        // Pour éviter les sauts à chaque cran de molette, on ne déclenche l'auto-scroll
+        // que si le changement est significatif (au moins 2 jours de différence)
+        final centerIndexDifference =
+            (scrollState.centerDateIndex - _previousCenterIndex).abs();
+        const minCenterIndexChange = 2; // Minimum 2 jours de différence
+
         if (scrollState.centerDateIndex != _previousCenterIndex) {
-          // Annule le timer de debounce précédent
-          _verticalScrollDebounceTimer?.cancel();
-
-          // Debounce les calculs de scroll vertical
-          _verticalScrollDebounceTimer = Timer(
-            _verticalScrollDebounceDuration,
-            () => _applyAutoScroll(scrollState),
-          );
-
-          // Mise à jour du callback de date
+          // Mise à jour du callback de date (toujours, même pour petits changements)
           _updateCurrentDateCallback(scrollState.centerDateIndex);
+
+          // Auto-scroll uniquement si le changement est significatif
+          if (centerIndexDifference >= minCenterIndexChange) {
+            // Annule le timer de debounce précédent
+            _verticalScrollDebounceTimer?.cancel();
+
+            // Debounce les calculs de scroll vertical
+            _verticalScrollDebounceTimer = Timer(
+              _verticalScrollDebounceDuration,
+              () => _applyAutoScroll(scrollState),
+            );
+          }
 
           // Sauvegarde du centre précédent
           _previousCenterIndex = scrollState.centerDateIndex;
@@ -385,12 +397,10 @@ class _Timeline extends State<Timeline> {
         userScrollOffset = _controllerVerticalStages.position.pixels;
       }
 
-      // Scrollbar position will be updated in build() based on available height
-      if (mounted) {
-        setState(() {
-          // Just trigger rebuild, calculations will happen in build()
-        });
-      }
+      // Note: Pas de setState() ici pour éviter les rebuilds excessifs
+      // qui causent le clignotement des items lazy-loaded.
+      // Le scrollbar est géré automatiquement par Flutter.
+      // Les mises à jour visuelles seront déclenchées par le scroll horizontal.
     });
 
     // Exécuter une seule fois après la construction du widget
@@ -452,20 +462,6 @@ class _Timeline extends State<Timeline> {
     }
   }
 
-  // Scroll vertical des stages automatique
-  void _scrollV(double scrollOffset) {
-    // Marque que c'est un scroll automatique
-    _isAutoScrolling = true;
-    // gestion du scroll via le ScrollController
-    _controllerVerticalStages
-        .animateTo(scrollOffset,
-            duration: _config.animationDuration, curve: Curves.easeInOut)
-        .then((_) {
-      // Une fois l'animation terminée, on réinitialise le flag
-      _isAutoScrolling = false;
-    });
-  }
-
   /// Calcule l'état complet du scroll basé sur la position actuelle.
   ///
   /// Cette fonction orchestre tous les calculs de scroll sans modifier l'état.
@@ -495,7 +491,6 @@ class _Timeline extends State<Timeline> {
     // 1. Calcul du dateIndex central
     final centerDateIndex = calculateCenterDateIndex(
       scrollOffset: currentScrollOffset,
-      viewportWidth: _timelineController.viewportWidth.value,
       dayWidth: dayWidth,
       dayMargin: dayMargin,
       totalDays: days.length,
@@ -527,6 +522,7 @@ class _Timeline extends State<Timeline> {
     final enableAutoScroll = shouldEnableAutoScroll(
       userScrollOffset: userScrollOffset,
       targetVerticalOffset: targetVerticalOffset,
+      scrollingLeft: scrollingLeft,
       totalRowsHeight: totalRowsHeight,
       viewportHeight: viewportHeight,
     );
@@ -550,6 +546,7 @@ class _Timeline extends State<Timeline> {
   /// 1. L'auto-scroll doit être activé (enableAutoScroll = true)
   /// 2. Un offset vertical cible doit être disponible (targetVerticalOffset != null)
   /// 3. Le ScrollController vertical doit avoir des clients
+  /// 4. La différence entre la position actuelle et la cible doit être significative (> seuil)
   ///
   /// Si toutes les conditions sont remplies, la fonction:
   /// - Calcule l'offset final en vérifiant l'espace restant
@@ -575,6 +572,7 @@ class _Timeline extends State<Timeline> {
     if (!_controllerVerticalStages.hasClients) return;
 
     final targetOffset = scrollState.targetVerticalOffset!;
+    final currentOffset = _controllerVerticalStages.position.pixels;
     final maxExtent = _controllerVerticalStages.position.maxScrollExtent;
 
     // Calcul de la hauteur totale des lignes
@@ -589,6 +587,17 @@ class _Timeline extends State<Timeline> {
     final finalOffset = (totalRowsHeight - targetOffset > viewportHeight / 2)
         ? targetOffset
         : maxExtent;
+
+    // Vérification 4: La différence doit être significative pour éviter les petits sauts
+    // Seuil: au moins la largeur d'un jour (dayWidth)
+    // Cela correspond au déplacement minimal significatif dans la timeline
+    final scrollThreshold = dayWidth;
+    final scrollDifference = (finalOffset - currentOffset).abs();
+
+    if (scrollDifference < scrollThreshold) {
+      // La différence est trop petite, on ne scroll pas pour éviter les micro-mouvements
+      return;
+    }
 
     // Marque que c'est un scroll automatique
     _isAutoScrolling = true;
@@ -645,103 +654,6 @@ class _Timeline extends State<Timeline> {
     widget.updateCurrentDate!.call(dayDate);
   }
 
-  // Perform auto-scroll with optimized calculations
-  void _performAutoScroll(int centerItemIndex, double oldScrollOffset) {
-    if (stagesRows.isEmpty) return; // Guard against empty stages
-    if (!_controllerVerticalStages.hasClients) {
-      return; // Guard against no scroll controller
-    }
-
-    bool enableAutoScroll = false;
-
-    // Index à gauche de l'écran - clamp to valid range
-    int leftItemIndex = TimelineErrorHandler.clampIndex(
-        centerItemIndex - 4, 0, days.length - 1);
-
-    // On récupère l'index de la ligne du stage/élément la plus haute (optimized)
-    int higherRowIndex =
-        getHigherStageRowIndexOptimized(stagesRows, leftItemIndex);
-
-    debugPrint(
-        '🔍 AutoScroll Debug: centerIndex=$centerItemIndex, leftIndex=$leftItemIndex, higherRowIndex=$higherRowIndex, stagesRows.length=${stagesRows.length}');
-
-    if (higherRowIndex == -1) {
-      debugPrint(
-          '⚠️ No matching row found for leftItemIndex=$leftItemIndex (should not happen with new logic)');
-      return; // No matching row found
-    }
-
-    // Clamp higherRowIndex to valid range
-    higherRowIndex = TimelineErrorHandler.clampIndex(
-        higherRowIndex, 0, stagesRows.length - 1);
-
-    // On calcule la hauteur de la ligne du stage/élément la plus haute
-    double higherRowHeight = (higherRowIndex * (rowHeight + (rowMargin * 2)));
-    // On vérifie si on est pas en bas du scroll pour éviter l'effet rebond du scroll en bas
-    double totalRowsHeight = (rowHeight + rowMargin) * stagesRows.length;
-
-    // Get current viewport height from controller if available
-    double currentViewportHeight = _controllerVerticalStages.hasClients
-        ? _controllerVerticalStages.position.viewportDimension
-        : timelineHeightContainer;
-
-    debugPrint(
-        '📊 Heights: higherRowHeight=$higherRowHeight, totalRowsHeight=$totalRowsHeight, userScrollOffset=$userScrollOffset, viewportHeight=$currentViewportHeight');
-
-    // On active le scroll automatique si :
-    // - L'utilisateur n'a PAS scrollé manuellement (userScrollOffset == null)
-    // - OU si l'utilisateur a scrollé mais le stage visible est plus bas que sa position
-    enableAutoScroll = userScrollOffset == null ||
-        (userScrollOffset != null && userScrollOffset! < higherRowHeight);
-
-    debugPrint('✅ EnableAutoScroll (initial): $enableAutoScroll');
-
-    // On ne calcule l'élément le plus bas que si on scroll vers la gauche
-    // et que l'utilisateur a scrollé à la main (optimisation)
-    if (_controllerTimeline.offset < oldScrollOffset &&
-        userScrollOffset != null) {
-      // Index à droite de l'écran - clamp to valid range
-      int rightItemIndex = TimelineErrorHandler.clampIndex(
-          centerItemIndex + 4, 0, days.length - 1);
-
-      // On récupère l'index de la ligne du stage/élément la plus basse (optimized)
-      int lowerRowIndex =
-          getLowerStageRowIndexOptimized(stagesRows, rightItemIndex);
-
-      if (lowerRowIndex != -1) {
-        // Clamp lowerRowIndex to valid range
-        lowerRowIndex = TimelineErrorHandler.clampIndex(
-            lowerRowIndex, 0, stagesRows.length - 1);
-
-        // On calcule la hauteur de la ligne du stage/élément la plus basse
-        double lowerRowHeight = (lowerRowIndex * (rowHeight + (rowMargin * 2)));
-        // On active le scroll si le stage visible est plus haut que la position de l'utilisateur
-        enableAutoScroll = userScrollOffset == null ||
-            (userScrollOffset != null && userScrollOffset! > lowerRowHeight);
-
-        debugPrint(
-            '⬅️ Scrolling left: lowerRowIndex=$lowerRowIndex, lowerRowHeight=$lowerRowHeight, enableAutoScroll=$enableAutoScroll');
-      }
-    }
-
-    // On vérifie si l'utilisateur a fait un scroll manuel pour éviter de le perdre
-    // On ne reprend le scroll automatique que si le stage/élément le plus haut est plus bas que le scroll de l'utilisateur
-    if (enableAutoScroll) {
-      if (totalRowsHeight - higherRowHeight > currentViewportHeight / 2) {
-        // On déclenche le scroll
-        debugPrint('🎯 Scrolling to: $higherRowHeight');
-        _scrollV(higherRowHeight);
-      } else {
-        debugPrint('🎯 Scrolling to max extent');
-        _scrollV(_controllerVerticalStages.position.maxScrollExtent);
-      }
-      // Réinitialise le scroll saisi par l'utilisateur
-      userScrollOffset = null;
-    } else {
-      debugPrint('❌ AutoScroll disabled');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     // If not initialized yet, show loading indicator
@@ -772,6 +684,7 @@ class _Timeline extends State<Timeline> {
           builder: (context, constraints) {
             // Get actual available width from parent container
             final double screenWidth = constraints.maxWidth;
+            final double screenCenter = (screenWidth / 2);
 
             // Update TimelineController with actual viewport width immediately
             if (_timelineController.viewportWidth.value != screenWidth) {
@@ -779,10 +692,8 @@ class _Timeline extends State<Timeline> {
               _timelineController.updateViewportWidth(screenWidth);
             }
 
-            // On calcule le padding pour avoir le début et la fin de la timeline au milieu de l'écran
-            double firstElementMargin =
-                ((screenWidth - (dayWidth - dayMargin)) / 2);
-            double screenCenter = (screenWidth / 2);
+            // Calculate firstElementMargin once and store it for use in scroll calculations
+            _firstElementMargin = ((screenWidth - (dayWidth - dayMargin)) / 2);
 
             // Calculate dynamic heights based on available space
             final double availableHeight = constraints.maxHeight;
@@ -854,7 +765,7 @@ class _Timeline extends State<Timeline> {
                                   controller: _controllerTimeline,
                                   scrollDirection: Axis.horizontal,
                                   padding: EdgeInsets.symmetric(
-                                      horizontal: firstElementMargin),
+                                      horizontal: _firstElementMargin),
                                   child: SizedBox(
                                     height:
                                         availableHeight, // Use available height
@@ -894,7 +805,6 @@ class _Timeline extends State<Timeline> {
                                                             _timelineController
                                                                 .centerItemIndex
                                                                 .value,
-                                                        nowIndex: nowIndex,
                                                         days: days,
                                                         dayWidth: dayWidth,
                                                         dayMargin: dayMargin,

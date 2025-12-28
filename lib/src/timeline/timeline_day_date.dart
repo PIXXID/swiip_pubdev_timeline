@@ -6,7 +6,6 @@ class TimelineDayDate extends StatefulWidget {
   final Map<String, Color> colors;
   final int index;
   final int centerItemIndex;
-  final int nowIndex;
   final List days;
   final double dayWidth;
   final double dayMargin;
@@ -18,7 +17,6 @@ class TimelineDayDate extends StatefulWidget {
       required this.colors,
       required this.index,
       required this.centerItemIndex,
-      required this.nowIndex,
       required this.days,
       required this.dayWidth,
       required this.dayMargin,

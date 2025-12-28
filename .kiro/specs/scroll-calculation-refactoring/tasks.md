@@ -110,7 +110,7 @@ Ce plan d'implémentation décompose la refactorisation du mécanisme de scroll 
     - Vérifier le clamping aux limites
     - Run 100 iterations
 
-- [ ] 7. Supprimer l'ancienne fonction _performAutoScroll()
+- [x] 7. Supprimer l'ancienne fonction _performAutoScroll()
   - Supprimer la méthode _performAutoScroll() de timeline.dart
   - Vérifier qu'aucune référence ne subsiste
   - _Requirements: 5.1, 5.2_

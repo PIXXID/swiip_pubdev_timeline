@@ -6,7 +6,6 @@ void main() {
     test('calcule correctement l\'index au centre du viewport', () {
       // Arrange
       const scrollOffset = 1000.0;
-      const viewportWidth = 800.0;
       const dayWidth = 45.0;
       const dayMargin = 5.0;
       const totalDays = 100;
@@ -14,16 +13,14 @@ void main() {
       // Act
       final result = calculateCenterDateIndex(
         scrollOffset: scrollOffset,
-        viewportWidth: viewportWidth,
         dayWidth: dayWidth,
         dayMargin: dayMargin,
         totalDays: totalDays,
       );
 
       // Assert
-      // centerPosition = 1000 + 800/2 = 1400
-      // centerIndex = 1400 / (45 - 5) = 1400 / 40 = 35
-      expect(result, equals(35));
+      // centerIndex = 1000 / (45 - 5) = 1000 / 40 = 25
+      expect(result, equals(25));
     });
 
     test('clamp l\'index à 0 quand le calcul donne un nombre négatif', () {
@@ -33,19 +30,21 @@ void main() {
       const dayWidth = 45.0;
       const dayMargin = 5.0;
       const totalDays = 100;
+      const firstElementMargin =
+          (viewportWidth - (dayWidth - dayMargin)) / 2; // 380.0
 
       // Act
       final result = calculateCenterDateIndex(
         scrollOffset: scrollOffset,
-        viewportWidth: viewportWidth,
+        
         dayWidth: dayWidth,
         dayMargin: dayMargin,
         totalDays: totalDays,
       );
 
       // Assert
-      // centerPosition = 0 + 800/2 = 400
-      // centerIndex = 400 / 40 = 10
+      // centerPosition = 0 + 380 = 380
+      // centerIndex = 380 / 40 = 9.5 ≈ 10
       expect(result, greaterThanOrEqualTo(0));
       expect(result, equals(10));
     });
@@ -57,11 +56,13 @@ void main() {
       const dayWidth = 45.0;
       const dayMargin = 5.0;
       const totalDays = 100;
+      const firstElementMargin =
+          (viewportWidth - (dayWidth - dayMargin)) / 2; // 380.0
 
       // Act
       final result = calculateCenterDateIndex(
         scrollOffset: scrollOffset,
-        viewportWidth: viewportWidth,
+        
         dayWidth: dayWidth,
         dayMargin: dayMargin,
         totalDays: totalDays,
@@ -79,13 +80,15 @@ void main() {
       const dayWidth = 45.0;
       const dayMargin = 5.0;
       const totalDays = 100;
+      const firstElementMargin =
+          (viewportWidth - (dayWidth - dayMargin)) / 2; // 380.0
 
       // Act - Appeler 10 fois avec les mêmes paramètres
       final results = List.generate(
         10,
         (_) => calculateCenterDateIndex(
           scrollOffset: scrollOffset,
-          viewportWidth: viewportWidth,
+          
           dayWidth: dayWidth,
           dayMargin: dayMargin,
           totalDays: totalDays,
@@ -94,7 +97,10 @@ void main() {
 
       // Assert - Tous les résultats doivent être identiques
       expect(results.toSet().length, equals(1));
-      expect(results.first, equals(23)); // (500 + 400) / 40 = 22.5 ≈ 23
+      // Formule: firstElementMargin = (800 - 40) / 2 = 380
+      //          centerPosition = 500 + 380 = 880
+      //          centerIndex = 880 / 40 = 22
+      expect(results.first, equals(22));
     });
 
     test('gère correctement les positions de scroll au début', () {
@@ -104,18 +110,20 @@ void main() {
       const dayWidth = 45.0;
       const dayMargin = 5.0;
       const totalDays = 100;
+      const firstElementMargin =
+          (viewportWidth - (dayWidth - dayMargin)) / 2; // 380.0
 
       // Act
       final result = calculateCenterDateIndex(
         scrollOffset: scrollOffset,
-        viewportWidth: viewportWidth,
+        
         dayWidth: dayWidth,
         dayMargin: dayMargin,
         totalDays: totalDays,
       );
 
       // Assert
-      expect(result, equals(10)); // (0 + 400) / 40 = 10
+      expect(result, equals(10)); // (0 + 380) / 40 = 9.5 ≈ 10
     });
 
     test('gère correctement différentes largeurs de jour', () {
@@ -125,19 +133,21 @@ void main() {
       const dayWidth = 60.0; // Largeur différente
       const dayMargin = 10.0; // Marge différente
       const totalDays = 100;
+      const firstElementMargin =
+          (viewportWidth - (dayWidth - dayMargin)) / 2; // 275.0
 
       // Act
       final result = calculateCenterDateIndex(
         scrollOffset: scrollOffset,
-        viewportWidth: viewportWidth,
+        
         dayWidth: dayWidth,
         dayMargin: dayMargin,
         totalDays: totalDays,
       );
 
       // Assert
-      // centerPosition = 1000 + 400 = 1400
-      // centerIndex = 1400 / (60 - 10) = 1400 / 50 = 28
+      // centerPosition = 1000 + 375 = 1375
+      // centerIndex = 1375 / (60 - 10) = 1375 / 50 = 27.5 ≈ 28
       expect(result, equals(28));
     });
   });
@@ -350,6 +360,7 @@ void main() {
       // Arrange
       const userScrollOffset = null;
       const targetVerticalOffset = 150.0;
+      const scrollingLeft = true;
       const totalRowsHeight = 1000.0;
       const viewportHeight = 300.0;
 
@@ -357,6 +368,7 @@ void main() {
       final result = shouldEnableAutoScroll(
         userScrollOffset: userScrollOffset,
         targetVerticalOffset: targetVerticalOffset,
+        scrollingLeft: scrollingLeft,
         totalRowsHeight: totalRowsHeight,
         viewportHeight: viewportHeight,
       );
@@ -369,6 +381,7 @@ void main() {
       // Arrange
       const userScrollOffset = 100.0;
       const targetVerticalOffset = null;
+      const scrollingLeft = true;
       const totalRowsHeight = 1000.0;
       const viewportHeight = 300.0;
 
@@ -376,6 +389,7 @@ void main() {
       final result = shouldEnableAutoScroll(
         userScrollOffset: userScrollOffset,
         targetVerticalOffset: targetVerticalOffset,
+        scrollingLeft: scrollingLeft,
         totalRowsHeight: totalRowsHeight,
         viewportHeight: viewportHeight,
       );
@@ -384,10 +398,13 @@ void main() {
       expect(result, isFalse);
     });
 
-    test('retourne true quand userScrollOffset < targetVerticalOffset', () {
-      // Arrange
+    test(
+        'retourne true quand scrollingLeft=true et userScrollOffset < targetVerticalOffset',
+        () {
+      // Arrange - Scroll vers la gauche
       const userScrollOffset = 100.0;
       const targetVerticalOffset = 200.0;
+      const scrollingLeft = true;
       const totalRowsHeight = 1000.0;
       const viewportHeight = 300.0;
 
@@ -395,6 +412,7 @@ void main() {
       final result = shouldEnableAutoScroll(
         userScrollOffset: userScrollOffset,
         targetVerticalOffset: targetVerticalOffset,
+        scrollingLeft: scrollingLeft,
         totalRowsHeight: totalRowsHeight,
         viewportHeight: viewportHeight,
       );
@@ -403,10 +421,13 @@ void main() {
       expect(result, isTrue);
     });
 
-    test('retourne false quand userScrollOffset >= targetVerticalOffset', () {
-      // Arrange
+    test(
+        'retourne false quand scrollingLeft=true et userScrollOffset >= targetVerticalOffset',
+        () {
+      // Arrange - Scroll vers la gauche
       const userScrollOffset = 200.0;
       const targetVerticalOffset = 100.0;
+      const scrollingLeft = true;
       const totalRowsHeight = 1000.0;
       const viewportHeight = 300.0;
 
@@ -414,6 +435,7 @@ void main() {
       final result = shouldEnableAutoScroll(
         userScrollOffset: userScrollOffset,
         targetVerticalOffset: targetVerticalOffset,
+        scrollingLeft: scrollingLeft,
         totalRowsHeight: totalRowsHeight,
         viewportHeight: viewportHeight,
       );
@@ -422,10 +444,13 @@ void main() {
       expect(result, isFalse);
     });
 
-    test('retourne false quand userScrollOffset == targetVerticalOffset', () {
-      // Arrange
-      const userScrollOffset = 150.0;
-      const targetVerticalOffset = 150.0;
+    test(
+        'retourne true quand scrollingLeft=false et userScrollOffset > targetVerticalOffset',
+        () {
+      // Arrange - Scroll vers la droite
+      const userScrollOffset = 200.0;
+      const targetVerticalOffset = 100.0;
+      const scrollingLeft = false;
       const totalRowsHeight = 1000.0;
       const viewportHeight = 300.0;
 
@@ -433,6 +458,30 @@ void main() {
       final result = shouldEnableAutoScroll(
         userScrollOffset: userScrollOffset,
         targetVerticalOffset: targetVerticalOffset,
+        scrollingLeft: scrollingLeft,
+        totalRowsHeight: totalRowsHeight,
+        viewportHeight: viewportHeight,
+      );
+
+      // Assert
+      expect(result, isTrue);
+    });
+
+    test(
+        'retourne false quand scrollingLeft=false et userScrollOffset <= targetVerticalOffset',
+        () {
+      // Arrange - Scroll vers la droite
+      const userScrollOffset = 100.0;
+      const targetVerticalOffset = 200.0;
+      const scrollingLeft = false;
+      const totalRowsHeight = 1000.0;
+      const viewportHeight = 300.0;
+
+      // Act
+      final result = shouldEnableAutoScroll(
+        userScrollOffset: userScrollOffset,
+        targetVerticalOffset: targetVerticalOffset,
+        scrollingLeft: scrollingLeft,
         totalRowsHeight: totalRowsHeight,
         viewportHeight: viewportHeight,
       );
@@ -445,6 +494,7 @@ void main() {
       // Arrange
       const userScrollOffset = 100.0;
       const targetVerticalOffset = 200.0;
+      const scrollingLeft = true;
       const totalRowsHeight = 1000.0;
       const viewportHeight = 300.0;
 
@@ -454,6 +504,7 @@ void main() {
         (_) => shouldEnableAutoScroll(
           userScrollOffset: userScrollOffset,
           targetVerticalOffset: targetVerticalOffset,
+          scrollingLeft: scrollingLeft,
           totalRowsHeight: totalRowsHeight,
           viewportHeight: viewportHeight,
         ),
@@ -468,6 +519,7 @@ void main() {
       // Arrange
       const userScrollOffset = 0.0;
       const targetVerticalOffset = 0.0;
+      const scrollingLeft = true;
       const totalRowsHeight = 1000.0;
       const viewportHeight = 300.0;
 
@@ -475,6 +527,7 @@ void main() {
       final result = shouldEnableAutoScroll(
         userScrollOffset: userScrollOffset,
         targetVerticalOffset: targetVerticalOffset,
+        scrollingLeft: scrollingLeft,
         totalRowsHeight: totalRowsHeight,
         viewportHeight: viewportHeight,
       );
@@ -492,11 +545,12 @@ void main() {
       const dayWidth = 45.0;
       const dayMargin = 5.0;
       const totalDays = 100;
+      const firstElementMargin = (viewportWidth - (dayWidth - dayMargin)) / 2;
 
       // Act
       calculateCenterDateIndex(
         scrollOffset: scrollOffset,
-        viewportWidth: viewportWidth,
+        
         dayWidth: dayWidth,
         dayMargin: dayMargin,
         totalDays: totalDays,
@@ -504,7 +558,7 @@ void main() {
 
       // Assert - Les paramètres ne doivent pas avoir changé
       expect(scrollOffset, equals(1000.0));
-      expect(viewportWidth, equals(800.0));
+      expect(firstElementMargin, equals(380.0));
       expect(dayWidth, equals(45.0));
       expect(dayMargin, equals(5.0));
       expect(totalDays, equals(100));
@@ -546,6 +600,7 @@ void main() {
       // Arrange
       const userScrollOffset = 100.0;
       const targetVerticalOffset = 200.0;
+      const scrollingLeft = true;
       const totalRowsHeight = 1000.0;
       const viewportHeight = 300.0;
 
@@ -553,6 +608,7 @@ void main() {
       shouldEnableAutoScroll(
         userScrollOffset: userScrollOffset,
         targetVerticalOffset: targetVerticalOffset,
+        scrollingLeft: scrollingLeft,
         totalRowsHeight: totalRowsHeight,
         viewportHeight: viewportHeight,
       );

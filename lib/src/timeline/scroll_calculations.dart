@@ -18,16 +18,18 @@
 ///
 /// La formule utilisée est:
 /// ```
-/// centerPosition = scrollOffset + (viewportWidth / 2)
-/// centerIndex = centerPosition / (dayWidth - dayMargin)
+/// centerIndex = scrollOffset / (dayWidth - dayMargin)
 /// ```
+///
+/// Le scrollOffset représente déjà la position réelle dans la timeline,
+/// car le padding visuel (firstElementMargin) est appliqué dans le
+/// SingleChildScrollView. On n'a donc pas besoin de l'ajouter ici.
 ///
 /// Le résultat est ensuite clamped à la plage valide [0, totalDays-1].
 ///
 /// ## Paramètres
 ///
 /// - [scrollOffset]: Position actuelle du scroll horizontal (en pixels)
-/// - [viewportWidth]: Largeur de la zone visible (en pixels)
 /// - [dayWidth]: Largeur d'un jour dans la timeline (en pixels)
 /// - [dayMargin]: Marge entre les jours (en pixels)
 /// - [totalDays]: Nombre total de jours dans la timeline
@@ -41,7 +43,6 @@
 /// ```dart
 /// final centerIndex = calculateCenterDateIndex(
 ///   scrollOffset: 1000.0,
-///   viewportWidth: 800.0,
 ///   dayWidth: 45.0,
 ///   dayMargin: 5.0,
 ///   totalDays: 100,
@@ -54,23 +55,22 @@
 /// Requirements 2.1, 2.2, 2.3
 int calculateCenterDateIndex({
   required double scrollOffset,
-  required double viewportWidth,
   required double dayWidth,
   required double dayMargin,
   required int totalDays,
 }) {
   // Validation des paramètres en mode debug
   assert(scrollOffset >= 0, 'scrollOffset must be non-negative');
-  assert(viewportWidth > 0, 'viewportWidth must be positive');
   assert(dayWidth > dayMargin, 'dayWidth must be greater than dayMargin');
-  assert(totalDays > 0, 'totalDays must be positive');
+  assert(totalDays >= 0, 'totalDays must be non-negative');
 
-  // Calcul de la position centrale dans le viewport
-  final centerPosition = scrollOffset + (viewportWidth / 2);
+  // Handle empty timeline
+  if (totalDays == 0) return 0;
 
   // Calcul de l'index du jour au centre
-  // On utilise la largeur effective d'un jour (dayWidth - dayMargin)
-  final centerIndex = (centerPosition / (dayWidth - dayMargin)).round();
+  // Le scrollOffset représente déjà la position dans la timeline
+  // (le padding visuel est géré par le SingleChildScrollView)
+  final centerIndex = (scrollOffset / (dayWidth - dayMargin)).round();
 
   // Clamp à la plage valide [0, totalDays-1]
   return centerIndex.clamp(0, totalDays - 1);
@@ -167,17 +167,24 @@ double? calculateTargetVerticalOffset({
 /// effet de bord. Elle décide simplement si le scroll vertical automatique
 /// devrait être activé en fonction de l'état actuel.
 ///
-/// La logique de décision est la suivante:
+/// La logique de décision prend en compte la direction du scroll:
 /// 1. Si pas de target vertical, pas d'auto-scroll
 /// 2. Si l'utilisateur n'a pas scrollé manuellement (userScrollOffset == null),
 ///    activer l'auto-scroll
-/// 3. Si l'utilisateur a scrollé mais le stage visible est plus bas que sa position,
-///    activer l'auto-scroll
+/// 3. Si on scroll vers la droite (scrollingLeft = false):
+///    - On cherche les stages à gauche (plus hauts dans la liste)
+///    - On peut seulement scroller vers le haut (offset plus petit)
+///    - Activer si userScrollOffset > targetVerticalOffset
+/// 4. Si on scroll vers la gauche (scrollingLeft = true):
+///    - On cherche les stages à droite (plus bas dans la liste)
+///    - On peut seulement scroller vers le bas (offset plus grand)
+///    - Activer si userScrollOffset < targetVerticalOffset
 ///
 /// ## Paramètres
 ///
 /// - [userScrollOffset]: Position de scroll manuel de l'utilisateur (null si pas de scroll manuel)
 /// - [targetVerticalOffset]: Position de scroll vertical calculée pour le stage visible
+/// - [scrollingLeft]: true si on scroll vers la gauche, false si vers la droite
 /// - [totalRowsHeight]: Hauteur totale de toutes les lignes de stages
 /// - [viewportHeight]: Hauteur de la zone visible
 ///
@@ -191,6 +198,7 @@ double? calculateTargetVerticalOffset({
 /// final shouldAutoScroll = shouldEnableAutoScroll(
 ///   userScrollOffset: null, // Pas de scroll manuel
 ///   targetVerticalOffset: 150.0,
+///   scrollingLeft: false,
 ///   totalRowsHeight: 1000.0,
 ///   viewportHeight: 300.0,
 /// );
@@ -203,6 +211,7 @@ double? calculateTargetVerticalOffset({
 bool shouldEnableAutoScroll({
   required double? userScrollOffset,
   required double? targetVerticalOffset,
+  required bool scrollingLeft,
   required double totalRowsHeight,
   required double viewportHeight,
 }) {
@@ -216,7 +225,18 @@ bool shouldEnableAutoScroll({
   // Si l'utilisateur n'a pas scrollé manuellement, activer l'auto-scroll
   if (userScrollOffset == null) return true;
 
-  // Si l'utilisateur a scrollé mais le stage visible est plus bas que sa position,
-  // activer l'auto-scroll
-  return userScrollOffset < targetVerticalOffset;
+  // La logique dépend de la direction du scroll:
+  // - Scroll vers la droite (scrollingLeft = false): on cherche les stages à gauche (plus hauts)
+  //   donc on peut seulement scroller vers le haut (offset plus petit)
+  //   -> activer si userScrollOffset > targetVerticalOffset
+  // - Scroll vers la gauche (scrollingLeft = true): on cherche les stages à droite (plus bas)
+  //   donc on peut seulement scroller vers le bas (offset plus grand)
+  //   -> activer si userScrollOffset < targetVerticalOffset
+  if (scrollingLeft) {
+    // Scroll vers la gauche: on peut seulement scroller vers le bas
+    return userScrollOffset < targetVerticalOffset;
+  } else {
+    // Scroll vers la droite: on peut seulement scroller vers le haut
+    return userScrollOffset > targetVerticalOffset;
+  }
 }
