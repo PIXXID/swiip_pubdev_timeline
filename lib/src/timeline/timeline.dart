@@ -18,6 +18,10 @@ import 'models/performance_monitor.dart';
 import 'models/timeline_configuration.dart';
 import 'models/timeline_configuration_manager.dart';
 import 'models/configuration_loader.dart';
+import 'models/scroll_state.dart';
+
+// Scroll calculations
+import 'scroll_calculations.dart';
 
 import 'package:swiip_pubdev_timeline/src/tools/tools.dart';
 import 'package:swiip_pubdev_timeline/src/platform/platform_language.dart';
@@ -151,6 +155,10 @@ class _Timeline extends State<Timeline> {
   double? userScrollOffset;
   // Flag pour indiquer si le scroll vertical est automatique
   bool _isAutoScrolling = false;
+
+  // Track previous scroll state for direction detection
+  double _previousScrollOffset = 0.0;
+  int _previousCenterIndex = 0;
 
   bool isUniqueProject = false;
 
@@ -466,6 +474,80 @@ class _Timeline extends State<Timeline> {
       // Une fois l'animation terminée, on réinitialise le flag
       _isAutoScrolling = false;
     });
+  }
+
+  /// Calcule l'état complet du scroll basé sur la position actuelle.
+  ///
+  /// Cette fonction orchestre tous les calculs de scroll sans modifier l'état.
+  /// Elle appelle les fonctions de calcul pures et retourne un objet ScrollState
+  /// contenant tous les résultats.
+  ///
+  /// ## Paramètres
+  ///
+  /// - [currentScrollOffset]: Position actuelle du scroll horizontal
+  /// - [previousScrollOffset]: Position précédente du scroll horizontal (pour détecter la direction)
+  ///
+  /// ## Retourne
+  ///
+  /// Un objet [ScrollState] contenant:
+  /// - centerDateIndex: L'index du jour au centre du viewport
+  /// - targetVerticalOffset: L'offset vertical calculé pour le stage visible
+  /// - enableAutoScroll: Si l'auto-scroll doit être activé
+  /// - scrollingLeft: La direction du scroll (true = gauche, false = droite)
+  ///
+  /// ## Validates
+  ///
+  /// Requirements 1.1, 1.2, 1.5
+  ScrollState _calculateScrollState({
+    required double currentScrollOffset,
+    required double previousScrollOffset,
+  }) {
+    // 1. Calcul du dateIndex central
+    final centerDateIndex = calculateCenterDateIndex(
+      scrollOffset: currentScrollOffset,
+      viewportWidth: _timelineController.viewportWidth.value,
+      dayWidth: dayWidth,
+      dayMargin: dayMargin,
+      totalDays: days.length,
+    );
+
+    // 2. Détection de la direction de scroll
+    final scrollingLeft = currentScrollOffset < previousScrollOffset;
+
+    // 3. Calcul de l'offset vertical cible
+    final targetVerticalOffset = calculateTargetVerticalOffset(
+      centerDateIndex: centerDateIndex,
+      stagesRows: stagesRows,
+      rowHeight: rowHeight,
+      rowMargin: rowMargin,
+      scrollingLeft: scrollingLeft,
+      getHigherStageRowIndex: getHigherStageRowIndexOptimized,
+      getLowerStageRowIndex: getLowerStageRowIndexOptimized,
+    );
+
+    // 4. Calcul de la hauteur totale des lignes
+    final totalRowsHeight = (rowHeight + rowMargin) * stagesRows.length;
+
+    // 5. Récupération de la hauteur du viewport
+    final viewportHeight = _controllerVerticalStages.hasClients
+        ? _controllerVerticalStages.position.viewportDimension
+        : timelineHeightContainer;
+
+    // 6. Détermination de l'auto-scroll
+    final enableAutoScroll = shouldEnableAutoScroll(
+      userScrollOffset: userScrollOffset,
+      targetVerticalOffset: targetVerticalOffset,
+      totalRowsHeight: totalRowsHeight,
+      viewportHeight: viewportHeight,
+    );
+
+    // 7. Retour de l'état calculé
+    return ScrollState(
+      centerDateIndex: centerDateIndex,
+      targetVerticalOffset: targetVerticalOffset,
+      enableAutoScroll: enableAutoScroll,
+      scrollingLeft: scrollingLeft,
+    );
   }
 
   // Perform auto-scroll with optimized calculations

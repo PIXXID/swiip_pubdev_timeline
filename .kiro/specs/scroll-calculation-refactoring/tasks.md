@@ -45,8 +45,8 @@ Ce plan d'implémentation décompose la refactorisation du mécanisme de scroll 
     - Vérifier la pureté (pas d'effets de bord)
     - _Requirements: 1.1, 1.2_
 
-- [ ] 3. Créer la fonction d'orchestration _calculateScrollState()
-  - [ ] 3.1 Implémenter _calculateScrollState() dans timeline.dart
+- [x] 3. Créer la fonction d'orchestration _calculateScrollState()
+  - [x] 3.1 Implémenter _calculateScrollState() dans timeline.dart
     - Appeler calculateCenterDateIndex() avec les paramètres appropriés
     - Détecter la direction de scroll (scrollingLeft)
     - Appeler calculateTargetVerticalOffset()
@@ -54,7 +54,7 @@ Ce plan d'implémentation décompose la refactorisation du mécanisme de scroll 
     - Retourner un objet ScrollState
     - _Requirements: 1.1, 1.2, 1.5_
 
-  - [ ] 3.2 Écrire un property test pour _calculateScrollState()
+  - [x] 3.2 Écrire un property test pour _calculateScrollState()
     - **Property 1: Pureté des Fonctions de Calcul**
     - **Validates: Requirements 1.1, 1.2, 1.3**
     - Générer des paramètres aléatoires (scrollOffset, viewportWidth, etc.)
