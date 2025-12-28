@@ -488,138 +488,153 @@ class _Timeline extends State<Timeline> {
                 ),
               ),
               Positioned.fill(
-                child: Column(children: <Widget>[
+                child:
+                    Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
                   // CONTENEUR UNIQUE AVEC SCROLL HORIZONTAL
-                  Container(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(
-                            color: widget.colors['secondaryBackground']!,
-                            width: widget.mode == 'chronology' ? 1.5 : 0),
-                      ),
-                    ),
-                    child: SizedBox(
-                      width: screenWidth,
-                      height: timelineHeight -
-                          4, // Constrain height to prevent infinite constraints
-                      child: SingleChildScrollView(
-                        controller: _controllerTimeline,
-                        scrollDirection: Axis.horizontal,
-                        padding: EdgeInsets.symmetric(
-                            horizontal: firstElementMargin),
-                        child: SizedBox(
-                          height: timelineHeight - 4, // Constrain Column height
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize
-                                .min, // Prevent Column from expanding infinitely
-                            children: [
-                              // DATES
-                              Container(
-                                decoration: BoxDecoration(
-                                  border: Border(
-                                    bottom: BorderSide(
-                                        color: widget
-                                            .colors['secondaryBackground']!,
-                                        width: 1.5),
-                                  ),
-                                ),
-                                child: SizedBox(
-                                  width: days.length * (dayWidth),
-                                  height: datesHeight,
-                                  child: days.isNotEmpty
-                                      ? LazyTimelineViewport(
-                                          controller: _timelineController,
-                                          items: days,
-                                          itemWidth: dayWidth,
-                                          itemMargin: dayMargin,
-                                          itemBuilder: (context, index) {
-                                            return TimelineDayDate(
-                                              lang: lang,
-                                              colors: widget.colors,
-                                              index: index,
-                                              centerItemIndex:
-                                                  _timelineController
-                                                      .centerItemIndex.value,
-                                              nowIndex: nowIndex,
-                                              days: days,
-                                              dayWidth: dayWidth,
-                                              dayMargin: dayMargin,
-                                              height: datesHeight,
-                                            );
-                                          },
-                                        )
-                                      : const SizedBox
-                                          .shrink(), // Handle empty days
-                                ),
-                              ),
-                              // STAGES/ELEMENTS DYNAMIQUES - Use Expanded to take remaining space
-                              Expanded(
-                                child: SizedBox(
-                                    child: stagesRows.isNotEmpty
-                                        ? SingleChildScrollView(
-                                            controller:
-                                                _controllerVerticalStages,
-                                            scrollDirection: Axis.vertical,
-                                            physics:
-                                                const ClampingScrollPhysics(), // Permet un scroll fluide
-                                            child: LazyStageRowsViewport(
-                                              controller: _timelineController,
-                                              stagesRows: stagesRows,
-                                              rowHeight: rowHeight,
-                                              rowMargin: rowMargin,
-                                              dayWidth: dayWidth,
-                                              dayMargin: dayMargin,
-                                              totalDays: days.length,
-                                              colors: widget.colors,
-                                              isUniqueProject: isUniqueProject,
-                                              verticalScrollController:
-                                                  _controllerVerticalStages,
-                                              viewportHeight:
-                                                  timelineHeightContainer,
-                                              openEditStage:
-                                                  widget.openEditStage,
-                                              openEditElement:
-                                                  widget.openEditElement,
-                                            ),
-                                          )
-                                        : const SizedBox
-                                            .shrink()), // Handle empty stages
-                              ),
-                              // TIMELINE DYNAMIQUE
-                              SizedBox(
-                                width: days.length * (dayWidth),
-                                height: 140,
-                                child: days.isNotEmpty
-                                    ? LazyTimelineViewport(
-                                        controller: _timelineController,
-                                        items: days,
-                                        itemWidth: dayWidth,
-                                        itemMargin: dayMargin,
-                                        itemBuilder: (context, index) {
-                                          return OptimizedTimelineItem(
-                                            colors: widget.colors,
-                                            index: index,
-                                            centerItemIndexNotifier:
-                                                _timelineController
-                                                    .centerItemIndex,
-                                            nowIndex: nowIndex,
-                                            day: days[index],
-                                            elements: widget.elements,
-                                            dayWidth: dayWidth,
-                                            dayMargin: dayMargin,
-                                            height: 120,
-                                            openDayDetail: widget.openDayDetail,
-                                          );
-                                        },
-                                      )
-                                    : const SizedBox
-                                        .shrink(), // Handle empty days
-                              ),
-                            ],
-                          ),
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                              color: widget.colors['secondaryBackground']!,
+                              width: widget.mode == 'chronology' ? 1.5 : 0),
                         ),
+                      ),
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          // Use available height from constraints
+                          final availableHeight = constraints.maxHeight;
+
+                          return SizedBox(
+                            width: screenWidth,
+                            height:
+                                availableHeight, // Use available height instead of fixed timelineHeight
+                            child: SingleChildScrollView(
+                              controller: _controllerTimeline,
+                              scrollDirection: Axis.horizontal,
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: firstElementMargin),
+                              child: SizedBox(
+                                height: availableHeight, // Use available height
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize
+                                      .min, // Prevent Column from expanding infinitely
+                                  children: [
+                                    // DATES
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        border: Border(
+                                          bottom: BorderSide(
+                                              color: widget.colors[
+                                                  'secondaryBackground']!,
+                                              width: 1.5),
+                                        ),
+                                      ),
+                                      child: SizedBox(
+                                        width: days.length * (dayWidth),
+                                        height: datesHeight,
+                                        child: days.isNotEmpty
+                                            ? LazyTimelineViewport(
+                                                controller: _timelineController,
+                                                items: days,
+                                                itemWidth: dayWidth,
+                                                itemMargin: dayMargin,
+                                                itemBuilder: (context, index) {
+                                                  return TimelineDayDate(
+                                                    lang: lang,
+                                                    colors: widget.colors,
+                                                    index: index,
+                                                    centerItemIndex:
+                                                        _timelineController
+                                                            .centerItemIndex
+                                                            .value,
+                                                    nowIndex: nowIndex,
+                                                    days: days,
+                                                    dayWidth: dayWidth,
+                                                    dayMargin: dayMargin,
+                                                    height: datesHeight,
+                                                  );
+                                                },
+                                              )
+                                            : const SizedBox
+                                                .shrink(), // Handle empty days
+                                      ),
+                                    ),
+                                    // STAGES/ELEMENTS DYNAMIQUES - Use Expanded to take remaining space
+                                    Expanded(
+                                      child: SizedBox(
+                                          child: stagesRows.isNotEmpty
+                                              ? SingleChildScrollView(
+                                                  controller:
+                                                      _controllerVerticalStages,
+                                                  scrollDirection:
+                                                      Axis.vertical,
+                                                  physics:
+                                                      const ClampingScrollPhysics(), // Permet un scroll fluide
+                                                  child: LazyStageRowsViewport(
+                                                    controller:
+                                                        _timelineController,
+                                                    stagesRows: stagesRows,
+                                                    rowHeight: rowHeight,
+                                                    rowMargin: rowMargin,
+                                                    dayWidth: dayWidth,
+                                                    dayMargin: dayMargin,
+                                                    totalDays: days.length,
+                                                    colors: widget.colors,
+                                                    isUniqueProject:
+                                                        isUniqueProject,
+                                                    verticalScrollController:
+                                                        _controllerVerticalStages,
+                                                    viewportHeight:
+                                                        timelineHeightContainer,
+                                                    openEditStage:
+                                                        widget.openEditStage,
+                                                    openEditElement:
+                                                        widget.openEditElement,
+                                                  ),
+                                                )
+                                              : const SizedBox
+                                                  .shrink()), // Handle empty stages
+                                    ),
+                                    // TIMELINE DYNAMIQUE
+                                    SizedBox(
+                                      width: days.length * (dayWidth),
+                                      height: 140,
+                                      child: days.isNotEmpty
+                                          ? LazyTimelineViewport(
+                                              controller: _timelineController,
+                                              items: days,
+                                              itemWidth: dayWidth,
+                                              itemMargin: dayMargin,
+                                              itemBuilder: (context, index) {
+                                                return OptimizedTimelineItem(
+                                                  colors: widget.colors,
+                                                  index: index,
+                                                  centerItemIndexNotifier:
+                                                      _timelineController
+                                                          .centerItemIndex,
+                                                  nowIndex: nowIndex,
+                                                  day: days[index],
+                                                  elements: widget.elements,
+                                                  dayWidth: dayWidth,
+                                                  dayMargin: dayMargin,
+                                                  height: 120,
+                                                  openDayDetail:
+                                                      widget.openDayDetail,
+                                                );
+                                              },
+                                            )
+                                          : const SizedBox
+                                              .shrink(), // Handle empty days
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ),
@@ -768,23 +783,35 @@ class _Timeline extends State<Timeline> {
                 Positioned(
                   right: 0,
                   top: 65,
+                  bottom: 100, // Use bottom constraint instead of fixed height
                   child: SizedBox(
                     width: 8,
-                    height: timelineHeightContainer,
-                    child: Stack(children: [
-                      Positioned(
-                          right: 0,
-                          top: scrollbarOffset,
-                          child: Container(
-                            width: 4,
-                            height: scrollbarHeight,
-                            decoration: BoxDecoration(
-                              color: widget.colors['secondaryBackground']!
-                                  .withAlpha(120),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ))
-                    ]),
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        // Use available height from constraints
+                        final availableHeight = constraints.maxHeight;
+                        // Ensure scrollbar height doesn't exceed available space
+                        final clampedScrollbarHeight =
+                            scrollbarHeight.clamp(0.0, availableHeight);
+                        final clampedScrollbarOffset = scrollbarOffset.clamp(
+                            0.0, availableHeight - clampedScrollbarHeight);
+
+                        return Stack(children: [
+                          Positioned(
+                              right: 0,
+                              top: clampedScrollbarOffset,
+                              child: Container(
+                                width: 4,
+                                height: clampedScrollbarHeight,
+                                decoration: BoxDecoration(
+                                  color: widget.colors['secondaryBackground']!
+                                      .withAlpha(120),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ))
+                        ]);
+                      },
+                    ),
                   ),
                 ),
               // MESSAGE SI AUCUNE ACTIVITE

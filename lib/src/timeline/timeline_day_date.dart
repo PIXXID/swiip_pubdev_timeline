@@ -60,39 +60,49 @@ class _TimelineDayDate extends State<TimelineDayDate>
                 width: widget.dayWidth - margin,
                 height: widget.height,
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     // Dates
-                    Text(
-                      DateFormat.E(widget.lang)
-                          .format(date)
-                          .toUpperCase()
-                          .substring(0, 1),
-                      style: TextStyle(
-                          color: dayTextColor,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500),
+                    Flexible(
+                      child: Text(
+                        DateFormat.E(widget.lang)
+                            .format(date)
+                            .toUpperCase()
+                            .substring(0, 1),
+                        style: TextStyle(
+                            color: dayTextColor,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500),
+                        overflow: TextOverflow.clip,
+                      ),
                     ),
-                    Text(
-                      DateFormat('dd').format(date),
-                      style: TextStyle(
-                          color: dayTextColor,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500),
+                    Flexible(
+                      child: Text(
+                        DateFormat('dd').format(date),
+                        style: TextStyle(
+                            color: dayTextColor,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500),
+                        overflow: TextOverflow.clip,
+                      ),
                     ),
                     // Météo
                     if (day['eicon'] != null)
-                      Padding(
-                          padding: const EdgeInsets.only(top: 3, bottom: 5),
-                          child: Text(
-                            '${day['eicon']}',
-                            style: TextStyle(
-                              color: colors['primaryText'],
-                              fontWeight: FontWeight.w300,
-                              fontSize: 16,
-                            ),
-                          ))
+                      Flexible(
+                          child: Padding(
+                              padding: const EdgeInsets.only(top: 3, bottom: 5),
+                              child: Text(
+                                '${day['eicon']}',
+                                style: TextStyle(
+                                  color: colors['primaryText'],
+                                  fontWeight: FontWeight.w300,
+                                  fontSize: 16,
+                                ),
+                                overflow: TextOverflow.clip,
+                              )))
                     else
-                      Container(height: 28),
+                      const Flexible(child: SizedBox(height: 28)),
                   ],
                 ))));
   }
