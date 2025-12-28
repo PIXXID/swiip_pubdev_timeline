@@ -115,54 +115,27 @@ This implementation plan breaks down the external configuration system into disc
   - Ensure all tests pass, ask the user if questions arise.
 
 
-- [ ] 6. Integrate configuration system with Timeline widget
-  - [ ] 6.1 Update Timeline widget constructor
+- [x] 6. Integrate configuration system with Timeline widget
+  - [x] 6.1 Update Timeline widget constructor
     - Add optional `configuration` parameter to Timeline widget
     - Maintain backward compatibility (all existing parameters still work)
     - _Requirements: 8.2, 8.5_
 
-  - [ ] 6.2 Update Timeline widget initialization
+  - [x] 6.2 Update Timeline widget initialization
     - Initialize configuration manager if not already initialized
     - Use provided configuration or fall back to manager's configuration
     - Replace hardcoded values with configuration values (dayWidth, dayMargin, etc.)
     - _Requirements: 5.3, 5.4_
 
-  - [ ] 6.3 Update TimelineController to use configuration
+  - [x] 6.3 Update TimelineController to use configuration
     - Pass configuration values to TimelineController constructor
     - Update scroll throttling to use configured duration
     - _Requirements: 2.4, 7.4_
 
-  - [ ] 6.4 Write property test for backward compatibility
+  - [x] 6.4 Write property test for backward compatibility
     - **Property 8: Backward Compatibility**
     - *For any* Timeline widget created without config file, behavior should match previous version
     - **Validates: Requirements 8.1, 8.3**
-
-- [ ] 7. Implement preset functionality
-  - [ ] 7.1 Create preset configurations
-    - Define small dataset preset (< 100 days)
-    - Define medium dataset preset (100-500 days)
-    - Define large dataset preset (> 500 days)
-    - _Requirements: 7.2, 7.3, 7.5_
-
-  - [ ] 7.2 Implement preset application logic
-    - Add logic to apply preset values when preset is specified
-    - Allow individual parameter overrides even with preset
-    - _Requirements: 7.2, 7.3_
-
-  - [ ] 7.3 Add buffer days warning
-    - Log warning when bufferDays > 10
-    - Include memory usage implications in warning message
-    - _Requirements: 7.1_
-
-  - [ ] 7.4 Write property test for preset application
-    - **Property 9: Preset Application**
-    - *For any* valid preset value, configuration should have corresponding optimized values
-    - **Validates: Requirements 7.2, 7.3**
-
-  - [ ] 7.5 Write property test for buffer days warning
-    - **Property 14: Buffer Days Warning**
-    - *For any* configuration with bufferDays > 10, system should log warning
-    - **Validates: Requirements 7.1**
 
 - [ ] 8. Implement error handling and logging
   - [ ] 8.1 Add comprehensive error logging

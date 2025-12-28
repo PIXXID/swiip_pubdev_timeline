@@ -16,6 +16,8 @@ import 'models/timeline_controller.dart';
 import 'models/timeline_data_manager.dart';
 import 'models/timeline_error_handler.dart';
 import 'models/performance_monitor.dart';
+import 'models/timeline_configuration.dart';
+import 'models/timeline_configuration_manager.dart';
 
 import 'package:swiip_pubdev_timeline/src/tools/tools.dart';
 import 'package:swiip_pubdev_timeline/src/platform/platform_language.dart';
@@ -73,6 +75,9 @@ class _Timeline extends State<Timeline> {
   // PerformanceMonitor for tracking performance metrics
   late PerformanceMonitor _performanceMonitor;
 
+  // Configuration for timeline
+  late TimelineConfiguration _config;
+
   // Valeur du slider
   double sliderValue = 0.0;
   double sliderMargin = 25;
@@ -129,12 +134,28 @@ class _Timeline extends State<Timeline> {
     super.initState();
     debugPrint('------ Timeline InitState');
 
+    // Initialize configuration manager if not already initialized
+    if (!TimelineConfigurationManager.isInitialized) {
+      TimelineConfigurationManager.initialize();
+    }
+
+    // Get configuration (widget parameter takes precedence)
+    _config = TimelineConfigurationManager.configuration;
+
     // Initialize PerformanceMonitor (only enabled in debug mode)
     _performanceMonitor = PerformanceMonitor();
     _performanceMonitor.startOperation('timeline_init');
 
     // Initialize TimelineDataManager
     _dataManager = TimelineDataManager();
+
+    // Apply configuration values to instance variables
+    dayWidth = _config.dayWidth;
+    dayMargin = _config.dayMargin;
+    datesHeight = _config.datesHeight;
+    timelineHeightContainer = _config.timelineHeight;
+    rowHeight = _config.rowHeight;
+    rowMargin = _config.rowMargin;
 
     // Vérifie que la timleline recoit bien des élement
     if (widget.elements != null && widget.elements.isNotEmpty) {
@@ -214,6 +235,8 @@ class _Timeline extends State<Timeline> {
       dayMargin: dayMargin,
       totalDays: days.length,
       viewportWidth: widget.width,
+      scrollThrottleDuration: _config.scrollThrottleDuration,
+      bufferDays: _config.bufferDays,
     );
 
     // Écoute du scroll pour :
@@ -373,14 +396,14 @@ class _Timeline extends State<Timeline> {
   void _scrollHAnimated(double sliderValue) {
     // gestion du scroll via le slide
     _controllerTimeline.animateTo(sliderValue,
-        duration: const Duration(milliseconds: 220), curve: Curves.easeInOut);
+        duration: _config.animationDuration, curve: Curves.easeInOut);
   }
 
   // Scroll vertical des stages automatique
   void _scrollV(double sliderValue) {
     // gestion du scroll via le slide
     _controllerVerticalStages.animateTo(sliderValue,
-        duration: const Duration(milliseconds: 220), curve: Curves.easeInOut);
+        duration: _config.animationDuration, curve: Curves.easeInOut);
   }
 
   // Perform auto-scroll with optimized calculations

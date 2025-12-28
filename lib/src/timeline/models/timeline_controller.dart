@@ -30,6 +30,9 @@ class TimelineController extends ChangeNotifier {
   /// Total number of days in the timeline
   final int totalDays;
 
+  /// Number of buffer days to render outside the visible viewport
+  final int bufferDays;
+
   /// Viewport width for calculating visible range
   double? _viewportWidth;
 
@@ -39,8 +42,8 @@ class TimelineController extends ChangeNotifier {
   /// Flag to track if controller is disposed
   bool _isDisposed = false;
 
-  /// Throttle duration (~60 FPS)
-  static const _scrollThrottleDuration = Duration(milliseconds: 16);
+  /// Throttle duration for scroll updates
+  final Duration _scrollThrottleDuration;
 
   /// Creates a TimelineController with the specified configuration.
   TimelineController({
@@ -48,7 +51,12 @@ class TimelineController extends ChangeNotifier {
     required this.dayMargin,
     required this.totalDays,
     double? viewportWidth,
-  }) : _viewportWidth = viewportWidth;
+    Duration? scrollThrottleDuration,
+    int? bufferDays,
+  })  : _viewportWidth = viewportWidth,
+        _scrollThrottleDuration =
+            scrollThrottleDuration ?? const Duration(milliseconds: 16),
+        bufferDays = bufferDays ?? 5;
 
   /// Sets the viewport width for calculating visible range.
   void setViewportWidth(double width) {
@@ -93,8 +101,8 @@ class TimelineController extends ChangeNotifier {
     // Calculate number of visible days
     final visibleDays = (_viewportWidth! / (dayWidth - dayMargin)).ceil();
 
-    // Add buffer of 5 days on each side
-    const buffer = 5;
+    // Use configured buffer days
+    final buffer = bufferDays;
 
     // Calculate start and end indices with buffer
     final start = (centerItemIndex.value - (visibleDays ~/ 2) - buffer)
