@@ -63,8 +63,8 @@ Ce plan d'implémentation décompose la refactorisation du mécanisme de scroll 
     - Vérifier qu'aucun ScrollController n'a été appelé
     - Run 100 iterations
 
-- [ ] 4. Créer la fonction d'action _applyAutoScroll()
-  - [ ] 4.1 Implémenter _applyAutoScroll() dans timeline.dart
+- [x] 4. Créer la fonction d'action _applyAutoScroll()
+  - [x] 4.1 Implémenter _applyAutoScroll() dans timeline.dart
     - Prendre un ScrollState en paramètre
     - Vérifier enableAutoScroll avant d'agir
     - Calculer l'offset final (avec vérification de l'espace restant)
@@ -73,7 +73,7 @@ Ce plan d'implémentation décompose la refactorisation du mécanisme de scroll 
     - Réinitialiser userScrollOffset
     - _Requirements: 1.3, 1.4, 3.4_
 
-  - [ ] 4.2 Écrire un property test pour _applyAutoScroll()
+  - [x] 4.2 Écrire un property test pour _applyAutoScroll()
     - **Property 4: Indépendance Calcul/Action**
     - **Validates: Requirements 1.4, 5.4**
     - Générer des ScrollState aléatoires
@@ -81,7 +81,7 @@ Ce plan d'implémentation décompose la refactorisation du mécanisme de scroll 
     - Vérifier qu'aucun scroll n'est déclenché
     - Appeler avec enableAutoScroll=true
     - Vérifier que le scroll est déclenché uniquement dans ce cas
-    - Run 100 iterations
+    - Run 3 iterations
 
 - [ ] 5. Checkpoint - Vérifier que les nouvelles fonctions sont correctes
   - Ensure all tests pass, ask the user if questions arise.

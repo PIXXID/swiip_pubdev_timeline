@@ -550,6 +550,75 @@ class _Timeline extends State<Timeline> {
     );
   }
 
+  /// Applique le scroll vertical automatique basé sur l'état calculé.
+  ///
+  /// Cette fonction APPLIQUE les changements - elle n'est PAS pure.
+  /// Elle prend un ScrollState en paramètre et déclenche le scroll vertical
+  /// si les conditions sont remplies.
+  ///
+  /// La fonction vérifie plusieurs conditions avant d'appliquer le scroll:
+  /// 1. L'auto-scroll doit être activé (enableAutoScroll = true)
+  /// 2. Un offset vertical cible doit être disponible (targetVerticalOffset != null)
+  /// 3. Le ScrollController vertical doit avoir des clients
+  ///
+  /// Si toutes les conditions sont remplies, la fonction:
+  /// - Calcule l'offset final en vérifiant l'espace restant
+  /// - Déclenche une animation vers l'offset calculé
+  /// - Gère le flag _isAutoScrolling pour éviter les conflits
+  /// - Réinitialise userScrollOffset pour permettre de futurs auto-scrolls
+  ///
+  /// ## Paramètres
+  ///
+  /// - [scrollState]: L'état de scroll calculé contenant toutes les informations nécessaires
+  ///
+  /// ## Validates
+  ///
+  /// Requirements 1.3, 1.4, 3.4
+  void _applyAutoScroll(ScrollState scrollState) {
+    // Vérification 1: L'auto-scroll doit être activé
+    if (!scrollState.enableAutoScroll) return;
+
+    // Vérification 2: Un offset cible doit être disponible
+    if (scrollState.targetVerticalOffset == null) return;
+
+    // Vérification 3: Le ScrollController doit avoir des clients
+    if (!_controllerVerticalStages.hasClients) return;
+
+    final targetOffset = scrollState.targetVerticalOffset!;
+    final maxExtent = _controllerVerticalStages.position.maxScrollExtent;
+
+    // Calcul de la hauteur totale des lignes
+    final totalRowsHeight = (rowHeight + rowMargin) * stagesRows.length;
+
+    // Récupération de la hauteur du viewport
+    final viewportHeight = _controllerVerticalStages.position.viewportDimension;
+
+    // Détermine l'offset final en vérifiant l'espace restant
+    // Si l'espace restant est suffisant (> viewportHeight / 2), on scroll vers le target
+    // Sinon, on scroll vers le maximum pour éviter l'effet rebond
+    final finalOffset = (totalRowsHeight - targetOffset > viewportHeight / 2)
+        ? targetOffset
+        : maxExtent;
+
+    // Marque que c'est un scroll automatique
+    _isAutoScrolling = true;
+
+    // Applique le scroll avec animation
+    _controllerVerticalStages
+        .animateTo(
+      finalOffset,
+      duration: _config.animationDuration,
+      curve: Curves.easeInOut,
+    )
+        .then((_) {
+      // Une fois l'animation terminée, on réinitialise le flag
+      _isAutoScrolling = false;
+    });
+
+    // Réinitialise le scroll utilisateur pour permettre de futurs auto-scrolls
+    userScrollOffset = null;
+  }
+
   // Perform auto-scroll with optimized calculations
   void _performAutoScroll(int centerItemIndex, double oldScrollOffset) {
     if (stagesRows.isEmpty) return; // Guard against empty stages
