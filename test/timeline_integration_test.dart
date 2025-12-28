@@ -132,7 +132,6 @@ void main() {
           MaterialApp(
             home: Scaffold(
               body: Timeline(
-                width: 800,
                 height: 600,
                 colors: {
                   'primary': Colors.blue,
@@ -314,7 +313,6 @@ void main() {
           MaterialApp(
             home: Scaffold(
               body: Timeline(
-                width: 800,
                 height: 600,
                 colors: {
                   'primary': Colors.blue,

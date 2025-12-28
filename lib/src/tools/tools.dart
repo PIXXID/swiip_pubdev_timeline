@@ -56,12 +56,15 @@ List getStageByDay(List days, List stages) {
 /// ------
 /// Récupère la row qui a le stage/élément le plus haut pour adapter le scroll vertical (optimized)
 /// Uses early exit and avoids redundant checks
+/// If no exact match is found, returns the row with the nearest upcoming stage
 ///
 /// [stagesRows]        Tableau des séquences et étapes associés aux élements
 /// [centerItemIndex]   Idex de l'item à centrer
 /// ------
 int getHigherStageRowIndexOptimized(List stagesRows, int centerItemIndex) {
   final int rowCount = stagesRows.length;
+  int nearestRowIndex = -1;
+  int nearestDistance = double.maxFinite.toInt();
 
   for (int i = 0; i < rowCount; i++) {
     final row = stagesRows[i];
@@ -73,32 +76,40 @@ int getHigherStageRowIndexOptimized(List stagesRows, int centerItemIndex) {
       final int startIndex = stage['startDateIndex'];
       final int endIndex = stage['endDateIndex'];
 
-      // On Vérifie si l'index est dans la plage de date
+      // On Vérifie si l'index est dans la plage de date (match exact)
       if (centerItemIndex >= startIndex && centerItemIndex <= endIndex) {
         return i;
       }
 
-      // Early exit: if centerItemIndex is before this stage's start,
-      // it won't be in any subsequent stages in this row (assuming sorted)
-      if (centerItemIndex < startIndex) {
-        break;
+      // Si le stage est après l'index, calculer la distance
+      if (startIndex > centerItemIndex) {
+        final distance = startIndex - centerItemIndex;
+        if (distance < nearestDistance) {
+          nearestDistance = distance;
+          nearestRowIndex = i;
+        }
+        break; // Pas besoin de vérifier les autres stages de cette ligne
       }
     }
   }
 
-  // Aucune correspondance trouvée
-  return -1;
+  // Si aucun match exact, retourner le stage le plus proche
+  // Si aucun stage trouvé du tout, retourner la première ligne
+  return nearestRowIndex != -1 ? nearestRowIndex : (rowCount > 0 ? 0 : -1);
 }
 
 /// ------
 /// Récupère la row qui a le stage/élément le plus bas pour adapter le scroll vertical (optimized)
 /// Uses early exit and avoids redundant checks
+/// If no exact match is found, returns the row with the nearest previous stage
 ///
 /// [stagesRows]        Tableau des séquences et étapes associés aux élements
 /// [centerItemIndex]   Idex de l'item à centrer
 /// ------
 int getLowerStageRowIndexOptimized(List stagesRows, int centerItemIndex) {
   final int rowCount = stagesRows.length;
+  int nearestRowIndex = -1;
+  int nearestDistance = double.maxFinite.toInt();
 
   // On parcourt les lignes en ordre inverse
   for (int i = rowCount - 1; i >= 0; i--) {
@@ -111,19 +122,26 @@ int getLowerStageRowIndexOptimized(List stagesRows, int centerItemIndex) {
       final int startIndex = stage['startDateIndex'];
       final int endIndex = stage['endDateIndex'];
 
-      // On Vérifie si l'index est dans la plage de date
+      // On Vérifie si l'index est dans la plage de date (match exact)
       if (centerItemIndex >= startIndex && centerItemIndex <= endIndex) {
-        return i + 1;
+        return i;
       }
 
-      // Early exit: if centerItemIndex is after this stage's end,
-      // it won't be in any previous stages in this row (assuming sorted)
-      if (centerItemIndex > endIndex) {
-        break;
+      // Si le stage est avant l'index, calculer la distance
+      if (endIndex < centerItemIndex) {
+        final distance = centerItemIndex - endIndex;
+        if (distance < nearestDistance) {
+          nearestDistance = distance;
+          nearestRowIndex = i;
+        }
+        break; // Pas besoin de vérifier les autres stages de cette ligne
       }
     }
   }
 
-  // Aucune correspondance trouvée
-  return -1;
+  // Si aucun match exact, retourner le stage le plus proche
+  // Si aucun stage trouvé du tout, retourner la dernière ligne
+  return nearestRowIndex != -1
+      ? nearestRowIndex
+      : (rowCount > 0 ? rowCount - 1 : -1);
 }

@@ -21,6 +21,9 @@ class TimelineController extends ChangeNotifier {
   /// Loading state for long-running operations
   final ValueNotifier<bool> isLoading = ValueNotifier(false);
 
+  /// Viewport width as a ValueNotifier
+  final ValueNotifier<double> viewportWidth = ValueNotifier(0.0);
+
   /// Width of each day item
   final double dayWidth;
 
@@ -56,12 +59,30 @@ class TimelineController extends ChangeNotifier {
   })  : _viewportWidth = viewportWidth,
         _scrollThrottleDuration =
             scrollThrottleDuration ?? const Duration(milliseconds: 16),
-        bufferDays = bufferDays ?? 5;
+        bufferDays = bufferDays ?? 5 {
+    // Initialize viewportWidth ValueNotifier
+    this.viewportWidth.value = viewportWidth ?? 0.0;
+    debugPrint(
+        '🎬 TimelineController initialized: viewportWidth=${viewportWidth ?? 0.0}, totalDays=$totalDays, bufferDays=${bufferDays ?? 5}');
+
+    // Initialize visible range if viewport width is available
+    if (viewportWidth != null && viewportWidth > 0) {
+      _updateVisibleRange();
+    }
+  }
 
   /// Sets the viewport width for calculating visible range.
   void setViewportWidth(double width) {
+    debugPrint(
+        '📐 setViewportWidth called: $width (previous: $_viewportWidth)');
     _viewportWidth = width;
+    viewportWidth.value = width;
     _updateVisibleRange();
+  }
+
+  /// Updates the viewport width (alias for setViewportWidth).
+  void updateViewportWidth(double width) {
+    setViewportWidth(width);
   }
 
   /// Updates the scroll offset with throttling.
@@ -96,7 +117,10 @@ class TimelineController extends ChangeNotifier {
 
   /// Updates the visible range based on center index and viewport width.
   void _updateVisibleRange() {
-    if (_viewportWidth == null) return;
+    if (_viewportWidth == null || _viewportWidth == 0) {
+      debugPrint('⚠️ VisibleRange: viewportWidth is null or 0');
+      return;
+    }
 
     // Calculate number of visible days
     final visibleDays = (_viewportWidth! / (dayWidth - dayMargin)).ceil();
@@ -113,6 +137,8 @@ class TimelineController extends ChangeNotifier {
     // Update visible range if changed
     final newRange = VisibleRange(start, end);
     if (newRange != visibleRange.value) {
+      debugPrint(
+          '📍 VisibleRange updated: $start to $end (visibleDays=$visibleDays, buffer=$buffer, viewportWidth=$_viewportWidth, centerIndex=${centerItemIndex.value})');
       visibleRange.value = newRange;
     }
   }
@@ -130,6 +156,7 @@ class TimelineController extends ChangeNotifier {
     centerItemIndex.dispose();
     visibleRange.dispose();
     isLoading.dispose();
+    viewportWidth.dispose();
 
     super.dispose();
   }
