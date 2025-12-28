@@ -106,27 +106,27 @@ This implementation plan breaks down the refactoring of the Timeline component t
     - Verify vertical position unchanged by horizontal scrolls (except auto-scroll)
     - Run 100 iterations
 
-- [ ] 6. Remove slider-related tests
+- [x] 6. Remove slider-related tests
   - Delete `test/timeline_slider_isolation_test.dart` file
   - Remove any slider-specific test cases from integration tests
   - Update scroll simulation tests to use ScrollController directly
   - _Requirements: 6.1, 6.2_
 
-- [ ] 7. Update integration tests
-  - [ ] 7.1 Write integration test for horizontal scrolling
+- [x] 7. Update integration tests
+  - [x] 7.1 Write integration test for horizontal scrolling
     - Test mouse wheel horizontal scrolling
     - Test trackpad horizontal gesture scrolling
     - Test touch drag horizontal scrolling
     - Verify scroll position updates correctly
     - _Requirements: 2.2, 2.3, 2.4_
 
-  - [ ] 7.2 Write integration test for scrollTo initialization
+  - [x] 7.2 Write integration test for scrollTo initialization
     - Test scrolling to defaultDate on initialization
     - Test scrolling to nowIndex when no defaultDate provided
     - Verify correct initial scroll position
     - _Requirements: 5.5_
 
-  - [ ] 7.3 Write integration test for custom scrollbar
+  - [x] 7.3 Write integration test for custom scrollbar
     - Verify scrollbar widget exists in widget tree
     - Verify scrollbar position updates with vertical scroll
     - Verify scrollbar height calculated correctly
