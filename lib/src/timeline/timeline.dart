@@ -22,7 +22,7 @@ import 'package:swiip_pubdev_timeline/src/platform/platform_language.dart';
 
 class Timeline extends StatefulWidget {
   const Timeline(
-      {Key? key,
+      {super.key,
       required this.width,
       required this.height,
       required this.colors,
@@ -36,8 +36,7 @@ class Timeline extends StatefulWidget {
       required this.openDayDetail,
       this.openEditStage,
       this.openEditElement,
-      this.updateCurrentDate})
-      : super(key: key);
+      this.updateCurrentDate});
 
   final double width;
   final double height;

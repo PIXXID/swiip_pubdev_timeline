@@ -281,22 +281,22 @@ Ce plan d'implémentation transforme la conception en tâches concrètes pour op
   - Vérifier qu'il n'y a pas de régressions de fonctionnalités
   - Demander à l'utilisateur si des questions se posent
 
-- [ ] 21. Documentation et nettoyage
-  - [ ] 21.1 Documenter les nouvelles APIs
+- [x] 21. Documentation et nettoyage
+  - [x] 21.1 Documenter les nouvelles APIs
     - Ajouter des commentaires de documentation pour TimelineController
     - Documenter TimelineDataManager et ses méthodes
     - Documenter TimelineConfiguration et ses options
     - Ajouter des exemples d'utilisation dans README
     - _Requirements: 8.4_
 
-  - [ ] 21.2 Nettoyer le code legacy
+  - [x] 21.2 Nettoyer le code legacy
     - Supprimer les anciennes implémentations non optimisées
     - Nettoyer les imports inutilisés
     - Formater le code selon les conventions Dart
     - Exécuter dart analyze et corriger les warnings
     - _Requirements: 6.2_
 
-  - [ ] 21.3 Mettre à jour les exemples et tests
+  - [x] 21.3 Mettre à jour les exemples et tests
     - Mettre à jour l'exemple d'utilisation dans lib/run.dart
     - Ajouter des exemples de configuration de performance
     - Documenter les options de tuning des performances

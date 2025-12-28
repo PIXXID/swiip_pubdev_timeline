@@ -41,14 +41,8 @@ Color? formatStringToColor(String? color) {
 /// [stages]          Séquence et étapes associés aux élements
 /// [maxCapacity]     Capacité maximum pour la calcul du graphique
 /// ------
-List formatElements(DateTime startDate, 
-  DateTime endDate, 
-  List elements,
-  List elementsDone, 
-  List capacities, 
-  List stages, 
-  int maxCapacity) {
-
+List formatElements(DateTime startDate, DateTime endDate, List elements,
+    List elementsDone, List capacities, List stages, int maxCapacity) {
   List list = [];
 
   // On récupère le nombre de jours entre la date de début et la date de fin
@@ -180,12 +174,8 @@ List formatElements(DateTime startDate,
 /// [stages]          Tableau des séquence et étapes associés aux élements
 /// [elements]        Tableau d'élements
 /// ------
-List formatStagesRows(DateTime startDate, 
-  DateTime endDate,
-  List days,
-  List stages, 
-  List elements) {
-
+List formatStagesRows(DateTime startDate, DateTime endDate, List days,
+    List stages, List elements) {
   List rows = [];
 
   List<dynamic> mergedList = [];
@@ -318,7 +308,6 @@ List getStageByDay(List days, List stages) {
   return days;
 }
 
-
 /// ------
 /// Récupère la row qui a le stage/élément le plus haut pour adapter le scroll vertical
 ///
@@ -371,8 +360,8 @@ int getHigherStageRowIndexOptimized(List stagesRows, int centerItemIndex) {
       if (centerItemIndex >= startIndex && centerItemIndex <= endIndex) {
         return i;
       }
-      
-      // Early exit: if centerItemIndex is before this stage's start, 
+
+      // Early exit: if centerItemIndex is before this stage's start,
       // it won't be in any subsequent stages in this row (assuming sorted)
       if (centerItemIndex < startIndex) {
         break;
@@ -383,7 +372,6 @@ int getHigherStageRowIndexOptimized(List stagesRows, int centerItemIndex) {
   // Aucune correspondance trouvée
   return -1;
 }
-
 
 /// ------
 /// Récupère la row qui a le stage/élément le plus haut pour adapter le scroll vertical
@@ -439,7 +427,7 @@ int getLowerStageRowIndexOptimized(List stagesRows, int centerItemIndex) {
       if (centerItemIndex >= startIndex && centerItemIndex <= endIndex) {
         return i + 1;
       }
-      
+
       // Early exit: if centerItemIndex is after this stage's end,
       // it won't be in any previous stages in this row (assuming sorted)
       if (centerItemIndex > endIndex) {
@@ -451,5 +439,3 @@ int getLowerStageRowIndexOptimized(List stagesRows, int centerItemIndex) {
   // Aucune correspondance trouvée
   return -1;
 }
-
-  

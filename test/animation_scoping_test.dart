@@ -15,7 +15,8 @@ void main() {
       testWidgets(
           'Property 12: Animations only active for widgets in viewport - iteration $iteration',
           (tester) async {
-        final random = Random(iteration); // Use iteration as seed for reproducibility
+        final random =
+            Random(iteration); // Use iteration as seed for reproducibility
 
         // Generate random timeline data
         final totalDays = 20 + random.nextInt(30); // 20-50 days
@@ -104,7 +105,7 @@ void main() {
         final outsideIndex = visibleEnd + 2;
         if (outsideIndex < totalDays) {
           testDays[outsideIndex]['compeff'] = 7; // High completion
-          
+
           // Rebuild with updated data
           await tester.pumpWidget(
             MaterialApp(
@@ -137,9 +138,9 @@ void main() {
               ),
             ),
           );
-          
+
           await tester.pump();
-          
+
           // The widget should not animate since it's outside viewport
           // We verify this by checking that the widget structure is correct
           expect(find.byType(OptimizedTimelineItem), findsNWidgets(totalDays));
@@ -149,7 +150,7 @@ void main() {
         // Items inside viewport should animate
         final insideIndex = visibleStart + 2;
         testDays[insideIndex]['compeff'] = 6; // High completion
-        
+
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
@@ -181,9 +182,9 @@ void main() {
             ),
           ),
         );
-        
+
         await tester.pump();
-        
+
         // Verify AnimatedBuilder is present for animation
         final animatedBuilders = find.byType(AnimatedBuilder);
         expect(
@@ -196,13 +197,14 @@ void main() {
         final newVisibleStart = 10 + random.nextInt(5);
         final newVisibleEnd = newVisibleStart + 8;
         if (newVisibleEnd < totalDays) {
-          visibleRangeNotifier.value = VisibleRange(newVisibleStart, newVisibleEnd);
+          visibleRangeNotifier.value =
+              VisibleRange(newVisibleStart, newVisibleEnd);
           await tester.pump();
-          
+
           // Change center index to trigger rebuild
           centerItemIndexNotifier.value = newVisibleStart + 4;
           await tester.pump();
-          
+
           // Verify widgets are still present
           expect(find.byType(OptimizedTimelineItem), findsNWidgets(totalDays));
         }
@@ -361,7 +363,7 @@ void main() {
 
         // Update completion to trigger potential animation
         testDay['compeff'] = 7;
-        
+
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
@@ -396,7 +398,7 @@ void main() {
   group('Animation Scoping Unit Tests', () {
     testWidgets('uses AnimatedBuilder for animations', (tester) async {
       // Validates: Requirements 9.1
-      
+
       final centerItemIndexNotifier = ValueNotifier<int>(0);
       final visibleRangeNotifier = ValueNotifier<VisibleRange>(
         VisibleRange(0, 10),
@@ -459,7 +461,7 @@ void main() {
 
     testWidgets('uses Transform for position animations', (tester) async {
       // Validates: Requirements 9.4
-      
+
       final centerItemIndexNotifier = ValueNotifier<int>(0);
       final visibleRangeNotifier = ValueNotifier<VisibleRange>(
         VisibleRange(0, 10),
@@ -513,7 +515,8 @@ void main() {
       expect(
         transform,
         findsAtLeastNWidgets(1),
-        reason: 'OptimizedTimelineItem must use Transform for efficient animations',
+        reason:
+            'OptimizedTimelineItem must use Transform for efficient animations',
       );
 
       centerItemIndexNotifier.dispose();
@@ -522,7 +525,7 @@ void main() {
 
     testWidgets('properly disposes AnimationController', (tester) async {
       // Validates: Requirements 9.5
-      
+
       final centerItemIndexNotifier = ValueNotifier<int>(0);
       final visibleRangeNotifier = ValueNotifier<VisibleRange>(
         VisibleRange(0, 10),
@@ -598,7 +601,7 @@ void main() {
 
     testWidgets('has RepaintBoundary around animated content', (tester) async {
       // Validates: Requirements 9.1
-      
+
       final centerItemIndexNotifier = ValueNotifier<int>(0);
       final visibleRangeNotifier = ValueNotifier<VisibleRange>(
         VisibleRange(0, 10),
@@ -652,7 +655,8 @@ void main() {
       expect(
         repaintBoundaries,
         findsAtLeastNWidgets(2),
-        reason: 'OptimizedTimelineItem must have RepaintBoundary around animated content',
+        reason:
+            'OptimizedTimelineItem must have RepaintBoundary around animated content',
       );
 
       centerItemIndexNotifier.dispose();

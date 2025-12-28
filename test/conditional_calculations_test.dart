@@ -18,12 +18,17 @@ void main() {
   group('Property 7: Conditional Calculations', () {
     test('should return cached days when input data is unchanged', () {
       // Feature: timeline-performance-optimization, Property 7: Conditional Calculations
-      
+
       final dataManager = TimelineDataManager();
       final startDate = DateTime(2024, 1, 1);
       final endDate = DateTime(2024, 1, 31);
       final elements = [
-        {'date': '2024-01-15', 'pre_id': 'elem1', 'nat': 'activity', 'status': 'pending'}
+        {
+          'date': '2024-01-15',
+          'pre_id': 'elem1',
+          'nat': 'activity',
+          'status': 'pending'
+        }
       ];
       final elementsDone = <Map<String, dynamic>>[];
       final capacities = <Map<String, dynamic>>[];
@@ -59,16 +64,31 @@ void main() {
 
     test('should recompute when input data changes', () {
       // Feature: timeline-performance-optimization, Property 7: Conditional Calculations
-      
+
       final dataManager = TimelineDataManager();
       final startDate = DateTime(2024, 1, 1);
       final endDate = DateTime(2024, 1, 31);
       final elements1 = [
-        {'date': '2024-01-15', 'pre_id': 'elem1', 'nat': 'activity', 'status': 'pending'}
+        {
+          'date': '2024-01-15',
+          'pre_id': 'elem1',
+          'nat': 'activity',
+          'status': 'pending'
+        }
       ];
       final elements2 = [
-        {'date': '2024-01-15', 'pre_id': 'elem1', 'nat': 'activity', 'status': 'pending'},
-        {'date': '2024-01-20', 'pre_id': 'elem2', 'nat': 'task', 'status': 'finished'}
+        {
+          'date': '2024-01-15',
+          'pre_id': 'elem1',
+          'nat': 'activity',
+          'status': 'pending'
+        },
+        {
+          'date': '2024-01-20',
+          'pre_id': 'elem2',
+          'nat': 'task',
+          'status': 'finished'
+        }
       ];
       final elementsDone = <Map<String, dynamic>>[];
       final capacities = <Map<String, dynamic>>[];
@@ -100,17 +120,18 @@ void main() {
       // Verify different instance is returned (recomputed)
       expect(identical(result1, result2), isFalse,
           reason: 'Should recompute when data changes');
-      
+
       // Verify the results are different
       expect(result1.length, equals(result2.length));
       // The second result should have more elements processed
       final day20Index = 19; // January 20th is index 19 (0-based)
-      expect(result2[day20Index]['preIds'].length, greaterThan(result1[day20Index]['preIds'].length));
+      expect(result2[day20Index]['preIds'].length,
+          greaterThan(result1[day20Index]['preIds'].length));
     });
 
     test('should skip centerItemIndex update when value hasn\'t changed', () {
       // Feature: timeline-performance-optimization, Property 7: Conditional Calculations
-      
+
       final controller = TimelineController(
         dayWidth: 45.0,
         dayMargin: 5.0,
@@ -120,26 +141,28 @@ void main() {
 
       // Set initial scroll offset
       controller.updateScrollOffset(200.0);
-      
+
       // Wait for throttle
       Future.delayed(const Duration(milliseconds: 20), () {
         final initialCenterIndex = controller.centerItemIndex.value;
 
         // Update with same scroll offset (should skip calculation)
         controller.updateScrollOffset(200.0);
-        
+
         Future.delayed(const Duration(milliseconds: 20), () {
           final newCenterIndex = controller.centerItemIndex.value;
 
           expect(newCenterIndex, equals(initialCenterIndex),
-              reason: 'CenterItemIndex should not change when scroll offset is the same');
+              reason:
+                  'CenterItemIndex should not change when scroll offset is the same');
         });
       });
     });
 
-    test('should skip calculations when scroll offset changes insignificantly', () {
+    test('should skip calculations when scroll offset changes insignificantly',
+        () {
       // Feature: timeline-performance-optimization, Property 7: Conditional Calculations
-      
+
       final controller = TimelineController(
         dayWidth: 45.0,
         dayMargin: 5.0,
@@ -149,26 +172,28 @@ void main() {
 
       // Set initial scroll offset
       controller.updateScrollOffset(200.0);
-      
+
       Future.delayed(const Duration(milliseconds: 20), () {
         final initialCenterIndex = controller.centerItemIndex.value;
 
         // Update with slightly different offset (less than one day width)
         // This should result in the same centerItemIndex
         controller.updateScrollOffset(202.0);
-        
+
         Future.delayed(const Duration(milliseconds: 20), () {
           final newCenterIndex = controller.centerItemIndex.value;
 
           expect(newCenterIndex, equals(initialCenterIndex),
-              reason: 'CenterItemIndex should not change for insignificant scroll changes');
+              reason:
+                  'CenterItemIndex should not change for insignificant scroll changes');
         });
       });
     });
 
-    test('should update calculations when scroll offset changes significantly', () {
+    test('should update calculations when scroll offset changes significantly',
+        () {
       // Feature: timeline-performance-optimization, Property 7: Conditional Calculations
-      
+
       final controller = TimelineController(
         dayWidth: 45.0,
         dayMargin: 5.0,
@@ -178,32 +203,35 @@ void main() {
 
       // Set initial scroll offset
       controller.updateScrollOffset(200.0);
-      
+
       Future.delayed(const Duration(milliseconds: 20), () {
         final initialCenterIndex = controller.centerItemIndex.value;
 
         // Update with significantly different offset (more than one day width)
         controller.updateScrollOffset(250.0);
-        
+
         Future.delayed(const Duration(milliseconds: 20), () {
           final newCenterIndex = controller.centerItemIndex.value;
 
           expect(newCenterIndex, isNot(equals(initialCenterIndex)),
-              reason: 'CenterItemIndex should change for significant scroll changes');
+              reason:
+                  'CenterItemIndex should change for significant scroll changes');
         });
       });
     });
 
     test('should cache stage rows independently of days', () {
       // Feature: timeline-performance-optimization, Property 7: Conditional Calculations
-      
+
       final dataManager = TimelineDataManager();
       final startDate = DateTime(2024, 1, 1);
       final endDate = DateTime(2024, 1, 31);
-      final days = List.generate(31, (i) => {
-        'date': startDate.add(Duration(days: i)),
-        'lmax': 8,
-      });
+      final days = List.generate(
+          31,
+          (i) => {
+                'date': startDate.add(Duration(days: i)),
+                'lmax': 8,
+              });
       final stages = [
         {
           'prs_id': 'stage1',
@@ -240,12 +268,17 @@ void main() {
 
     test('should clear cache and recompute on clearCache call', () {
       // Feature: timeline-performance-optimization, Property 7: Conditional Calculations
-      
+
       final dataManager = TimelineDataManager();
       final startDate = DateTime(2024, 1, 1);
       final endDate = DateTime(2024, 1, 31);
       final elements = [
-        {'date': '2024-01-15', 'pre_id': 'elem1', 'nat': 'activity', 'status': 'pending'}
+        {
+          'date': '2024-01-15',
+          'pre_id': 'elem1',
+          'nat': 'activity',
+          'status': 'pending'
+        }
       ];
       final elementsDone = <Map<String, dynamic>>[];
       final capacities = <Map<String, dynamic>>[];
@@ -280,7 +313,7 @@ void main() {
       // Verify different instance is returned (recomputed)
       expect(identical(result1, result2), isFalse,
           reason: 'Should recompute after cache is cleared');
-      
+
       // But the content should be the same
       expect(result1.length, equals(result2.length));
     });

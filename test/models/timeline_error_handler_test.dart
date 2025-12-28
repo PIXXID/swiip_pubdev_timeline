@@ -32,7 +32,7 @@ void main() {
           {'lmax': 8}, // Missing date
           {'date': DateTime(2024, 1, 2), 'lmax': 8},
         ];
-        
+
         final result = TimelineErrorHandler.validateDays(days);
         expect(result.length, equals(2));
       });
@@ -43,7 +43,7 @@ void main() {
           {'date': '2024-01-02', 'lmax': 8}, // String instead of DateTime
           {'date': DateTime(2024, 1, 3), 'lmax': 8},
         ];
-        
+
         final result = TimelineErrorHandler.validateDays(days);
         expect(result.length, equals(2));
       });
@@ -54,7 +54,7 @@ void main() {
           {'date': DateTime(2024, 1, 2)}, // Missing lmax
           {'date': DateTime(2024, 1, 3), 'lmax': 8},
         ];
-        
+
         final result = TimelineErrorHandler.validateDays(days);
         expect(result.length, equals(2));
       });
@@ -79,7 +79,7 @@ void main() {
           {'sdate': '2024-01-01', 'edate': '2024-01-10'}, // Missing type
           {'sdate': '2024-01-15', 'edate': '2024-01-20', 'type': 'cycle'},
         ];
-        
+
         final result = TimelineErrorHandler.validateStages(stages);
         expect(result.length, equals(2));
       });
@@ -103,7 +103,7 @@ void main() {
           {'pre_id': 'elem2'}, // Missing date
           {'pre_id': 'elem3', 'date': '2024-01-05'},
         ];
-        
+
         final result = TimelineErrorHandler.validateElements(elements);
         expect(result.length, equals(2));
       });
@@ -131,19 +131,25 @@ void main() {
 
     group('clampScrollOffset', () {
       test('should clamp negative offset to 0', () {
-        expect(TimelineErrorHandler.clampScrollOffset(-10.0, 100.0), equals(0.0));
-        expect(TimelineErrorHandler.clampScrollOffset(-0.1, 100.0), equals(0.0));
+        expect(
+            TimelineErrorHandler.clampScrollOffset(-10.0, 100.0), equals(0.0));
+        expect(
+            TimelineErrorHandler.clampScrollOffset(-0.1, 100.0), equals(0.0));
       });
 
       test('should clamp offset beyond max to max', () {
-        expect(TimelineErrorHandler.clampScrollOffset(150.0, 100.0), equals(100.0));
-        expect(TimelineErrorHandler.clampScrollOffset(1000.0, 100.0), equals(100.0));
+        expect(TimelineErrorHandler.clampScrollOffset(150.0, 100.0),
+            equals(100.0));
+        expect(TimelineErrorHandler.clampScrollOffset(1000.0, 100.0),
+            equals(100.0));
       });
 
       test('should not change valid offset', () {
-        expect(TimelineErrorHandler.clampScrollOffset(50.0, 100.0), equals(50.0));
+        expect(
+            TimelineErrorHandler.clampScrollOffset(50.0, 100.0), equals(50.0));
         expect(TimelineErrorHandler.clampScrollOffset(0.0, 100.0), equals(0.0));
-        expect(TimelineErrorHandler.clampScrollOffset(100.0, 100.0), equals(100.0));
+        expect(TimelineErrorHandler.clampScrollOffset(100.0, 100.0),
+            equals(100.0));
       });
     });
 
@@ -151,7 +157,7 @@ void main() {
       test('should throw ArgumentError when end is before start', () {
         final start = DateTime(2024, 1, 31);
         final end = DateTime(2024, 1, 1);
-        
+
         expect(
           () => TimelineErrorHandler.validateDateRange(start, end),
           throwsArgumentError,
@@ -161,14 +167,14 @@ void main() {
       test('should return end date when range is valid', () {
         final start = DateTime(2024, 1, 1);
         final end = DateTime(2024, 1, 31);
-        
+
         final result = TimelineErrorHandler.validateDateRange(start, end);
         expect(result, equals(end));
       });
 
       test('should accept same start and end date', () {
         final date = DateTime(2024, 1, 15);
-        
+
         final result = TimelineErrorHandler.validateDateRange(date, date);
         expect(result, equals(date));
       });
@@ -258,7 +264,7 @@ void main() {
       final dataManager = TimelineDataManager();
       final startDate = DateTime(2024, 1, 1);
       final endDate = DateTime(2024, 1, 31);
-      
+
       final result = dataManager.getFormattedDays(
         startDate: startDate,
         endDate: endDate,
@@ -268,7 +274,7 @@ void main() {
         stages: [],
         maxCapacity: 8,
       );
-      
+
       expect(result, isNotEmpty);
       expect(result.length, equals(31)); // 31 days in January
     });
@@ -277,7 +283,7 @@ void main() {
       final dataManager = TimelineDataManager();
       final startDate = DateTime(2024, 1, 1);
       final endDate = DateTime(2024, 1, 10);
-      
+
       final result = dataManager.getFormattedDays(
         startDate: startDate,
         endDate: endDate,
@@ -287,10 +293,10 @@ void main() {
         stages: [],
         maxCapacity: 8,
       );
-      
+
       expect(result, isNotEmpty);
       expect(result.length, equals(10));
-      
+
       // Verify each day has default values
       for (final day in result) {
         expect(day['activityTotal'], equals(0));
@@ -303,7 +309,7 @@ void main() {
       final dataManager = TimelineDataManager();
       final startDate = DateTime(2024, 1, 31);
       final endDate = DateTime(2024, 1, 1); // Invalid: end before start
-      
+
       // Should return empty list instead of crashing
       final result = dataManager.getFormattedDays(
         startDate: startDate,
@@ -314,14 +320,14 @@ void main() {
         stages: [],
         maxCapacity: 8,
       );
-      
+
       expect(result, isEmpty);
     });
 
     test('should handle single day timeline', () {
       final dataManager = TimelineDataManager();
       final date = DateTime(2024, 1, 15);
-      
+
       final result = dataManager.getFormattedDays(
         startDate: date,
         endDate: date,
@@ -331,7 +337,7 @@ void main() {
         stages: [],
         maxCapacity: 8,
       );
-      
+
       expect(result.length, equals(1));
       expect(result[0]['date'], equals(date));
     });
@@ -345,15 +351,15 @@ void main() {
         totalDays: 100,
         viewportWidth: 800.0,
       );
-      
+
       controller.updateScrollOffset(-100.0);
-      
+
       // Wait for throttle
       await Future.delayed(const Duration(milliseconds: 20));
-      
+
       // Center index should be clamped to 0
       expect(controller.centerItemIndex.value, greaterThanOrEqualTo(0));
-      
+
       controller.dispose();
     });
 
@@ -364,15 +370,15 @@ void main() {
         totalDays: 100,
         viewportWidth: 800.0,
       );
-      
+
       controller.updateScrollOffset(100000.0);
-      
+
       // Wait for throttle
       await Future.delayed(const Duration(milliseconds: 20));
-      
+
       // Center index should be clamped to max
       expect(controller.centerItemIndex.value, lessThan(100));
-      
+
       controller.dispose();
     });
 
@@ -383,10 +389,10 @@ void main() {
         totalDays: 0,
         viewportWidth: 800.0,
       );
-      
+
       // Should not crash
       expect(controller.centerItemIndex.value, equals(0));
-      
+
       controller.dispose();
     });
 
@@ -397,15 +403,15 @@ void main() {
         totalDays: 1,
         viewportWidth: 800.0,
       );
-      
+
       controller.updateScrollOffset(100.0);
-      
+
       // Wait for throttle
       await Future.delayed(const Duration(milliseconds: 20));
-      
+
       // Center index should be clamped to 0 (only one day)
       expect(controller.centerItemIndex.value, equals(0));
-      
+
       controller.dispose();
     });
 
@@ -416,7 +422,7 @@ void main() {
         totalDays: 100,
         viewportWidth: 800.0,
       );
-      
+
       // Should not crash when disposing immediately
       expect(() => controller.dispose(), returnsNormally);
     });
@@ -428,12 +434,12 @@ void main() {
         totalDays: 100,
         viewportWidth: 800.0,
       );
-      
+
       controller.dispose();
-      
+
       // Should not crash when updating after disposal
       expect(() => controller.updateScrollOffset(100.0), returnsNormally);
-      
+
       // Wait for throttle
       await Future.delayed(const Duration(milliseconds: 20));
     });

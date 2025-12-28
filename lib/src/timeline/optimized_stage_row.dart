@@ -33,8 +33,10 @@ class OptimizedStageRow extends StatefulWidget {
   final double dayMargin;
   final double height;
   final bool isUniqueProject;
-  final Function(String?, String?, String?, String?, String?, double?, String?)? openEditStage;
-  final Function(String?, String?, String?, String?, String?, double?, String?)? openEditElement;
+  final Function(String?, String?, String?, String?, String?, double?, String?)?
+      openEditStage;
+  final Function(String?, String?, String?, String?, String?, double?, String?)?
+      openEditElement;
 
   @override
   State<OptimizedStageRow> createState() => _OptimizedStageRowState();
@@ -45,11 +47,11 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
   late List<Widget> _cachedStageItems;
   late List<Widget> _cachedLabels;
   late List<Widget> _cachedSpacers;
-  
+
   // Track last values to detect changes
   int? _lastCenterIndex;
   VisibleRange? _lastVisibleRange;
-  
+
   // Current position for layout
   double _currentPosition = 0;
 
@@ -57,7 +59,7 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
   void initState() {
     super.initState();
     _buildStageWidgets();
-    
+
     // Listen to state changes with conditional rebuild
     widget.centerItemIndexNotifier.addListener(_onCenterIndexChanged);
     widget.visibleRangeNotifier.addListener(_onVisibleRangeChanged);
@@ -74,7 +76,7 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
   /// Only rebuilds if this row is affected by the change.
   void _onCenterIndexChanged() {
     final newIndex = widget.centerItemIndexNotifier.value;
-    
+
     // Rebuild only if the center affects this row
     if (_shouldRebuildForCenterChange(newIndex)) {
       setState(() {
@@ -88,7 +90,7 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
   /// Only rebuilds if this row is affected by the change.
   void _onVisibleRangeChanged() {
     final newRange = widget.visibleRangeNotifier.value;
-    
+
     // Rebuild only if the visible range affects this row
     if (_shouldRebuildForRangeChange(newRange)) {
       setState(() {
@@ -105,7 +107,7 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
   /// - Any stage in this row contains the new center index
   bool _shouldRebuildForCenterChange(int newIndex) {
     if (_lastCenterIndex == newIndex) return false;
-    
+
     // Check if any stage in this row contains the new center index
     return widget.stagesList.any((stage) =>
         stage['startDateIndex'] <= newIndex &&
@@ -119,7 +121,7 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
   /// - Any stage in this row overlaps with the new visible range
   bool _shouldRebuildForRangeChange(VisibleRange newRange) {
     if (_lastVisibleRange == newRange) return false;
-    
+
     // Check if any stage in this row overlaps with the new visible range
     return widget.stagesList.any((stage) =>
         newRange.overlaps(stage['startDateIndex'], stage['endDateIndex']));
@@ -134,37 +136,39 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
     _cachedLabels = [];
     _cachedSpacers = [];
     _currentPosition = 0;
-    
+
     final visibleRange = widget.visibleRangeNotifier.value;
     final centerIndex = widget.centerItemIndexNotifier.value;
-    
+
     for (int index = 0; index < widget.stagesList.length; index++) {
       final stage = widget.stagesList[index];
       final startIndex = stage['startDateIndex'] as int;
       final endIndex = stage['endDateIndex'] as int;
-      
+
       // Skip stages that are completely outside the visible range
       if (endIndex < visibleRange.start || startIndex > visibleRange.end) {
         continue;
       }
-      
+
       // Calculate dimensions
       int daysWidth = endIndex - startIndex + 1;
       double itemWidth = daysWidth * (widget.dayWidth - widget.dayMargin);
-      
+
       // Calculate spacer before this stage
       var previousItem = index > 0 ? widget.stagesList[index - 1] : null;
       double spacerWidth = 0;
-      
+
       if (previousItem != null) {
-        int daysBetweenElements = startIndex - (previousItem['endDateIndex'] as int) - 1;
+        int daysBetweenElements =
+            startIndex - (previousItem['endDateIndex'] as int) - 1;
         if (daysBetweenElements > 0) {
-          spacerWidth = daysBetweenElements * (widget.dayWidth - widget.dayMargin);
+          spacerWidth =
+              daysBetweenElements * (widget.dayWidth - widget.dayMargin);
         }
       } else {
         spacerWidth = startIndex * (widget.dayWidth - widget.dayMargin);
       }
-      
+
       // Add spacer if needed
       if (spacerWidth > 0) {
         _cachedSpacers.add(
@@ -178,18 +182,19 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
         );
         _currentPosition += spacerWidth;
       }
-      
+
       // Store position for this stage
       double stageItemPosition = _currentPosition;
-      
+
       // Build the stage item
-      _cachedStageItems.add(_buildStageItem(stage, stageItemPosition, itemWidth, daysWidth));
-      
+      _cachedStageItems
+          .add(_buildStageItem(stage, stageItemPosition, itemWidth, daysWidth));
+
       // Build label if needed
       if (_shouldShowLabel(stage, centerIndex, daysWidth)) {
         _cachedLabels.add(_buildLabel(stage, stageItemPosition));
       }
-      
+
       // Update position for next stage
       _currentPosition += itemWidth;
     }
@@ -203,11 +208,12 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
     int daysWidth,
   ) {
     // Determine if this is a stage or element
-    bool isStage = ['milestone', 'cycle', 'sequence', 'stage'].contains(stage['type']);
-    
+    bool isStage =
+        ['milestone', 'cycle', 'sequence', 'stage'].contains(stage['type']);
+
     // Build label
-    String progressLabel = (stage['prog'] != null && stage['prog'] > 0) 
-        ? ' (${stage['prog']}%)' 
+    String progressLabel = (stage['prog'] != null && stage['prog'] > 0)
+        ? ' (${stage['prog']}%)'
         : '';
     String label = '';
     if (isStage) {
@@ -215,7 +221,7 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
     } else {
       label = stage['pre_name'] ?? '';
     }
-    
+
     // Set project color
     Map<String, Color> stageColors = Map.from(widget.colors);
     if (stage['pcolor'] != null) {
@@ -223,10 +229,10 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
     } else {
       stageColors['pcolor'] = Color(int.parse('ffffff', radix: 16));
     }
-    
+
     // Get entity ID
     String entityId = isStage ? stage['prs_id'] : stage['pre_id'];
-    
+
     return Positioned(
       left: position,
       child: StageItem(
@@ -257,11 +263,12 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
 
   /// Builds a label widget for a stage.
   Widget _buildLabel(Map<String, dynamic> stage, double position) {
-    bool isStage = ['milestone', 'cycle', 'sequence', 'stage'].contains(stage['type']);
+    bool isStage =
+        ['milestone', 'cycle', 'sequence', 'stage'].contains(stage['type']);
     String entityId = isStage ? stage['prs_id'] : stage['pre_id'];
-    
-    String progressLabel = (stage['prog'] != null && stage['prog'] > 0) 
-        ? ' (${stage['prog']}%)' 
+
+    String progressLabel = (stage['prog'] != null && stage['prog'] > 0)
+        ? ' (${stage['prog']}%)'
         : '';
     String label = '';
     if (isStage) {
@@ -269,7 +276,7 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
     } else {
       label = stage['pre_name'] ?? '';
     }
-    
+
     // Set project color
     Color pcolor;
     if (stage['pcolor'] != null) {
@@ -277,11 +284,12 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
     } else {
       pcolor = Color(int.parse('ffffff', radix: 16));
     }
-    
-    Color fontColor = ThemeData.estimateBrightnessForColor(pcolor) == Brightness.dark 
-        ? Colors.white 
-        : Colors.black;
-    
+
+    Color fontColor =
+        ThemeData.estimateBrightnessForColor(pcolor) == Brightness.dark
+            ? Colors.white
+            : Colors.black;
+
     return Positioned(
       left: position + 30,
       top: 5,
@@ -317,9 +325,11 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
   /// Labels are shown for elements (not stages) that are:
   /// - Less than 4 days wide
   /// - Contain the center index
-  bool _shouldShowLabel(Map<String, dynamic> stage, int centerIndex, int daysWidth) {
-    bool isStage = ['milestone', 'cycle', 'sequence', 'stage'].contains(stage['type']);
-    
+  bool _shouldShowLabel(
+      Map<String, dynamic> stage, int centerIndex, int daysWidth) {
+    bool isStage =
+        ['milestone', 'cycle', 'sequence', 'stage'].contains(stage['type']);
+
     return !isStage &&
         daysWidth < 4 &&
         stage['startDateIndex'] <= centerIndex &&
@@ -332,38 +342,40 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
   /// It's more efficient than rebuilding all stage widgets.
   void _updateLabelsVisibility() {
     _cachedLabels.clear();
-    
+
     final centerIndex = widget.centerItemIndexNotifier.value;
     double currentPos = 0;
-    
+
     for (int index = 0; index < widget.stagesList.length; index++) {
       final stage = widget.stagesList[index];
       final startIndex = stage['startDateIndex'] as int;
       final endIndex = stage['endDateIndex'] as int;
       int daysWidth = endIndex - startIndex + 1;
       double itemWidth = daysWidth * (widget.dayWidth - widget.dayMargin);
-      
+
       // Calculate spacer
       var previousItem = index > 0 ? widget.stagesList[index - 1] : null;
       double spacerWidth = 0;
-      
+
       if (previousItem != null) {
-        int daysBetweenElements = startIndex - (previousItem['endDateIndex'] as int) - 1;
+        int daysBetweenElements =
+            startIndex - (previousItem['endDateIndex'] as int) - 1;
         if (daysBetweenElements > 0) {
-          spacerWidth = daysBetweenElements * (widget.dayWidth - widget.dayMargin);
+          spacerWidth =
+              daysBetweenElements * (widget.dayWidth - widget.dayMargin);
         }
       } else {
         spacerWidth = startIndex * (widget.dayWidth - widget.dayMargin);
       }
-      
+
       currentPos += spacerWidth;
       double stageItemPosition = currentPos;
-      
+
       // Add label if needed
       if (_shouldShowLabel(stage, centerIndex, daysWidth)) {
         _cachedLabels.add(_buildLabel(stage, stageItemPosition));
       }
-      
+
       currentPos += itemWidth;
     }
   }

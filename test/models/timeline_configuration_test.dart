@@ -40,8 +40,8 @@ void main() {
         expect(config.bufferDays, equals(10));
         expect(config.scrollThrottleDuration,
             equals(const Duration(milliseconds: 32)));
-        expect(
-            config.animationDuration, equals(const Duration(milliseconds: 300)));
+        expect(config.animationDuration,
+            equals(const Duration(milliseconds: 300)));
       });
 
       test('allows zero values', () {

@@ -35,13 +35,13 @@ class LazyTimelineViewport extends StatelessWidget {
   /// The [items] list contains all data to be rendered.
   /// The [itemBuilder] creates widgets for visible items.
   const LazyTimelineViewport({
-    Key? key,
+    super.key,
     required this.controller,
     required this.items,
     required this.itemWidth,
     required this.itemMargin,
     required this.itemBuilder,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -75,4 +75,3 @@ class LazyTimelineViewport extends StatelessWidget {
     );
   }
 }
-

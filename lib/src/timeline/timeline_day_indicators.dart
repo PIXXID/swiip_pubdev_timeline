@@ -24,15 +24,12 @@ class TimelineDayIndicators extends StatelessWidget {
 
     // Données de style
     const fontSize = 14.0;
-     // Border radius
+    // Border radius
     BorderRadius borderRadius = const BorderRadius.only(
-        topRight: Radius.circular(10), 
-        bottomRight: Radius.circular(10)
-    );
+        topRight: Radius.circular(10), bottomRight: Radius.circular(10));
 
-    return Column(
-      children: <Widget>[
-        Container(
+    return Column(children: <Widget>[
+      Container(
           width: badgeWidth,
           height: badgeHeight,
           decoration: BoxDecoration(
@@ -41,17 +38,15 @@ class TimelineDayIndicators extends StatelessWidget {
               border: Border.all(color: colors['secondaryText']!)),
           child: Center(
               child: Text(
-                "${day['capeff'].floor()}h",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: colors['primaryText'],
-                  fontSize: fontSize,
-                ),
-              )
-            )
-        ),
-        const SizedBox(height: 4),
-        Container(
+            "${day['capeff'].floor()}h",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: colors['primaryText'],
+              fontSize: fontSize,
+            ),
+          ))),
+      const SizedBox(height: 4),
+      Container(
           width: badgeWidth,
           height: badgeHeight,
           decoration: BoxDecoration(
@@ -60,17 +55,15 @@ class TimelineDayIndicators extends StatelessWidget {
               border: Border.all(color: colors['secondaryText']!)),
           child: Center(
               child: Text(
-                "${day['buseff'].toStringAsFixed(1)}h",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: colors['info'],
-                  fontSize: fontSize,
-                ),
-              )
-            )
-        ),
-        const SizedBox(height: 4),
-        Container(
+            "${day['buseff'].toStringAsFixed(1)}h",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: colors['info'],
+              fontSize: fontSize,
+            ),
+          ))),
+      const SizedBox(height: 4),
+      Container(
           width: badgeWidth,
           height: badgeHeight,
           decoration: BoxDecoration(
@@ -79,17 +72,13 @@ class TimelineDayIndicators extends StatelessWidget {
               border: Border.all(color: colors['primary']!)),
           child: Center(
               child: Text(
-                "${day['compeff'].toStringAsFixed(1)}h",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: colors['info'],
-                  fontSize: fontSize,
-                ),
-              )
-            )
-        ),
-      ]
-    );
-    
+            "${day['compeff'].toStringAsFixed(1)}h",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: colors['info'],
+              fontSize: fontSize,
+            ),
+          ))),
+    ]);
   }
 }

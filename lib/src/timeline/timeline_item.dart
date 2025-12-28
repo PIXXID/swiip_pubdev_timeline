@@ -191,7 +191,8 @@ class _BouncingTimelineItem extends State<TimelineItem>
                                                   heightBuseff == 0 &&
                                                   heightCompeff == 0)
                                               ? Icon(Icons.sunny,
-                                                  color: colors['secondaryBackground'],
+                                                  color: colors[
+                                                      'secondaryBackground'],
                                                   size: 14)
                                               : null))),
                           // Barre de travail affecté (busy)

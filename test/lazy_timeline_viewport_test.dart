@@ -154,7 +154,7 @@ void main() {
                   itemBuilder: (context, index) {
                     builtWidgetCount++;
                     builtIndices.add(index);
-                    return Container(
+                    return SizedBox(
                       key: ValueKey('day_$index'),
                       width: dayWidth - dayMargin,
                       height: 100,
@@ -233,7 +233,7 @@ void main() {
                 itemWidth: dayWidth,
                 itemMargin: dayMargin,
                 itemBuilder: (context, index) {
-                  return Container(
+                  return SizedBox(
                     key: ValueKey('day_$index'),
                     width: dayWidth - dayMargin,
                     height: 100,
@@ -324,7 +324,7 @@ void main() {
               itemMargin: 5.0,
               itemBuilder: (context, index) {
                 buildCount++;
-                return Container(
+                return SizedBox(
                   key: ValueKey('day_$index'),
                   width: 40,
                   height: 100,
@@ -366,7 +366,7 @@ void main() {
               itemWidth: 45.0,
               itemMargin: 5.0,
               itemBuilder: (context, index) {
-                return Container(
+                return SizedBox(
                   key: ValueKey('day_$index'),
                   width: 40,
                   height: 100,
@@ -392,8 +392,7 @@ void main() {
       controller.dispose();
     });
 
-    testWidgets('calculates correct total width',
-        (WidgetTester tester) async {
+    testWidgets('calculates correct total width', (WidgetTester tester) async {
       final totalDays = 100;
       final dayWidth = 45.0;
 
@@ -418,7 +417,7 @@ void main() {
               itemWidth: dayWidth,
               itemMargin: 5.0,
               itemBuilder: (context, index) {
-                return Container(
+                return SizedBox(
                   key: ValueKey('day_$index'),
                   width: 40,
                   height: 100,
@@ -475,7 +474,7 @@ void main() {
                 itemMargin: 5.0,
                 itemBuilder: (context, index) {
                   buildCount++;
-                  return Container(
+                  return SizedBox(
                     key: ValueKey('day_$index'),
                     width: 40,
                     height: 100,
@@ -497,4 +496,3 @@ void main() {
     });
   });
 }
-

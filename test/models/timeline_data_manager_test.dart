@@ -37,8 +37,12 @@ void main() {
               'date': _formatDate(
                   startDate.add(Duration(days: random.nextInt(dayCount)))),
               'nat': ['activity', 'delivrable', 'task'][random.nextInt(3)],
-              'status': ['pending', 'inprogress', 'validated', 'finished']
-                  [random.nextInt(4)],
+              'status': [
+                'pending',
+                'inprogress',
+                'validated',
+                'finished'
+              ][random.nextInt(4)],
             },
           );
 
@@ -74,10 +78,15 @@ void main() {
               final stageDuration = 1 + random.nextInt(10);
               return {
                 'prs_id': 'stage_$i',
-                'type': ['milestone', 'cycle', 'sequence', 'stage']
-                    [random.nextInt(4)],
+                'type': [
+                  'milestone',
+                  'cycle',
+                  'sequence',
+                  'stage'
+                ][random.nextInt(4)],
                 'sdate': _formatDate(stageStart),
-                'edate': _formatDate(stageStart.add(Duration(days: stageDuration))),
+                'edate':
+                    _formatDate(stageStart.add(Duration(days: stageDuration))),
                 'pcolor': '#FF0000',
                 'elm_filtered': <String>[],
               };

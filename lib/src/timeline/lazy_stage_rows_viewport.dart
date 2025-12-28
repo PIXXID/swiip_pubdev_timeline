@@ -59,7 +59,7 @@ class LazyStageRowsViewport extends StatefulWidget {
 
   /// Creates a [LazyStageRowsViewport] with the specified configuration.
   const LazyStageRowsViewport({
-    Key? key,
+    super.key,
     required this.controller,
     required this.stagesRows,
     required this.rowHeight,
@@ -74,7 +74,7 @@ class LazyStageRowsViewport extends StatefulWidget {
     this.openEditStage,
     this.openEditElement,
     this.bufferRows = 2,
-  }) : super(key: key);
+  });
 
   @override
   State<LazyStageRowsViewport> createState() => _LazyStageRowsViewportState();
