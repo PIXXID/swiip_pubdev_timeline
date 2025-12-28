@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/foundation.dart';
+import 'configuration_logger.dart';
 
 /// Loads configuration from JSON files.
 ///
@@ -35,10 +35,10 @@ class ConfigurationLoader {
       // Check file size
       final fileSize = file.lengthSync();
       if (fileSize > maxFileSizeBytes) {
-        debugPrint(
-          'Configuration Warning: File size ($fileSize bytes) exceeds '
-          'recommended maximum ($maxFileSizeBytes bytes). '
-          'Large configuration files may impact startup performance.',
+        ConfigurationLogger.warning(
+          'File Size',
+          'File size ($fileSize bytes) exceeds recommended maximum ($maxFileSizeBytes bytes)',
+          details: 'Large configuration files may impact startup performance',
         );
       }
 
@@ -51,33 +51,33 @@ class ConfigurationLoader {
         if (parsed is Map<String, dynamic>) {
           return parsed;
         } else {
-          debugPrint(
-            'Configuration Error: Expected JSON object at root, '
-            'but got ${parsed.runtimeType}',
+          ConfigurationLogger.error(
+            'JSON Structure',
+            'Expected JSON object at root, but got ${parsed.runtimeType}',
+            details: 'Configuration file must contain a JSON object',
           );
           return null;
         }
       } on FormatException catch (e) {
         // JSON parsing error - try to extract line number
-        final lineInfo = _extractLineNumber(e.message);
-        debugPrint(
-          'Configuration Error: Invalid JSON in $configPath$lineInfo\n'
-          'Error: ${e.message}',
+        final lineNumber = _extractLineNumber(e.message);
+        ConfigurationLogger.jsonParsingError(
+          configPath,
+          e.message,
+          lineNumber: lineNumber,
         );
         return null;
       }
     } on FileSystemException catch (e) {
       // File system error (permissions, etc.)
-      debugPrint(
-        'Configuration Error: Failed to read file $configPath\n'
-        'Error: ${e.message}',
-      );
+      ConfigurationLogger.fileSystemError(configPath, e.message);
       return null;
     } catch (e) {
       // Unexpected error
-      debugPrint(
-        'Configuration Error: Unexpected error loading $configPath\n'
-        'Error: $e',
+      ConfigurationLogger.error(
+        'Unexpected Error',
+        'Failed to load configuration from $configPath',
+        details: e.toString(),
       );
       return null;
     }
@@ -85,14 +85,14 @@ class ConfigurationLoader {
 
   /// Extracts line number information from a FormatException message.
   ///
-  /// Returns a formatted string with line number if available, or empty string.
-  static String _extractLineNumber(String message) {
+  /// Returns the line number if available, or null.
+  static int? _extractLineNumber(String message) {
     // Try to extract line number from error message
     // Format is typically "... at line X column Y"
     final lineMatch = RegExp(r'line (\d+)').firstMatch(message);
     if (lineMatch != null) {
-      return ' at line ${lineMatch.group(1)}';
+      return int.tryParse(lineMatch.group(1)!);
     }
-    return '';
+    return null;
   }
 }

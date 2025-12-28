@@ -1,3 +1,4 @@
+import 'configuration_logger.dart';
 import 'parameter_constraints.dart';
 import 'validation_error.dart';
 
@@ -61,9 +62,31 @@ class ConfigurationValidator {
         if (result.errors.isNotEmpty) {
           errors.addAll(result.errors);
           validatedConfig[paramName] = constraints.defaultValue;
+
+          // Log each validation error
+          for (final error in result.errors) {
+            ConfigurationLogger.validationError(
+              error.parameterName,
+              error.providedValue,
+              error.expectedType,
+              expectedRange: error.expectedRange,
+              reason: error.message,
+            );
+          }
         } else if (result.warnings.isNotEmpty) {
           warnings.addAll(result.warnings);
           validatedConfig[paramName] = constraints.defaultValue;
+
+          // Log each validation warning
+          for (final warning in result.warnings) {
+            ConfigurationLogger.validationWarning(
+              warning.parameterName,
+              warning.providedValue,
+              warning.expectedType,
+              expectedRange: warning.expectedRange,
+              reason: warning.message,
+            );
+          }
         } else {
           validatedConfig[paramName] = value;
         }
