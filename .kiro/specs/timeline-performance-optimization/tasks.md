@@ -269,8 +269,8 @@ Ce plan d'implémentation transforme la conception en tâches concrètes pour op
     - Vérifier que les métriques sont collectées
     - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5_
 
-- [ ] 19. Écrire le test de propriété pour la performance de rendu initial
-  - [ ] 19.1 Implémenter le test de propriété pour le rendu initial
+- [x] 19. Écrire le test de propriété pour la performance de rendu initial
+  - [x] 19.1 Implémenter le test de propriété pour le rendu initial
     - **Property 1: Initial Render Performance**
     - **Validates: Requirements 1.1**
 
