@@ -19,16 +19,16 @@ This implementation plan breaks down the external configuration system into disc
   - *For any* valid TimelineConfiguration, converting to Map and back should produce equivalent configuration
   - **Validates: Requirements 5.5**
 
-- [ ] 2. Implement configuration validation logic
-  - [ ] 2.1 Create ValidationError and ValidationWarning classes
+- [x] 2. Implement configuration validation logic
+  - [x] 2.1 Create ValidationError and ValidationWarning classes
     - Define error/warning models with parameter name, value, expected type/range, and message
     - _Requirements: 3.5, 9.4_
 
-  - [ ] 2.2 Create ParameterConstraints class
+  - [x] 2.2 Create ParameterConstraints class
     - Define constraints for each parameter (type, min, max, default)
     - _Requirements: 2.1-2.8, 3.3_
 
-  - [ ] 2.3 Implement ConfigurationValidator class
+  - [x] 2.3 Implement ConfigurationValidator class
     - Implement `validate()` method that validates all parameters
     - Implement `validateParameter()` for single parameter validation
     - Implement `getDefaultConfiguration()` to return default values
@@ -36,22 +36,22 @@ This implementation plan breaks down the external configuration system into disc
     - Replace invalid parameters with defaults
     - _Requirements: 3.1-3.5, 9.2, 9.5_
 
-  - [ ] 2.4 Write property test for parameter range validation
+  - [x] 2.4 Write property test for parameter range validation
     - **Property 3: Parameter Range Validation**
     - *For any* configuration parameter with out-of-range value, validator should use default
     - **Validates: Requirements 3.1, 3.3**
 
-  - [ ] 2.5 Write property test for type validation
+  - [x] 2.5 Write property test for type validation
     - **Property 4: Type Validation**
     - *For any* parameter with incorrect type, validator should log warning and use default
     - **Validates: Requirements 3.2**
 
-  - [ ] 2.6 Write property test for partial configuration validity
+  - [x] 2.6 Write property test for partial configuration validity
     - **Property 5: Partial Configuration Validity**
     - *For any* config with mixed valid/invalid parameters, valid ones should be preserved
     - **Validates: Requirements 3.4**
 
-  - [ ] 2.7 Write property test for error aggregation
+  - [x] 2.7 Write property test for error aggregation
     - **Property 11: Error Aggregation**
     - *For any* config with multiple invalid parameters, all errors should be reported together
     - **Validates: Requirements 9.5**

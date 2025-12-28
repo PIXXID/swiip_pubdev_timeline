@@ -8,3 +8,6 @@ export 'performance_monitor.dart';
 export 'timeline_controller.dart';
 export 'timeline_data_manager.dart';
 export 'timeline_error_handler.dart';
+export 'validation_error.dart';
+export 'parameter_constraints.dart';
+export 'configuration_validator.dart';
