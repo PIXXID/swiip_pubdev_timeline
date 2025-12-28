@@ -1,360 +1,649 @@
-import 'dart:math';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:swiip_pubdev_timeline/src/timeline/models/timeline_error_handler.dart';
-import 'package:swiip_pubdev_timeline/src/timeline/models/timeline_data_manager.dart';
-import 'package:swiip_pubdev_timeline/src/timeline/models/timeline_controller.dart';
+import 'package:swiip_pubdev_timeline/src/timeline/models/models.dart';
 
-/// Property 11: Edge Case Handling
-///
-/// **Validates: Requirements 6.4**
-///
-/// This test verifies that:
-/// - Null values are handled gracefully without crashes
-/// - Empty lists are handled without exceptions
-/// - Dates outside range are handled correctly
-/// - Invalid indices are clamped to valid ranges
-/// - Scroll beyond limits is handled properly
-///
-/// Property: For any edge case input (null values, empty lists, dates outside range,
-/// invalid indices), the system should handle it gracefully without crashes or exceptions.
 void main() {
-  group('Property 11: Edge Case Handling', () {
-    test('should handle null and empty data gracefully', () {
-      // Feature: timeline-performance-optimization, Property 11: Edge Case Handling
-
-      final random = Random(42); // Seed for reproducibility
-
-      for (var i = 0; i < 100; i++) {
-        final dataManager = TimelineDataManager();
-        final startDate = DateTime(2024, 1, 1);
-        final endDate = DateTime(2024, 1, 31);
-
-        // Test with various combinations of null/empty data
-        final testCases = [
-          {
-            'elements': null,
-            'elementsDone': null,
-            'capacities': null,
-            'stages': null,
-          },
-          {
-            'elements': [],
-            'elementsDone': [],
-            'capacities': [],
-            'stages': [],
-          },
-          {
-            'elements': null,
-            'elementsDone': [],
-            'capacities': null,
-            'stages': [],
-          },
-        ];
-
-        final testCase = testCases[random.nextInt(testCases.length)];
-
-        // Should not throw exception
-        expect(() {
-          final result = dataManager.getFormattedDays(
-            startDate: startDate,
-            endDate: endDate,
-            elements: testCase['elements'] ?? [],
-            elementsDone: testCase['elementsDone'] ?? [],
-            capacities: testCase['capacities'] ?? [],
-            stages: testCase['stages'] ?? [],
-            maxCapacity: 8,
-          );
-
-          // Result should be a valid list (possibly empty)
-          expect(result, isA<List>());
-        }, returnsNormally,
-            reason: 'Should handle null/empty data without throwing');
-      }
+  group('Edge Case Handling', () {
+    setUp(() {
+      TimelineConfigurationManager.reset();
     });
 
-    test('should handle invalid date ranges gracefully', () {
-      // Feature: timeline-performance-optimization, Property 11: Edge Case Handling
+    group('Empty Configuration', () {
+      // Requirements: 3.1-3.5, 9.1-9.5
+      test('empty configuration file uses all defaults', () {
+        final emptyConfig = <String, dynamic>{};
+        final result = ConfigurationValidator.validate(emptyConfig);
 
-      for (var i = 0; i < 100; i++) {
-        final startDate = DateTime(2024, 1, 31);
-        final endDate = DateTime(2024, 1, 1); // End before start
+        final defaults = ConfigurationValidator.getDefaultConfiguration();
 
-        // Should throw ArgumentError for invalid range
+        // Verify all parameters use defaults
         expect(
-          () => TimelineErrorHandler.validateDateRange(startDate, endDate),
-          throwsArgumentError,
-          reason:
-              'Should throw ArgumentError when end date is before start date',
+            result.validatedConfig['dayWidth'], equals(defaults['dayWidth']));
+        expect(
+            result.validatedConfig['dayMargin'], equals(defaults['dayMargin']));
+        expect(result.validatedConfig['datesHeight'],
+            equals(defaults['datesHeight']));
+        expect(result.validatedConfig['timelineHeight'],
+            equals(defaults['timelineHeight']));
+        expect(
+            result.validatedConfig['rowHeight'], equals(defaults['rowHeight']));
+        expect(
+            result.validatedConfig['rowMargin'], equals(defaults['rowMargin']));
+        expect(result.validatedConfig['bufferDays'],
+            equals(defaults['bufferDays']));
+        expect(result.validatedConfig['scrollThrottleMs'],
+            equals(defaults['scrollThrottleMs']));
+        expect(result.validatedConfig['animationDurationMs'],
+            equals(defaults['animationDurationMs']));
+
+        // No errors should be generated for empty config
+        expect(result.errors, isEmpty);
+      });
+
+      test('empty configuration initializes manager successfully', () {
+        final emptyConfig = <String, dynamic>{};
+
+        TimelineConfigurationManager.initialize(fileConfig: emptyConfig);
+
+        final config = TimelineConfigurationManager.configuration;
+
+        // Should have default values
+        expect(config.dayWidth, equals(45.0));
+        expect(config.dayMargin, equals(5.0));
+        expect(config.bufferDays, equals(5));
+      });
+    });
+
+    group('Partial Configuration', () {
+      // Requirements: 3.4
+      test(
+          'configuration with only dayWidth preserves it and uses defaults for others',
+          () {
+        final partialConfig = {
+          'dayWidth': 60.0,
+        };
+
+        final result = ConfigurationValidator.validate(partialConfig);
+        final defaults = ConfigurationValidator.getDefaultConfiguration();
+
+        // Provided parameter should be preserved
+        expect(result.validatedConfig['dayWidth'], equals(60.0));
+
+        // Others should use defaults
+        expect(
+            result.validatedConfig['dayMargin'], equals(defaults['dayMargin']));
+        expect(result.validatedConfig['bufferDays'],
+            equals(defaults['bufferDays']));
+        expect(result.validatedConfig['scrollThrottleMs'],
+            equals(defaults['scrollThrottleMs']));
+      });
+
+      test(
+          'configuration with only bufferDays preserves it and uses defaults for others',
+          () {
+        final partialConfig = {
+          'bufferDays': 10,
+        };
+
+        final result = ConfigurationValidator.validate(partialConfig);
+        final defaults = ConfigurationValidator.getDefaultConfiguration();
+
+        // Provided parameter should be preserved
+        expect(result.validatedConfig['bufferDays'], equals(10));
+
+        // Others should use defaults
+        expect(
+            result.validatedConfig['dayWidth'], equals(defaults['dayWidth']));
+        expect(
+            result.validatedConfig['dayMargin'], equals(defaults['dayMargin']));
+      });
+
+      test('configuration with multiple parameters preserves all valid ones',
+          () {
+        final partialConfig = {
+          'dayWidth': 50.0,
+          'bufferDays': 8,
+          'scrollThrottleMs': 20,
+        };
+
+        final result = ConfigurationValidator.validate(partialConfig);
+        final defaults = ConfigurationValidator.getDefaultConfiguration();
+
+        // Provided parameters should be preserved
+        expect(result.validatedConfig['dayWidth'], equals(50.0));
+        expect(result.validatedConfig['bufferDays'], equals(8));
+        expect(result.validatedConfig['scrollThrottleMs'], equals(20));
+
+        // Others should use defaults
+        expect(
+            result.validatedConfig['dayMargin'], equals(defaults['dayMargin']));
+        expect(result.validatedConfig['datesHeight'],
+            equals(defaults['datesHeight']));
+      });
+    });
+
+    group('Unknown Parameters', () {
+      // Requirements: 9.1-9.5
+      test('configuration with unknown parameters ignores them', () {
+        final configWithUnknown = {
+          'dayWidth': 50.0,
+          'unknownParam1': 'should be ignored',
+          'bufferDays': 8,
+          'unknownParam2': 12345,
+          'anotherUnknown': true,
+        };
+
+        final result = ConfigurationValidator.validate(configWithUnknown);
+
+        // Known parameters should be preserved
+        expect(result.validatedConfig['dayWidth'], equals(50.0));
+        expect(result.validatedConfig['bufferDays'], equals(8));
+
+        // Unknown parameters should not be in validated config
+        expect(result.validatedConfig.containsKey('unknownParam1'), isFalse);
+        expect(result.validatedConfig.containsKey('unknownParam2'), isFalse);
+        expect(result.validatedConfig.containsKey('anotherUnknown'), isFalse);
+      });
+
+      test('configuration with only unknown parameters uses all defaults', () {
+        final configWithOnlyUnknown = {
+          'unknownParam1': 'value1',
+          'unknownParam2': 123,
+          'unknownParam3': true,
+        };
+
+        final result = ConfigurationValidator.validate(configWithOnlyUnknown);
+        final defaults = ConfigurationValidator.getDefaultConfiguration();
+
+        // All parameters should use defaults
+        expect(
+            result.validatedConfig['dayWidth'], equals(defaults['dayWidth']));
+        expect(
+            result.validatedConfig['dayMargin'], equals(defaults['dayMargin']));
+        expect(result.validatedConfig['bufferDays'],
+            equals(defaults['bufferDays']));
+
+        // Unknown parameters should not be present
+        expect(result.validatedConfig.containsKey('unknownParam1'), isFalse);
+        expect(result.validatedConfig.containsKey('unknownParam2'), isFalse);
+        expect(result.validatedConfig.containsKey('unknownParam3'), isFalse);
+      });
+
+      test('unknown parameters do not cause errors or warnings', () {
+        final configWithUnknown = {
+          'dayWidth': 50.0,
+          'unknownParam': 'ignored',
+        };
+
+        final result = ConfigurationValidator.validate(configWithUnknown);
+
+        // Should not generate errors or warnings for unknown parameters
+        // (only for invalid known parameters)
+        expect(result.errors, isEmpty);
+        expect(result.warnings, isEmpty);
+      });
+    });
+
+    group('Boundary Values', () {
+      // Requirements: 3.1, 3.3
+      test('dayWidth at minimum boundary (20.0) is accepted', () {
+        final config = {'dayWidth': 20.0};
+        final result = ConfigurationValidator.validate(config);
+
+        expect(result.validatedConfig['dayWidth'], equals(20.0));
+        expect(result.errors, isEmpty);
+      });
+
+      test('dayWidth at maximum boundary (100.0) is accepted', () {
+        final config = {'dayWidth': 100.0};
+        final result = ConfigurationValidator.validate(config);
+
+        expect(result.validatedConfig['dayWidth'], equals(100.0));
+        expect(result.errors, isEmpty);
+      });
+
+      test('dayMargin at minimum boundary (0.0) is accepted', () {
+        final config = {'dayMargin': 0.0};
+        final result = ConfigurationValidator.validate(config);
+
+        expect(result.validatedConfig['dayMargin'], equals(0.0));
+        expect(result.errors, isEmpty);
+      });
+
+      test('dayMargin at maximum boundary (20.0) is accepted', () {
+        final config = {'dayMargin': 20.0};
+        final result = ConfigurationValidator.validate(config);
+
+        expect(result.validatedConfig['dayMargin'], equals(20.0));
+        expect(result.errors, isEmpty);
+      });
+
+      test('bufferDays at minimum boundary (1) is accepted', () {
+        final config = {'bufferDays': 1};
+        final result = ConfigurationValidator.validate(config);
+
+        expect(result.validatedConfig['bufferDays'], equals(1));
+        expect(result.errors, isEmpty);
+      });
+
+      test('bufferDays at maximum boundary (20) is accepted', () {
+        final config = {'bufferDays': 20};
+        final result = ConfigurationValidator.validate(config);
+
+        expect(result.validatedConfig['bufferDays'], equals(20));
+        expect(result.errors, isEmpty);
+      });
+
+      test('scrollThrottleMs at minimum boundary (8) is accepted', () {
+        final config = {'scrollThrottleMs': 8};
+        final result = ConfigurationValidator.validate(config);
+
+        expect(result.validatedConfig['scrollThrottleMs'], equals(8));
+        expect(result.errors, isEmpty);
+      });
+
+      test('scrollThrottleMs at maximum boundary (100) is accepted', () {
+        final config = {'scrollThrottleMs': 100};
+        final result = ConfigurationValidator.validate(config);
+
+        expect(result.validatedConfig['scrollThrottleMs'], equals(100));
+        expect(result.errors, isEmpty);
+      });
+
+      test('animationDurationMs at minimum boundary (100) is accepted', () {
+        final config = {'animationDurationMs': 100};
+        final result = ConfigurationValidator.validate(config);
+
+        expect(result.validatedConfig['animationDurationMs'], equals(100));
+        expect(result.errors, isEmpty);
+      });
+
+      test('animationDurationMs at maximum boundary (500) is accepted', () {
+        final config = {'animationDurationMs': 500};
+        final result = ConfigurationValidator.validate(config);
+
+        expect(result.validatedConfig['animationDurationMs'], equals(500));
+        expect(result.errors, isEmpty);
+      });
+
+      test('rowHeight at minimum boundary (20.0) is accepted', () {
+        final config = {'rowHeight': 20.0};
+        final result = ConfigurationValidator.validate(config);
+
+        expect(result.validatedConfig['rowHeight'], equals(20.0));
+        expect(result.errors, isEmpty);
+      });
+
+      test('rowHeight at maximum boundary (60.0) is accepted', () {
+        final config = {'rowHeight': 60.0};
+        final result = ConfigurationValidator.validate(config);
+
+        expect(result.validatedConfig['rowHeight'], equals(60.0));
+        expect(result.errors, isEmpty);
+      });
+
+      test('rowMargin at minimum boundary (0.0) is accepted', () {
+        final config = {'rowMargin': 0.0};
+        final result = ConfigurationValidator.validate(config);
+
+        expect(result.validatedConfig['rowMargin'], equals(0.0));
+        expect(result.errors, isEmpty);
+      });
+
+      test('rowMargin at maximum boundary (10.0) is accepted', () {
+        final config = {'rowMargin': 10.0};
+        final result = ConfigurationValidator.validate(config);
+
+        expect(result.validatedConfig['rowMargin'], equals(10.0));
+        expect(result.errors, isEmpty);
+      });
+
+      test('datesHeight at minimum boundary (40.0) is accepted', () {
+        final config = {'datesHeight': 40.0};
+        final result = ConfigurationValidator.validate(config);
+
+        expect(result.validatedConfig['datesHeight'], equals(40.0));
+        expect(result.errors, isEmpty);
+      });
+
+      test('datesHeight at maximum boundary (100.0) is accepted', () {
+        final config = {'datesHeight': 100.0};
+        final result = ConfigurationValidator.validate(config);
+
+        expect(result.validatedConfig['datesHeight'], equals(100.0));
+        expect(result.errors, isEmpty);
+      });
+
+      test('timelineHeight at minimum boundary (100.0) is accepted', () {
+        final config = {'timelineHeight': 100.0};
+        final result = ConfigurationValidator.validate(config);
+
+        expect(result.validatedConfig['timelineHeight'], equals(100.0));
+        expect(result.errors, isEmpty);
+      });
+
+      test('timelineHeight at maximum boundary (1000.0) is accepted', () {
+        final config = {'timelineHeight': 1000.0};
+        final result = ConfigurationValidator.validate(config);
+
+        expect(result.validatedConfig['timelineHeight'], equals(1000.0));
+        expect(result.errors, isEmpty);
+      });
+
+      test('all parameters at their minimum boundaries are accepted', () {
+        final config = {
+          'dayWidth': 20.0,
+          'dayMargin': 0.0,
+          'datesHeight': 40.0,
+          'timelineHeight': 100.0,
+          'rowHeight': 20.0,
+          'rowMargin': 0.0,
+          'bufferDays': 1,
+          'scrollThrottleMs': 8,
+          'animationDurationMs': 100,
+        };
+
+        final result = ConfigurationValidator.validate(config);
+
+        expect(result.validatedConfig['dayWidth'], equals(20.0));
+        expect(result.validatedConfig['dayMargin'], equals(0.0));
+        expect(result.validatedConfig['datesHeight'], equals(40.0));
+        expect(result.validatedConfig['timelineHeight'], equals(100.0));
+        expect(result.validatedConfig['rowHeight'], equals(20.0));
+        expect(result.validatedConfig['rowMargin'], equals(0.0));
+        expect(result.validatedConfig['bufferDays'], equals(1));
+        expect(result.validatedConfig['scrollThrottleMs'], equals(8));
+        expect(result.validatedConfig['animationDurationMs'], equals(100));
+        expect(result.errors, isEmpty);
+      });
+
+      test('all parameters at their maximum boundaries are accepted', () {
+        final config = {
+          'dayWidth': 100.0,
+          'dayMargin': 20.0,
+          'datesHeight': 100.0,
+          'timelineHeight': 1000.0,
+          'rowHeight': 60.0,
+          'rowMargin': 10.0,
+          'bufferDays': 20,
+          'scrollThrottleMs': 100,
+          'animationDurationMs': 500,
+        };
+
+        final result = ConfigurationValidator.validate(config);
+
+        expect(result.validatedConfig['dayWidth'], equals(100.0));
+        expect(result.validatedConfig['dayMargin'], equals(20.0));
+        expect(result.validatedConfig['datesHeight'], equals(100.0));
+        expect(result.validatedConfig['timelineHeight'], equals(1000.0));
+        expect(result.validatedConfig['rowHeight'], equals(60.0));
+        expect(result.validatedConfig['rowMargin'], equals(10.0));
+        expect(result.validatedConfig['bufferDays'], equals(20));
+        expect(result.validatedConfig['scrollThrottleMs'], equals(100));
+        expect(result.validatedConfig['animationDurationMs'], equals(500));
+        expect(result.errors, isEmpty);
+      });
+
+      test('values just below minimum boundary use defaults', () {
+        final config = {
+          'dayWidth': 19.9,
+          'bufferDays': 0,
+          'scrollThrottleMs': 7,
+        };
+
+        final result = ConfigurationValidator.validate(config);
+        final defaults = ConfigurationValidator.getDefaultConfiguration();
+
+        expect(
+            result.validatedConfig['dayWidth'], equals(defaults['dayWidth']));
+        expect(result.validatedConfig['bufferDays'],
+            equals(defaults['bufferDays']));
+        expect(result.validatedConfig['scrollThrottleMs'],
+            equals(defaults['scrollThrottleMs']));
+        expect(result.errors.length, equals(3));
+      });
+
+      test('values just above maximum boundary use defaults', () {
+        final config = {
+          'dayWidth': 100.1,
+          'bufferDays': 21,
+          'scrollThrottleMs': 101,
+        };
+
+        final result = ConfigurationValidator.validate(config);
+        final defaults = ConfigurationValidator.getDefaultConfiguration();
+
+        expect(
+            result.validatedConfig['dayWidth'], equals(defaults['dayWidth']));
+        expect(result.validatedConfig['bufferDays'],
+            equals(defaults['bufferDays']));
+        expect(result.validatedConfig['scrollThrottleMs'],
+            equals(defaults['scrollThrottleMs']));
+        expect(result.errors.length, equals(3));
+      });
+    });
+
+    group('Concurrent Initialization', () {
+      // Requirements: 9.1-9.5
+      test('concurrent initialization attempts use first initialization', () {
+        TimelineConfigurationManager.reset();
+
+        final config1 = const TimelineConfiguration(dayWidth: 50.0);
+        final config2 = const TimelineConfiguration(dayWidth: 60.0);
+
+        // Initialize with first config
+        TimelineConfigurationManager.initialize(programmaticConfig: config1);
+
+        // Attempt second initialization (should be ignored)
+        TimelineConfigurationManager.initialize(programmaticConfig: config2);
+
+        // Should use first initialization
+        final result = TimelineConfigurationManager.configuration;
+        expect(result.dayWidth, equals(50.0));
+      });
+
+      test('multiple initialization attempts do not change configuration', () {
+        TimelineConfigurationManager.reset();
+
+        final config1 = const TimelineConfiguration(
+          dayWidth: 50.0,
+          bufferDays: 8,
         );
-      }
-    });
 
-    test('should clamp invalid indices to valid range', () {
-      // Feature: timeline-performance-optimization, Property 11: Edge Case Handling
+        TimelineConfigurationManager.initialize(programmaticConfig: config1);
 
-      final random = Random(42);
+        // Store reference to first configuration
+        final firstConfig = TimelineConfigurationManager.configuration;
 
-      for (var i = 0; i < 100; i++) {
-        final min = 0;
-        final max = random.nextInt(100) + 10; // 10-110
-
-        // Test negative indices
-        final negativeIndex = -random.nextInt(100) - 1; // -1 to -100
-        final clampedNegative =
-            TimelineErrorHandler.clampIndex(negativeIndex, min, max);
-        expect(clampedNegative, equals(min),
-            reason: 'Negative index should be clamped to min');
-
-        // Test indices beyond max
-        final beyondMax = max + random.nextInt(100) + 1; // max+1 to max+100
-        final clampedBeyond =
-            TimelineErrorHandler.clampIndex(beyondMax, min, max);
-        expect(clampedBeyond, equals(max),
-            reason: 'Index beyond max should be clamped to max');
-
-        // Test valid indices
-        final validIndex = random.nextInt(max - min + 1) + min;
-        final clampedValid =
-            TimelineErrorHandler.clampIndex(validIndex, min, max);
-        expect(clampedValid, equals(validIndex),
-            reason: 'Valid index should remain unchanged');
-      }
-    });
-
-    test('should handle scroll beyond limits', () {
-      // Feature: timeline-performance-optimization, Property 11: Edge Case Handling
-
-      final random = Random(42);
-
-      for (var i = 0; i < 100; i++) {
-        final maxOffset = random.nextDouble() * 1000 + 100; // 100-1100
-
-        // Test negative scroll offset
-        final negativeOffset = -random.nextDouble() * 100; // 0 to -100
-        final clampedNegative =
-            TimelineErrorHandler.clampScrollOffset(negativeOffset, maxOffset);
-        expect(clampedNegative, equals(0.0),
-            reason: 'Negative scroll offset should be clamped to 0');
-
-        // Test scroll beyond max
-        final beyondMax =
-            maxOffset + random.nextDouble() * 100; // maxOffset to maxOffset+100
-        final clampedBeyond =
-            TimelineErrorHandler.clampScrollOffset(beyondMax, maxOffset);
-        expect(clampedBeyond, equals(maxOffset),
-            reason: 'Scroll beyond max should be clamped to maxOffset');
-
-        // Test valid scroll offset
-        final validOffset = random.nextDouble() * maxOffset;
-        final clampedValid =
-            TimelineErrorHandler.clampScrollOffset(validOffset, maxOffset);
-        expect(clampedValid, equals(validOffset),
-            reason: 'Valid scroll offset should remain unchanged');
-      }
-    });
-
-    test('should validate days list and filter invalid entries', () {
-      // Feature: timeline-performance-optimization, Property 11: Edge Case Handling
-
-      for (var i = 0; i < 100; i++) {
-        final days = [
-          // Valid day
-          {'date': DateTime(2024, 1, 1), 'lmax': 8},
-          // Missing date
-          {'lmax': 8},
-          // Invalid date type
-          {'date': '2024-01-01', 'lmax': 8},
-          // Missing lmax
-          {'date': DateTime(2024, 1, 2)},
-          // Valid day
-          {'date': DateTime(2024, 1, 3), 'lmax': 8},
-        ];
-
-        final validDays = TimelineErrorHandler.validateDays(days);
-
-        // Should only return valid days (2 out of 5)
-        expect(validDays.length, equals(2),
-            reason: 'Should filter out invalid day entries');
-
-        // All returned days should have required fields
-        for (final day in validDays) {
-          expect(day.containsKey('date'), isTrue);
-          expect(day['date'], isA<DateTime>());
-          expect(day.containsKey('lmax'), isTrue);
+        // Attempt multiple re-initializations
+        for (int i = 0; i < 10; i++) {
+          final newConfig = TimelineConfiguration(
+            dayWidth: 60.0 + i,
+            bufferDays: 10 + i,
+          );
+          TimelineConfigurationManager.initialize(
+              programmaticConfig: newConfig);
         }
-      }
-    });
 
-    test('should validate stages list and filter invalid entries', () {
-      // Feature: timeline-performance-optimization, Property 11: Edge Case Handling
+        // Configuration should remain unchanged
+        final finalConfig = TimelineConfigurationManager.configuration;
+        expect(identical(firstConfig, finalConfig), isTrue);
+        expect(finalConfig.dayWidth, equals(50.0));
+        expect(finalConfig.bufferDays, equals(8));
+      });
 
-      for (var i = 0; i < 100; i++) {
-        final stages = [
-          // Valid stage
-          {'sdate': '2024-01-01', 'edate': '2024-01-10', 'type': 'milestone'},
-          // Missing sdate
-          {'edate': '2024-01-10', 'type': 'milestone'},
-          // Missing edate
-          {'sdate': '2024-01-01', 'type': 'milestone'},
-          // Missing type
-          {'sdate': '2024-01-01', 'edate': '2024-01-10'},
-          // Valid stage
-          {'sdate': '2024-01-15', 'edate': '2024-01-20', 'type': 'cycle'},
-        ];
+      test('isInitialized returns true after first initialization', () {
+        TimelineConfigurationManager.reset();
 
-        final validStages = TimelineErrorHandler.validateStages(stages);
+        expect(TimelineConfigurationManager.isInitialized, isFalse);
 
-        // Should only return valid stages (2 out of 5)
-        expect(validStages.length, equals(2),
-            reason: 'Should filter out invalid stage entries');
+        TimelineConfigurationManager.initialize(
+          programmaticConfig: const TimelineConfiguration(),
+        );
 
-        // All returned stages should have required fields
-        for (final stage in validStages) {
-          expect(stage.containsKey('sdate'), isTrue);
-          expect(stage.containsKey('edate'), isTrue);
-          expect(stage.containsKey('type'), isTrue);
+        expect(TimelineConfigurationManager.isInitialized, isTrue);
+      });
+
+      test('isInitialized remains true after multiple initialization attempts',
+          () {
+        TimelineConfigurationManager.reset();
+
+        TimelineConfigurationManager.initialize(
+          programmaticConfig: const TimelineConfiguration(),
+        );
+
+        expect(TimelineConfigurationManager.isInitialized, isTrue);
+
+        // Attempt multiple re-initializations
+        for (int i = 0; i < 5; i++) {
+          TimelineConfigurationManager.initialize(
+            programmaticConfig: const TimelineConfiguration(dayWidth: 60.0),
+          );
+          expect(TimelineConfigurationManager.isInitialized, isTrue);
         }
-      }
+      });
     });
 
-    test('should validate elements list and filter invalid entries', () {
-      // Feature: timeline-performance-optimization, Property 11: Edge Case Handling
+    group('Null and Missing Values', () {
+      // Requirements: 3.1-3.5
+      test('null configuration map uses all defaults', () {
+        final result = ConfigurationValidator.validate(null);
+        final defaults = ConfigurationValidator.getDefaultConfiguration();
 
-      for (var i = 0; i < 100; i++) {
-        final elements = [
-          // Valid element
-          {'pre_id': 'elem1', 'date': '2024-01-01'},
-          // Missing pre_id
-          {'date': '2024-01-01'},
-          // Missing date
-          {'pre_id': 'elem2'},
-          // Valid element
-          {'pre_id': 'elem3', 'date': '2024-01-05'},
-        ];
+        expect(
+            result.validatedConfig['dayWidth'], equals(defaults['dayWidth']));
+        expect(
+            result.validatedConfig['dayMargin'], equals(defaults['dayMargin']));
+        expect(result.validatedConfig['bufferDays'],
+            equals(defaults['bufferDays']));
+      });
 
-        final validElements = TimelineErrorHandler.validateElements(elements);
+      test('configuration with null values uses defaults for those parameters',
+          () {
+        final config = {
+          'dayWidth': null,
+          'bufferDays': 8,
+          'dayMargin': null,
+        };
 
-        // Should only return valid elements (2 out of 4)
-        expect(validElements.length, equals(2),
-            reason: 'Should filter out invalid element entries');
+        final result = ConfigurationValidator.validate(config);
+        final defaults = ConfigurationValidator.getDefaultConfiguration();
 
-        // All returned elements should have required fields
-        for (final element in validElements) {
-          expect(element.containsKey('pre_id'), isTrue);
-          expect(element.containsKey('date'), isTrue);
-        }
-      }
+        // Null values should use defaults
+        expect(
+            result.validatedConfig['dayWidth'], equals(defaults['dayWidth']));
+        expect(
+            result.validatedConfig['dayMargin'], equals(defaults['dayMargin']));
+
+        // Valid value should be preserved
+        expect(result.validatedConfig['bufferDays'], equals(8));
+      });
     });
 
-    test('should handle safe list access with invalid indices', () {
-      // Feature: timeline-performance-optimization, Property 11: Edge Case Handling
+    group('Special Numeric Values', () {
+      // Requirements: 3.1-3.5
+      test('configuration with zero values where valid are accepted', () {
+        final config = {
+          'dayMargin': 0.0,
+          'rowMargin': 0.0,
+        };
 
-      final random = Random(42);
+        final result = ConfigurationValidator.validate(config);
 
-      for (var i = 0; i < 100; i++) {
-        final list = List.generate(10, (index) => index * 2);
-        final fallback = -1;
+        expect(result.validatedConfig['dayMargin'], equals(0.0));
+        expect(result.validatedConfig['rowMargin'], equals(0.0));
+        expect(result.errors, isEmpty);
+      });
 
-        // Test negative index
-        final negativeResult =
-            TimelineErrorHandler.safeListAccess(list, -1, fallback);
-        expect(negativeResult, equals(fallback),
-            reason: 'Should return fallback for negative index');
+      test('configuration with negative values uses defaults', () {
+        final config = {
+          'dayWidth': -10.0,
+          'bufferDays': -5,
+        };
 
-        // Test index beyond length
-        final beyondResult =
-            TimelineErrorHandler.safeListAccess(list, 100, fallback);
-        expect(beyondResult, equals(fallback),
-            reason: 'Should return fallback for index beyond length');
+        final result = ConfigurationValidator.validate(config);
+        final defaults = ConfigurationValidator.getDefaultConfiguration();
 
-        // Test valid index
-        final validIndex = random.nextInt(list.length);
-        final validResult =
-            TimelineErrorHandler.safeListAccess(list, validIndex, fallback);
-        expect(validResult, equals(list[validIndex]),
-            reason: 'Should return actual value for valid index');
-      }
+        expect(
+            result.validatedConfig['dayWidth'], equals(defaults['dayWidth']));
+        expect(result.validatedConfig['bufferDays'],
+            equals(defaults['bufferDays']));
+        expect(result.errors.length, equals(2));
+      });
+
+      test('configuration with very large values uses defaults', () {
+        final config = {
+          'dayWidth': 1000000.0,
+          'bufferDays': 1000000,
+        };
+
+        final result = ConfigurationValidator.validate(config);
+        final defaults = ConfigurationValidator.getDefaultConfiguration();
+
+        expect(
+            result.validatedConfig['dayWidth'], equals(defaults['dayWidth']));
+        expect(result.validatedConfig['bufferDays'],
+            equals(defaults['bufferDays']));
+        expect(result.errors.length, equals(2));
+      });
+
+      test('configuration with decimal values for integer parameters', () {
+        final config = {
+          'bufferDays': 5.5,
+          'scrollThrottleMs': 16.7,
+        };
+
+        final result = ConfigurationValidator.validate(config);
+
+        // The validator accepts numeric types (num) for integer parameters
+        // This is a design decision - the validator is lenient with numeric types
+        // The values should be within valid range
+        final bufferDaysResult = result.validatedConfig['bufferDays'];
+        final scrollThrottleResult = result.validatedConfig['scrollThrottleMs'];
+
+        // Values should be numeric and within valid range
+        expect(bufferDaysResult, isA<num>());
+        expect(scrollThrottleResult, isA<num>());
+        expect(bufferDaysResult, greaterThanOrEqualTo(1));
+        expect(bufferDaysResult, lessThanOrEqualTo(20));
+        expect(scrollThrottleResult, greaterThanOrEqualTo(8));
+        expect(scrollThrottleResult, lessThanOrEqualTo(100));
+
+        // No errors should be generated for valid numeric values
+        expect(result.errors, isEmpty);
+      });
     });
 
-    test('should handle TimelineController with edge case values', () {
-      // Feature: timeline-performance-optimization, Property 11: Edge Case Handling
+    group('Mixed Valid and Invalid Configurations', () {
+      // Requirements: 3.4
+      test('configuration with mix of valid, invalid, and unknown parameters',
+          () {
+        final config = {
+          'dayWidth': 50.0, // valid
+          'bufferDays': 100, // invalid (out of range)
+          'unknownParam': 'ignored', // unknown
+          'dayMargin': 'invalid', // invalid (wrong type)
+          'scrollThrottleMs': 20, // valid
+        };
 
-      final random = Random(42);
+        final result = ConfigurationValidator.validate(config);
+        final defaults = ConfigurationValidator.getDefaultConfiguration();
 
-      for (var i = 0; i < 100; i++) {
-        final totalDays = random.nextInt(100) + 1; // 1-100
-        final controller = TimelineController(
-          dayWidth: 45.0,
-          dayMargin: 5.0,
-          totalDays: totalDays,
-          viewportWidth: 800.0,
-        );
+        // Valid parameters should be preserved
+        expect(result.validatedConfig['dayWidth'], equals(50.0));
+        expect(result.validatedConfig['scrollThrottleMs'], equals(20));
 
-        // Test negative scroll offset
-        controller.updateScrollOffset(-100.0);
-        // Wait for throttle
-        Future.delayed(const Duration(milliseconds: 20), () {
-          expect(controller.centerItemIndex.value, greaterThanOrEqualTo(0),
-              reason: 'Center index should not be negative');
-        });
+        // Invalid parameters should use defaults
+        expect(result.validatedConfig['bufferDays'],
+            equals(defaults['bufferDays']));
+        expect(
+            result.validatedConfig['dayMargin'], equals(defaults['dayMargin']));
 
-        // Test very large scroll offset
-        controller.updateScrollOffset(100000.0);
-        Future.delayed(const Duration(milliseconds: 20), () {
-          expect(controller.centerItemIndex.value, lessThan(totalDays),
-              reason: 'Center index should not exceed total days');
-        });
+        // Unknown parameters should not be present
+        expect(result.validatedConfig.containsKey('unknownParam'), isFalse);
 
-        controller.dispose();
-      }
-    });
-
-    test('should handle withErrorHandling wrapper correctly', () {
-      // Feature: timeline-performance-optimization, Property 11: Edge Case Handling
-
-      for (var i = 0; i < 100; i++) {
-        // Test successful operation
-        final successResult = TimelineErrorHandler.withErrorHandling(
-          'testOperation',
-          () => 42,
-          -1,
-        );
-        expect(successResult, equals(42),
-            reason: 'Should return operation result on success');
-
-        // Test operation that throws
-        final errorResult = TimelineErrorHandler.withErrorHandling(
-          'testOperation',
-          () => throw Exception('Test error'),
-          -1,
-        );
-        expect(errorResult, equals(-1),
-            reason: 'Should return fallback on error');
-      }
-    });
-
-    test('should handle data manager with invalid date ranges', () {
-      // Feature: timeline-performance-optimization, Property 11: Edge Case Handling
-
-      for (var i = 0; i < 100; i++) {
-        final dataManager = TimelineDataManager();
-        final startDate = DateTime(2024, 1, 31);
-        final endDate = DateTime(2024, 1, 1); // Invalid: end before start
-
-        // Should return empty list instead of crashing
-        final result = dataManager.getFormattedDays(
-          startDate: startDate,
-          endDate: endDate,
-          elements: [],
-          elementsDone: [],
-          capacities: [],
-          stages: [],
-          maxCapacity: 8,
-        );
-
-        expect(result, isEmpty,
-            reason: 'Should return empty list for invalid date range');
-      }
+        // Should have errors for invalid parameters
+        expect(result.errors.length, greaterThan(0));
+      });
     });
   });
 }

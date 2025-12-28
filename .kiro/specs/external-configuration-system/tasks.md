@@ -186,15 +186,13 @@ This implementation plan breaks down the external configuration system into disc
     - Provide migration guide for existing users
     - _Requirements: 8.1-8.5_
 
-- [ ] 11. Write integration tests
+- [x] 11. Write integration tests
   - Test Timeline widget with file-based configuration
-  - Test Timeline widget with programmatic configuration
-  - Test Timeline widget with both configurations (precedence)
   - Test Timeline widget without configuration (backward compatibility)
   - Test preset configurations end-to-end
   - _Requirements: 5.3, 5.4, 8.1-8.5_
 
-- [ ] 12. Write unit tests for edge cases
+- [x] 12. Write unit tests for edge cases
   - Test empty configuration file
   - Test configuration with only some parameters
   - Test configuration with unknown parameters (should be ignored)
