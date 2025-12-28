@@ -27,7 +27,6 @@ import 'package:swiip_pubdev_timeline/src/platform/platform_language.dart';
 class Timeline extends StatefulWidget {
   const Timeline(
       {super.key,
-      required this.height,
       required this.colors,
       required this.mode,
       required this.infos,
@@ -41,7 +40,6 @@ class Timeline extends StatefulWidget {
       this.openEditElement,
       this.updateCurrentDate});
 
-  final double height;
   final Map<String, Color> colors;
   final String mode;
   final dynamic infos;
@@ -352,14 +350,10 @@ class _Timeline extends State<Timeline> {
       isUniqueProject = uniquePrjIds.length > 1 ? false : true;
     }
 
-    // Personnalise la taile de l'affichage
-    timelineHeight = widget.height;
-    timelineHeightContainer = timelineHeight - datesHeight;
+    // timelineHeight will be calculated from available space in build()
+    // timelineHeightContainer will be calculated dynamically
 
-    // Calcule la position de la scrollbar
-    scrollbarHeight = timelineHeightContainer *
-        timelineHeightContainer /
-        (stagesRows.length * rowHeight);
+    // Scrollbar position will be calculated dynamically in build()
     scrollbarOffset = 0;
 
     // Écoute le scroll vertical pour ajuster la scrollbar
@@ -369,18 +363,12 @@ class _Timeline extends State<Timeline> {
         userScrollOffset = _controllerVerticalStages.position.pixels;
       }
 
-      setState(() {
-        double currentVerticalScrollOffset =
-            _controllerVerticalStages.position.pixels;
-        // Hauteur de la barre de scroll
-        scrollbarHeight = timelineHeightContainer *
-            timelineHeightContainer /
-            (stagesRows.length * rowHeight);
-        // Position de la bar selon le scroll (en tenant compte de la hauteur de la barre)
-        scrollbarOffset = currentVerticalScrollOffset *
-            (timelineHeightContainer - (scrollbarHeight * 2)) /
-            (stagesRows.length * rowHeight);
-      });
+      // Scrollbar position will be updated in build() based on available height
+      if (mounted) {
+        setState(() {
+          // Just trigger rebuild, calculations will happen in build()
+        });
+      }
     });
 
     // Exécuter une seule fois après la construction du widget
@@ -498,8 +486,13 @@ class _Timeline extends State<Timeline> {
     // On vérifie si on est pas en bas du scroll pour éviter l'effet rebond du scroll en bas
     double totalRowsHeight = (rowHeight + rowMargin) * stagesRows.length;
 
+    // Get current viewport height from controller if available
+    double currentViewportHeight = _controllerVerticalStages.hasClients
+        ? _controllerVerticalStages.position.viewportDimension
+        : timelineHeightContainer;
+
     debugPrint(
-        '📊 Heights: higherRowHeight=$higherRowHeight, totalRowsHeight=$totalRowsHeight, userScrollOffset=$userScrollOffset');
+        '📊 Heights: higherRowHeight=$higherRowHeight, totalRowsHeight=$totalRowsHeight, userScrollOffset=$userScrollOffset, viewportHeight=$currentViewportHeight');
 
     // On active le scroll automatique si :
     // - L'utilisateur n'a PAS scrollé manuellement (userScrollOffset == null)
@@ -539,7 +532,7 @@ class _Timeline extends State<Timeline> {
     // On vérifie si l'utilisateur a fait un scroll manuel pour éviter de le perdre
     // On ne reprend le scroll automatique que si le stage/élément le plus haut est plus bas que le scroll de l'utilisateur
     if (enableAutoScroll) {
-      if (totalRowsHeight - higherRowHeight > timelineHeight / 2) {
+      if (totalRowsHeight - higherRowHeight > currentViewportHeight / 2) {
         // On déclenche le scroll
         debugPrint('🎯 Scrolling to: $higherRowHeight');
         _scrollV(higherRowHeight);
@@ -596,6 +589,9 @@ class _Timeline extends State<Timeline> {
                 ((screenWidth - (dayWidth - dayMargin)) / 2);
             double screenCenter = (screenWidth / 2);
 
+            // Calculate dynamic heights based on available space
+            final double availableHeight = constraints.maxHeight;
+
             return Stack(
               // Trait rouge indiquant le jour en cours
               children: [
@@ -603,7 +599,9 @@ class _Timeline extends State<Timeline> {
                   left: screenCenter,
                   top: 45,
                   child: Container(
-                    height: timelineHeightContainer,
+                    height: availableHeight -
+                        datesHeight -
+                        200, // Adjust for dates and bottom controls
                     width: 1,
                     decoration: BoxDecoration(color: widget.colors['error']),
                   ),
@@ -623,9 +621,12 @@ class _Timeline extends State<Timeline> {
                           ),
                         ),
                         child: LayoutBuilder(
-                          builder: (context, constraints) {
+                          builder: (context, innerConstraints) {
                             // Use available height from constraints
-                            final availableHeight = constraints.maxHeight;
+                            final availableHeight = innerConstraints.maxHeight;
+
+                            // Update timelineHeightContainer for scrollbar calculations
+                            timelineHeightContainer = availableHeight;
 
                             return SizedBox(
                               width: screenWidth,
@@ -773,7 +774,9 @@ class _Timeline extends State<Timeline> {
                                                           verticalScrollController:
                                                               _controllerVerticalStages,
                                                           viewportHeight:
-                                                              timelineHeightContainer,
+                                                              availableHeight -
+                                                                  datesHeight -
+                                                                  140, // Subtract dates and timeline heights
                                                           openEditStage: widget
                                                               .openEditStage,
                                                           openEditElement: widget
@@ -982,14 +985,50 @@ class _Timeline extends State<Timeline> {
                     child: SizedBox(
                       width: 8,
                       child: LayoutBuilder(
-                        builder: (context, constraints) {
+                        builder: (context, scrollbarConstraints) {
                           // Use available height from constraints
-                          final availableHeight = constraints.maxHeight;
+                          final availableScrollbarHeight =
+                              scrollbarConstraints.maxHeight;
+
+                          // Calculate scrollbar dimensions dynamically
+                          final totalContentHeight =
+                              stagesRows.length * rowHeight;
+                          final viewportHeight = availableScrollbarHeight;
+
+                          // Calculate scrollbar height proportionally
+                          final calculatedScrollbarHeight =
+                              totalContentHeight > 0
+                                  ? (viewportHeight *
+                                          viewportHeight /
+                                          totalContentHeight)
+                                      .clamp(20.0, viewportHeight)
+                                  : 0.0;
+
+                          // Calculate scrollbar offset based on scroll position
+                          final currentScrollOffset =
+                              _controllerVerticalStages.hasClients
+                                  ? _controllerVerticalStages.position.pixels
+                                  : 0.0;
+                          final maxScrollExtent =
+                              _controllerVerticalStages.hasClients
+                                  ? _controllerVerticalStages
+                                      .position.maxScrollExtent
+                                  : 1.0;
+
+                          final calculatedScrollbarOffset = maxScrollExtent > 0
+                              ? (currentScrollOffset / maxScrollExtent) *
+                                  (viewportHeight - calculatedScrollbarHeight)
+                              : 0.0;
+
                           // Ensure scrollbar height doesn't exceed available space
                           final clampedScrollbarHeight =
-                              scrollbarHeight.clamp(0.0, availableHeight);
-                          final clampedScrollbarOffset = scrollbarOffset.clamp(
-                              0.0, availableHeight - clampedScrollbarHeight);
+                              calculatedScrollbarHeight.clamp(
+                                  0.0, availableScrollbarHeight);
+                          final clampedScrollbarOffset =
+                              calculatedScrollbarOffset.clamp(
+                                  0.0,
+                                  availableScrollbarHeight -
+                                      clampedScrollbarHeight);
 
                           return Stack(children: [
                             Positioned(

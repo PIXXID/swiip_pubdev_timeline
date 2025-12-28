@@ -52,7 +52,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 /// ### Basic Timeline
 /// ```dart
 /// Timeline(
-///   height: 600,
 ///   colors: myColors,
 ///   mode: 'chronology',
 ///   infos: myInfos,
@@ -115,8 +114,7 @@ class MyApp extends StatelessWidget {
 
     // Timeline dimensions
     // Note: The timeline automatically handles responsive sizing and
-    // lazy rendering. Width is now 100% of parent container.
-    const double height = 420;
+    // lazy rendering. Both width and height are now 100% of parent container.
 
     // ## APP DEFAULT
     return MaterialApp(
@@ -153,7 +151,6 @@ class MyApp extends StatelessWidget {
                       bottom: true,
                       minimum: const EdgeInsets.all(16.0),
                       child: Timeline(
-                          height: height,
                           colors: colors,
                           mode: 'chronology',
                           infos: timelineData['infos'],

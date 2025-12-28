@@ -73,7 +73,6 @@ void main() {
                 width: 800,
                 height: 600,
                 child: Timeline(
-                  height: 600,
                   colors: testColors,
                   mode: 'chronology',
                   infos: infos,
@@ -152,7 +151,6 @@ void main() {
                 width: 800,
                 height: 600,
                 child: Timeline(
-                  height: 600,
                   colors: testColors,
                   mode: 'chronology',
                   infos: infos,
@@ -229,7 +227,6 @@ void main() {
                 width: 800,
                 height: 600,
                 child: Timeline(
-                  height: 600,
                   colors: testColors,
                   mode: 'chronology',
                   infos: infos,
