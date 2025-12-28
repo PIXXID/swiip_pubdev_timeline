@@ -62,6 +62,7 @@ void main() {
       for (int iteration = 0; iteration < 100; iteration++) {
         final params = generateRandomParams();
         final scrollOffset = params['scrollOffset'] as double;
+        final viewportWidth = params['viewportWidth'] as double;
         final dayWidth = params['dayWidth'] as double;
         final dayMargin = params['dayMargin'] as double;
         final totalDays = params['totalDays'] as int;
@@ -74,6 +75,7 @@ void main() {
           10,
           (_) => calculateCenterDateIndex(
             scrollOffset: scrollOffset,
+            viewportWidth: viewportWidth,
             dayWidth: validDayWidth,
             dayMargin: dayMargin,
             totalDays: totalDays,
@@ -179,6 +181,7 @@ void main() {
       for (int iteration = 0; iteration < 100; iteration++) {
         final params = generateRandomParams();
         final scrollOffset = params['scrollOffset'] as double;
+        final viewportWidth = params['viewportWidth'] as double;
         final dayWidth = params['dayWidth'] as double;
         final dayMargin = params['dayMargin'] as double;
         final totalDays = params['totalDays'] as int;
@@ -200,6 +203,7 @@ void main() {
           // 1. Calculate center date index
           final centerDateIndex = calculateCenterDateIndex(
             scrollOffset: scrollOffset,
+            viewportWidth: viewportWidth,
             dayWidth: validDayWidth,
             dayMargin: dayMargin,
             totalDays: totalDays,
@@ -257,6 +261,7 @@ void main() {
       for (int iteration = 0; iteration < 100; iteration++) {
         final params = generateRandomParams();
         final scrollOffset = params['scrollOffset'] as double;
+        final viewportWidth = params['viewportWidth'] as double;
         final dayWidth = params['dayWidth'] as double;
         final dayMargin = params['dayMargin'] as double;
         final totalDays = params['totalDays'] as int;
@@ -266,6 +271,7 @@ void main() {
 
         // Store original values
         final originalScrollOffset = scrollOffset;
+        final originalViewportWidth = viewportWidth;
         final originalDayWidth = validDayWidth;
         final originalDayMargin = dayMargin;
         final originalTotalDays = totalDays;
@@ -273,6 +279,7 @@ void main() {
         // Call the function
         calculateCenterDateIndex(
           scrollOffset: scrollOffset,
+          viewportWidth: viewportWidth,
           dayWidth: validDayWidth,
           dayMargin: dayMargin,
           totalDays: totalDays,
@@ -280,6 +287,7 @@ void main() {
 
         // Verify parameters haven't changed
         expect(scrollOffset, equals(originalScrollOffset));
+        expect(viewportWidth, equals(originalViewportWidth));
         expect(validDayWidth, equals(originalDayWidth));
         expect(dayMargin, equals(originalDayMargin));
         expect(totalDays, equals(originalTotalDays));

@@ -6,6 +6,7 @@ void main() {
     test('calcule correctement l\'index au centre du viewport', () {
       // Arrange
       const scrollOffset = 1000.0;
+      const viewportWidth = 800.0;
       const dayWidth = 45.0;
       const dayMargin = 5.0;
       const totalDays = 100;
@@ -13,14 +14,16 @@ void main() {
       // Act
       final result = calculateCenterDateIndex(
         scrollOffset: scrollOffset,
+        viewportWidth: viewportWidth,
         dayWidth: dayWidth,
         dayMargin: dayMargin,
         totalDays: totalDays,
       );
 
       // Assert
-      // centerIndex = 1000 / (45 - 5) = 1000 / 40 = 25
-      expect(result, equals(25));
+      // centerPosition = 1000 + 400 = 1400
+      // centerIndex = 1400 / (45 - 5) = 1400 / 40 = 35
+      expect(result, equals(35));
     });
 
     test('clamp l\'index à 0 quand le calcul donne un nombre négatif', () {
@@ -36,15 +39,15 @@ void main() {
       // Act
       final result = calculateCenterDateIndex(
         scrollOffset: scrollOffset,
-        
+        viewportWidth: viewportWidth,
         dayWidth: dayWidth,
         dayMargin: dayMargin,
         totalDays: totalDays,
       );
 
       // Assert
-      // centerPosition = 0 + 380 = 380
-      // centerIndex = 380 / 40 = 9.5 ≈ 10
+      // centerPosition = 0 + 400 = 400
+      // centerIndex = 400 / 40 = 10
       expect(result, greaterThanOrEqualTo(0));
       expect(result, equals(10));
     });
@@ -62,7 +65,7 @@ void main() {
       // Act
       final result = calculateCenterDateIndex(
         scrollOffset: scrollOffset,
-        
+        viewportWidth: viewportWidth,
         dayWidth: dayWidth,
         dayMargin: dayMargin,
         totalDays: totalDays,
@@ -88,7 +91,7 @@ void main() {
         10,
         (_) => calculateCenterDateIndex(
           scrollOffset: scrollOffset,
-          
+          viewportWidth: viewportWidth,
           dayWidth: dayWidth,
           dayMargin: dayMargin,
           totalDays: totalDays,
@@ -97,10 +100,9 @@ void main() {
 
       // Assert - Tous les résultats doivent être identiques
       expect(results.toSet().length, equals(1));
-      // Formule: firstElementMargin = (800 - 40) / 2 = 380
-      //          centerPosition = 500 + 380 = 880
-      //          centerIndex = 880 / 40 = 22
-      expect(results.first, equals(22));
+      // centerPosition = 500 + 400 = 900
+      // centerIndex = 900 / 40 = 22.5 ≈ 23
+      expect(results.first, equals(23));
     });
 
     test('gère correctement les positions de scroll au début', () {
@@ -116,14 +118,14 @@ void main() {
       // Act
       final result = calculateCenterDateIndex(
         scrollOffset: scrollOffset,
-        
+        viewportWidth: viewportWidth,
         dayWidth: dayWidth,
         dayMargin: dayMargin,
         totalDays: totalDays,
       );
 
       // Assert
-      expect(result, equals(10)); // (0 + 380) / 40 = 9.5 ≈ 10
+      expect(result, equals(10)); // (0 + 400) / 40 = 10
     });
 
     test('gère correctement différentes largeurs de jour', () {
@@ -139,15 +141,15 @@ void main() {
       // Act
       final result = calculateCenterDateIndex(
         scrollOffset: scrollOffset,
-        
+        viewportWidth: viewportWidth,
         dayWidth: dayWidth,
         dayMargin: dayMargin,
         totalDays: totalDays,
       );
 
       // Assert
-      // centerPosition = 1000 + 375 = 1375
-      // centerIndex = 1375 / (60 - 10) = 1375 / 50 = 27.5 ≈ 28
+      // centerPosition = 1000 + 400 = 1400
+      // centerIndex = 1400 / (60 - 10) = 1400 / 50 = 28
       expect(result, equals(28));
     });
   });
@@ -550,7 +552,7 @@ void main() {
       // Act
       calculateCenterDateIndex(
         scrollOffset: scrollOffset,
-        
+        viewportWidth: viewportWidth,
         dayWidth: dayWidth,
         dayMargin: dayMargin,
         totalDays: totalDays,
@@ -558,7 +560,7 @@ void main() {
 
       // Assert - Les paramètres ne doivent pas avoir changé
       expect(scrollOffset, equals(1000.0));
-      expect(firstElementMargin, equals(380.0));
+      expect(viewportWidth, equals(800.0));
       expect(dayWidth, equals(45.0));
       expect(dayMargin, equals(5.0));
       expect(totalDays, equals(100));

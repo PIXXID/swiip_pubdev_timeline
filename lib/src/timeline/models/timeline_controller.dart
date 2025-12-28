@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'visible_range.dart';
+import '../scroll_calculations.dart';
 
 /// Controller for managing timeline state with granular notifications.
 ///
@@ -122,12 +123,17 @@ class TimelineController extends ChangeNotifier {
       return;
     }
 
-    // Calculate which item is at the center of the viewport
-    // The scrollOffset already accounts for the visual padding (firstElementMargin)
-    // applied in the SingleChildScrollView, so we don't add it here
-    final newIndex = (scrollOffset.value / (dayWidth - dayMargin)).round();
+    // Use the pure calculation function
+    final newIndex = calculateCenterDateIndex(
+      scrollOffset: scrollOffset.value,
+      viewportWidth: _viewportWidth ?? 0.0,
+      dayWidth: dayWidth,
+      dayMargin: dayMargin,
+      totalDays: totalDays,
+    );
+
     if (newIndex != centerItemIndex.value) {
-      centerItemIndex.value = newIndex.clamp(0, totalDays - 1);
+      centerItemIndex.value = newIndex;
     }
   }
 

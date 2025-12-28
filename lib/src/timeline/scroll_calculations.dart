@@ -18,18 +18,19 @@
 ///
 /// La formule utilisée est:
 /// ```
-/// centerIndex = scrollOffset / (dayWidth - dayMargin)
+/// centerPosition = scrollOffset + (viewportWidth / 2)
+/// centerIndex = centerPosition / (dayWidth - dayMargin)
 /// ```
 ///
-/// Le scrollOffset représente déjà la position réelle dans la timeline,
-/// car le padding visuel (firstElementMargin) est appliqué dans le
-/// SingleChildScrollView. On n'a donc pas besoin de l'ajouter ici.
+/// Le scrollOffset représente la position du bord gauche du viewport.
+/// On ajoute viewportWidth/2 pour obtenir la position du centre du viewport.
 ///
 /// Le résultat est ensuite clamped à la plage valide [0, totalDays-1].
 ///
 /// ## Paramètres
 ///
 /// - [scrollOffset]: Position actuelle du scroll horizontal (en pixels)
+/// - [viewportWidth]: Largeur du viewport visible (en pixels)
 /// - [dayWidth]: Largeur d'un jour dans la timeline (en pixels)
 /// - [dayMargin]: Marge entre les jours (en pixels)
 /// - [totalDays]: Nombre total de jours dans la timeline
@@ -43,6 +44,7 @@
 /// ```dart
 /// final centerIndex = calculateCenterDateIndex(
 ///   scrollOffset: 1000.0,
+///   viewportWidth: 800.0,
 ///   dayWidth: 45.0,
 ///   dayMargin: 5.0,
 ///   totalDays: 100,
@@ -55,22 +57,25 @@
 /// Requirements 2.1, 2.2, 2.3
 int calculateCenterDateIndex({
   required double scrollOffset,
+  required double viewportWidth,
   required double dayWidth,
   required double dayMargin,
   required int totalDays,
 }) {
   // Validation des paramètres en mode debug
-  assert(scrollOffset >= 0, 'scrollOffset must be non-negative');
+  // Note: scrollOffset can be negative during overscroll/bounce effects
+  assert(viewportWidth > 0, 'viewportWidth must be positive');
   assert(dayWidth > dayMargin, 'dayWidth must be greater than dayMargin');
   assert(totalDays >= 0, 'totalDays must be non-negative');
 
   // Handle empty timeline
   if (totalDays == 0) return 0;
 
+  // Calcul de la position du centre du viewport
+  final centerPosition = scrollOffset + (viewportWidth / 2);
+
   // Calcul de l'index du jour au centre
-  // Le scrollOffset représente déjà la position dans la timeline
-  // (le padding visuel est géré par le SingleChildScrollView)
-  final centerIndex = (scrollOffset / (dayWidth - dayMargin)).round();
+  final centerIndex = (centerPosition / (dayWidth - dayMargin)).round();
 
   // Clamp à la plage valide [0, totalDays-1]
   return centerIndex.clamp(0, totalDays - 1);

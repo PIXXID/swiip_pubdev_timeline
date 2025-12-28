@@ -442,8 +442,12 @@ class _Timeline extends State<Timeline> {
         TimelineErrorHandler.clampIndex(dateIndex, 0, days.length - 1);
 
     if (safeIndex >= 0) {
-      // On calcule la valeur du scroll en fonction de la date
-      double scroll = safeIndex * (dayWidth - dayMargin);
+      // Calculate the scroll offset to center the specified date
+      // The formula is: scroll = dateIndex * (dayWidth - dayMargin) - (viewportWidth / 2)
+      // This positions the date at the center of the viewport
+      final targetPosition = safeIndex * (dayWidth - dayMargin);
+      final viewportWidth = _timelineController.viewportWidth.value;
+      double scroll = targetPosition - (viewportWidth / 2);
 
       // Clamp scroll offset to valid range using ScrollController's maxScrollExtent
       final maxScroll = _controllerTimeline.position.maxScrollExtent;
@@ -491,6 +495,7 @@ class _Timeline extends State<Timeline> {
     // 1. Calcul du dateIndex central
     final centerDateIndex = calculateCenterDateIndex(
       scrollOffset: currentScrollOffset,
+      viewportWidth: _timelineController.viewportWidth.value,
       dayWidth: dayWidth,
       dayMargin: dayMargin,
       totalDays: days.length,
