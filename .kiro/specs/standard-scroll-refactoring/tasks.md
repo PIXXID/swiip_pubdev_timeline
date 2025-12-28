@@ -71,17 +71,17 @@ This implementation plan breaks down the refactoring of the Timeline component t
     - Verify callback called with correct date string (YYYY-MM-DD format)
     - Run 100 iterations
 
-- [ ] 4. Checkpoint - Ensure all tests pass
+- [x] 4. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 5. Verify vertical scrolling remains independent
-  - [ ] 5.1 Ensure vertical scroll controller still works
+- [x] 5. Verify vertical scrolling remains independent
+  - [x] 5.1 Ensure vertical scroll controller still works
     - Verify vertical scroll listener still updates scrollbar position
     - Verify auto-scroll behavior preserved
     - Verify manual vertical scroll detection still works
     - _Requirements: 3.1, 3.2, 3.4_
 
-  - [ ] 5.2 Write property test for vertical scroll position updates
+  - [x] 5.2 Write property test for vertical scroll position updates
     - **Property 2: Vertical Scroll Position Updates**
     - **Validates: Requirements 3.1, 3.2**
     - Generate random vertical scroll offsets (0 to maxScrollExtent)
@@ -89,7 +89,7 @@ This implementation plan breaks down the refactoring of the Timeline component t
     - Verify _controllerVerticalStages.offset matches expected value
     - Run 100 iterations
 
-  - [ ] 5.3 Write property test for auto-scroll behavior
+  - [x] 5.3 Write property test for auto-scroll behavior
     - **Property 3: Auto-Scroll Behavior**
     - **Validates: Requirements 3.4**
     - Generate random horizontal scroll positions that change center item
@@ -97,7 +97,7 @@ This implementation plan breaks down the refactoring of the Timeline component t
     - Verify vertical position updates to show highest visible stage row
     - Run 100 iterations
 
-  - [ ] 5.4 Write property test for scroll independence
+  - [x] 5.4 Write property test for scroll independence
     - **Property 8: Scroll Independence**
     - **Validates: Requirements 6.5**
     - Generate random sequences of horizontal and vertical scroll operations
