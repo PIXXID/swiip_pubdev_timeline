@@ -5,7 +5,6 @@ import 'package:intl/intl.dart';
 
 // Widgets
 import 'timeline_day_info.dart';
-import 'timeline_day_indicators.dart';
 import 'timeline_day_date.dart';
 import 'lazy_timeline_viewport.dart';
 import 'lazy_stage_rows_viewport.dart';
@@ -28,7 +27,6 @@ class Timeline extends StatefulWidget {
   const Timeline(
       {super.key,
       required this.colors,
-      required this.mode,
       required this.infos,
       required this.elements,
       required this.elementsDone,
@@ -41,7 +39,6 @@ class Timeline extends StatefulWidget {
       this.updateCurrentDate});
 
   final Map<String, Color> colors;
-  final String mode;
   final dynamic infos;
   final dynamic elements;
   final dynamic elementsDone;
@@ -452,7 +449,6 @@ class _Timeline extends State<Timeline> {
 
   // Perform auto-scroll with optimized calculations
   void _performAutoScroll(int centerItemIndex, double oldSliderValue) {
-    if (widget.mode != 'chronology') return;
     if (stagesRows.isEmpty) return; // Guard against empty stages
     if (!_controllerVerticalStages.hasClients) {
       return; // Guard against no scroll controller
@@ -617,7 +613,7 @@ class _Timeline extends State<Timeline> {
                           border: Border(
                             bottom: BorderSide(
                                 color: widget.colors['secondaryBackground']!,
-                                width: widget.mode == 'chronology' ? 1.5 : 0),
+                                width: 1.5),
                           ),
                         ),
                         child: LayoutBuilder(
@@ -952,102 +948,75 @@ class _Timeline extends State<Timeline> {
                         ])),
                   ]),
                 ),
-                if (widget.mode == 'effort')
-                  Positioned.fill(
-                    left: 1,
-                    top: 35,
-                    child: Align(
-                        alignment: Alignment.centerLeft,
-                        // INDICATEURS
-                        child: ValueListenableBuilder<int>(
-                          valueListenable: _timelineController.centerItemIndex,
-                          builder: (context, centerItemIndex, _) {
-                            // Guard against empty days or invalid index
-                            if (days.isEmpty ||
-                                centerItemIndex >= days.length) {
-                              return const SizedBox.shrink();
-                            }
-                            return TimelineDayIndicators(
-                                day: days[centerItemIndex],
-                                colors: widget.colors,
-                                elements: widget.elements);
-                          },
-                        )),
-                  ),
-                if (widget.mode == 'chronology')
-                  // SCROLLBAR CUSTOM
-                  // Scrollbar personnalisée (Positionné à droite)
-                  Positioned(
-                    right: 0,
-                    top: 65,
-                    bottom:
-                        100, // Use bottom constraint instead of fixed height
-                    child: SizedBox(
-                      width: 8,
-                      child: LayoutBuilder(
-                        builder: (context, scrollbarConstraints) {
-                          // Use available height from constraints
-                          final availableScrollbarHeight =
-                              scrollbarConstraints.maxHeight;
+                // SCROLLBAR CUSTOM
+                // Scrollbar personnalisée (Positionné à droite)
+                Positioned(
+                  right: 0,
+                  top: 65,
+                  bottom: 100, // Use bottom constraint instead of fixed height
+                  child: SizedBox(
+                    width: 8,
+                    child: LayoutBuilder(
+                      builder: (context, scrollbarConstraints) {
+                        // Use available height from constraints
+                        final availableScrollbarHeight =
+                            scrollbarConstraints.maxHeight;
 
-                          // Calculate scrollbar dimensions dynamically
-                          final totalContentHeight =
-                              stagesRows.length * rowHeight;
-                          final viewportHeight = availableScrollbarHeight;
+                        // Calculate scrollbar dimensions dynamically
+                        final totalContentHeight =
+                            stagesRows.length * rowHeight;
+                        final viewportHeight = availableScrollbarHeight;
 
-                          // Calculate scrollbar height proportionally
-                          final calculatedScrollbarHeight =
-                              totalContentHeight > 0
-                                  ? (viewportHeight *
-                                          viewportHeight /
-                                          totalContentHeight)
-                                      .clamp(20.0, viewportHeight)
-                                  : 0.0;
+                        // Calculate scrollbar height proportionally
+                        final calculatedScrollbarHeight = totalContentHeight > 0
+                            ? (viewportHeight *
+                                    viewportHeight /
+                                    totalContentHeight)
+                                .clamp(20.0, viewportHeight)
+                            : 0.0;
 
-                          // Calculate scrollbar offset based on scroll position
-                          final currentScrollOffset =
-                              _controllerVerticalStages.hasClients
-                                  ? _controllerVerticalStages.position.pixels
-                                  : 0.0;
-                          final maxScrollExtent =
-                              _controllerVerticalStages.hasClients
-                                  ? _controllerVerticalStages
-                                      .position.maxScrollExtent
-                                  : 1.0;
+                        // Calculate scrollbar offset based on scroll position
+                        final currentScrollOffset =
+                            _controllerVerticalStages.hasClients
+                                ? _controllerVerticalStages.position.pixels
+                                : 0.0;
+                        final maxScrollExtent = _controllerVerticalStages
+                                .hasClients
+                            ? _controllerVerticalStages.position.maxScrollExtent
+                            : 1.0;
 
-                          final calculatedScrollbarOffset = maxScrollExtent > 0
-                              ? (currentScrollOffset / maxScrollExtent) *
-                                  (viewportHeight - calculatedScrollbarHeight)
-                              : 0.0;
+                        final calculatedScrollbarOffset = maxScrollExtent > 0
+                            ? (currentScrollOffset / maxScrollExtent) *
+                                (viewportHeight - calculatedScrollbarHeight)
+                            : 0.0;
 
-                          // Ensure scrollbar height doesn't exceed available space
-                          final clampedScrollbarHeight =
-                              calculatedScrollbarHeight.clamp(
-                                  0.0, availableScrollbarHeight);
-                          final clampedScrollbarOffset =
-                              calculatedScrollbarOffset.clamp(
-                                  0.0,
-                                  availableScrollbarHeight -
-                                      clampedScrollbarHeight);
+                        // Ensure scrollbar height doesn't exceed available space
+                        final clampedScrollbarHeight = calculatedScrollbarHeight
+                            .clamp(0.0, availableScrollbarHeight);
+                        final clampedScrollbarOffset =
+                            calculatedScrollbarOffset.clamp(
+                                0.0,
+                                availableScrollbarHeight -
+                                    clampedScrollbarHeight);
 
-                          return Stack(children: [
-                            Positioned(
-                                right: 0,
-                                top: clampedScrollbarOffset,
-                                child: Container(
-                                  width: 4,
-                                  height: clampedScrollbarHeight,
-                                  decoration: BoxDecoration(
-                                    color: widget.colors['secondaryBackground']!
-                                        .withAlpha(120),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ))
-                          ]);
-                        },
-                      ),
+                        return Stack(children: [
+                          Positioned(
+                              right: 0,
+                              top: clampedScrollbarOffset,
+                              child: Container(
+                                width: 4,
+                                height: clampedScrollbarHeight,
+                                decoration: BoxDecoration(
+                                  color: widget.colors['secondaryBackground']!
+                                      .withAlpha(120),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ))
+                        ]);
+                      },
                     ),
                   ),
+                ),
                 // MESSAGE SI AUCUNE ACTIVITE
                 if (timelineIsEmpty)
                   Positioned.fill(

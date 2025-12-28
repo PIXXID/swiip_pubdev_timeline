@@ -218,10 +218,7 @@ The configuration is **automatically loaded** when the Timeline widget is initia
 3. Use the Timeline widget normally - configuration loads automatically:
    ```dart
    Timeline(
-     width: 800,
-     height: 600,
      colors: myColors,
-     mode: 'chronology',
      infos: myInfos,
      elements: myElements,
      // ... other parameters

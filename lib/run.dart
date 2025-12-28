@@ -53,7 +53,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 /// ```dart
 /// Timeline(
 ///   colors: myColors,
-///   mode: 'chronology',
 ///   infos: myInfos,
 ///   elements: myElements,
 ///   elementsDone: [],
@@ -134,8 +133,6 @@ class MyApp extends StatelessWidget {
                   };
                 }
 
-                // Mode 'effort' / 'chronology'
-                //
                 // The Timeline widget automatically optimizes rendering based on
                 // the data size. With the current implementation:
                 // - Only visible days are rendered (plus a 5-day buffer)
@@ -152,7 +149,6 @@ class MyApp extends StatelessWidget {
                       minimum: const EdgeInsets.all(16.0),
                       child: Timeline(
                           colors: colors,
-                          mode: 'chronology',
                           infos: timelineData['infos'],
                           elements: timelineData['elements'],
                           elementsDone: timelineData['elementsDone'],

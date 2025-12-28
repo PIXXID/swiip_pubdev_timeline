@@ -124,7 +124,6 @@ void main() {
                 height: 600,
                 child: Timeline(
                   colors: testColors,
-                  mode: 'chronology',
                   infos: infos,
                   elements: elements,
                   elementsDone: [],
@@ -219,7 +218,6 @@ void main() {
                   height: 600,
                   child: Timeline(
                     colors: testColors,
-                    mode: 'chronology',
                     infos: infos,
                     elements: elements,
                     elementsDone: [],
@@ -319,7 +317,6 @@ void main() {
                 height: 600,
                 child: Timeline(
                   colors: testColors,
-                  mode: 'chronology',
                   infos: infos,
                   elements: elements,
                   elementsDone: [],

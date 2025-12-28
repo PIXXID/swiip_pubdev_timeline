@@ -32,15 +32,12 @@ flutter pub get
 import 'package:swiip_pubdev_timeline/timeline.dart';
 
 Timeline(
-  width: 800,
-  height: 600,
   colors: {
     'primaryText': Colors.black,
     'secondaryText': Colors.grey,
     'accent1': Colors.blue,
     // ... other color definitions
   },
-  mode: 'chronology',
   infos: {
     'startDate': '2024-01-01',
     'endDate': '2024-12-31',

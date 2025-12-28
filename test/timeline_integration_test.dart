@@ -140,7 +140,6 @@ void main() {
                   'error': Colors.red,
                   'warning': Colors.orange,
                 },
-                mode: 'effort',
                 infos: infos,
                 elements: [],
                 elementsDone: [],
@@ -320,7 +319,6 @@ void main() {
                   'error': Colors.red,
                   'warning': Colors.orange,
                 },
-                mode: 'effort',
                 infos: infos,
                 elements: [], // Empty
                 elementsDone: [],
