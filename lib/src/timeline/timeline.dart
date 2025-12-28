@@ -318,10 +318,18 @@ class _Timeline extends State<Timeline> {
       bufferDays: _config.bufferDays,
     );
 
-    // Écoute du scroll pour :
-    // - calculer quel élément est au centre
+    // Écoute du scroll horizontal pour :
+    // - calculer quel élément est au centre (calcul pur)
     // - mettre à jour le TimelineController avec la position de scroll
-    // - Si mode stages/éléments, scroll vertical automatique
+    // - déclencher l'auto-scroll vertical si nécessaire (action séparée)
+    //
+    // Architecture de scroll refactorisée :
+    // 1. CALCUL (_calculateScrollState): Fonctions pures qui calculent les valeurs
+    //    sans modifier l'état ni déclencher d'actions
+    // 2. ACTION (_applyAutoScroll): Fonction séparée qui applique le scroll vertical
+    //    basé sur les calculs
+    //
+    // Cette séparation calcul/action améliore la testabilité et la maintenabilité.
     _controllerTimeline.addListener(() {
       _performanceMonitor.startOperation('scroll_update');
 

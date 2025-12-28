@@ -75,7 +75,31 @@ Timeline(
 
 The timeline widget includes several performance optimizations that work automatically:
 
-#### 1. TimelineController
+#### 1. Scroll Architecture
+
+The timeline uses a **calculation-based scroll architecture** that separates concerns:
+
+**Pure Calculation Functions** (`scroll_calculations.dart`):
+- `calculateCenterDateIndex()`: Calculates which day is at the viewport center
+- `calculateTargetVerticalOffset()`: Calculates the vertical scroll position for a given date
+- `shouldEnableAutoScroll()`: Determines if auto-scroll should be enabled
+
+These functions are **pure** (same inputs = same outputs) with no side effects, making them:
+- Easy to test in isolation
+- Predictable and maintainable
+- Optimizable by the compiler
+
+**Action Functions** (in `timeline.dart`):
+- `_calculateScrollState()`: Orchestrates all calculations and returns a `ScrollState` object
+- `_applyAutoScroll()`: Applies the calculated scroll changes to the ScrollController
+
+This separation ensures:
+- Clear responsibility boundaries
+- Better testability
+- No circular dependencies between calculation and action
+- Native Flutter scrolling for all user gestures
+
+#### 2. TimelineController
 
 The `TimelineController` manages scroll state with throttling:
 
@@ -85,7 +109,17 @@ The `TimelineController` manages scroll state with throttling:
 // and manages the visible range for lazy rendering
 ```
 
-#### 2. TimelineDataManager
+#### 3. TimelineController
+
+The `TimelineController` manages scroll state with throttling:
+
+```dart
+// Controller is created internally by the Timeline widget
+// It automatically throttles scroll updates to ~60 FPS
+// and manages the visible range for lazy rendering
+```
+
+#### 4. TimelineDataManager
 
 Data formatting is cached automatically:
 
@@ -95,7 +129,17 @@ Data formatting is cached automatically:
 // This significantly improves performance for large datasets
 ```
 
-#### 3. Lazy Rendering
+#### 5. TimelineDataManager
+
+Data formatting is cached automatically:
+
+```dart
+// The Timeline widget uses TimelineDataManager internally
+// Formatted data is cached and only recomputed when input changes
+// This significantly improves performance for large datasets
+```
+
+#### 6. Lazy Rendering
 
 Only visible items are rendered:
 
@@ -105,7 +149,17 @@ Only visible items are rendered:
 // This keeps memory usage low even with hundreds of days
 ```
 
-#### 4. Standard Scrolling
+#### 7. Lazy Rendering
+
+Only visible items are rendered:
+
+```dart
+// The Timeline automatically calculates which items are visible
+// and renders only those items plus a configurable buffer
+// This keeps memory usage low even with hundreds of days
+```
+
+#### 8. Standard Scrolling
 
 The timeline uses native Flutter scrolling mechanisms:
 

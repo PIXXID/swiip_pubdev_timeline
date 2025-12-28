@@ -1,3 +1,27 @@
+## 1.3.0 - 29/12/2024
+
+### Refactoring
+
+* **Scroll Calculation Architecture Refactoring**: Major internal refactoring of the scroll mechanism to separate calculation from action.
+  
+  **Changes**:
+  - Extracted pure calculation functions into `scroll_calculations.dart`:
+    - `calculateCenterDateIndex()`: Calculates which day is at viewport center
+    - `calculateTargetVerticalOffset()`: Calculates vertical scroll position
+    - `shouldEnableAutoScroll()`: Determines if auto-scroll should be enabled
+  - Created `ScrollState` data class to encapsulate scroll state
+  - Separated calculation (`_calculateScrollState()`) from action (`_applyAutoScroll()`)
+  - Improved scroll direction detection logic for better auto-scroll behavior
+  
+  **Benefits**:
+  - Pure functions are easily testable in isolation
+  - Clear separation of concerns (calculation vs action)
+  - No circular dependencies between scroll state and calculations
+  - Better maintainability and code clarity
+  - Improved auto-scroll accuracy with direction-aware logic
+  
+  **Migration**: No breaking changes. This is an internal refactoring that maintains all existing functionality and API compatibility.
+
 ## 1.2.0 - 28/12/2024
 
 ### Breaking Changes

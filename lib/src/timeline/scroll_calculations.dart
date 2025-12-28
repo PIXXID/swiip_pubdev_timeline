@@ -9,6 +9,7 @@
 /// - No side effects (no state modification, no scroll actions)
 /// - Calculations are separated from actions
 /// - Easy to test in isolation
+library;
 
 /// Calcule le dateIndex au centre du viewport basé sur la position de scroll.
 ///
