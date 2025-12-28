@@ -51,6 +51,56 @@ class TimelineConfiguration {
     this.animationDuration = const Duration(milliseconds: 220),
   });
 
+  /// Creates a [TimelineConfiguration] from a map.
+  ///
+  /// This is useful for loading configuration from JSON files.
+  /// Missing parameters will use default values.
+  factory TimelineConfiguration.fromMap(Map<String, dynamic> map) {
+    // Parse durations
+    Duration scrollThrottleDuration = const Duration(milliseconds: 16);
+    if (map['scrollThrottleMs'] != null) {
+      scrollThrottleDuration = Duration(
+        milliseconds: (map['scrollThrottleMs'] as num).toInt(),
+      );
+    }
+
+    Duration animationDuration = const Duration(milliseconds: 220);
+    if (map['animationDurationMs'] != null) {
+      animationDuration = Duration(
+        milliseconds: (map['animationDurationMs'] as num).toInt(),
+      );
+    }
+
+    return TimelineConfiguration(
+      dayWidth: (map['dayWidth'] as num?)?.toDouble() ?? 45.0,
+      dayMargin: (map['dayMargin'] as num?)?.toDouble() ?? 5.0,
+      datesHeight: (map['datesHeight'] as num?)?.toDouble() ?? 65.0,
+      timelineHeight: (map['timelineHeight'] as num?)?.toDouble() ?? 300.0,
+      rowHeight: (map['rowHeight'] as num?)?.toDouble() ?? 30.0,
+      rowMargin: (map['rowMargin'] as num?)?.toDouble() ?? 3.0,
+      bufferDays: (map['bufferDays'] as num?)?.toInt() ?? 5,
+      scrollThrottleDuration: scrollThrottleDuration,
+      animationDuration: animationDuration,
+    );
+  }
+
+  /// Converts this configuration to a map.
+  ///
+  /// This is useful for debugging and serialization.
+  Map<String, dynamic> toMap() {
+    return {
+      'dayWidth': dayWidth,
+      'dayMargin': dayMargin,
+      'datesHeight': datesHeight,
+      'timelineHeight': timelineHeight,
+      'rowHeight': rowHeight,
+      'rowMargin': rowMargin,
+      'bufferDays': bufferDays,
+      'scrollThrottleMs': scrollThrottleDuration.inMilliseconds,
+      'animationDurationMs': animationDuration.inMilliseconds,
+    };
+  }
+
   /// Creates a copy of this configuration with the given fields replaced.
   ///
   /// This is useful for creating variations of a configuration without
