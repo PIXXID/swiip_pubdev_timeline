@@ -212,8 +212,6 @@ void main() {
       final timelineFinder = find.byType(Timeline);
       expect(timelineFinder, findsOneWidget);
 
-      final timelineState = tester.state(timelineFinder) as dynamic;
-
       // Find the vertical scrollable widget
       final verticalScrollableFinder = find.descendant(
         of: timelineFinder,
@@ -431,8 +429,6 @@ void main() {
 
       final timelineFinder = find.byType(Timeline);
       expect(timelineFinder, findsOneWidget);
-
-      final timelineState = tester.state(timelineFinder) as dynamic;
 
       // Find the vertical scrollable widget
       final verticalScrollableFinder = find.descendant(

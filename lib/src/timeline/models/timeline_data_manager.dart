@@ -344,8 +344,9 @@ class TimelineDataManager {
         final seenPreIds = <String>{};
 
         for (final preId in elmFiltered) {
-          if (preId == null || preId is! String || seenPreIds.contains(preId))
+          if (preId == null || preId is! String || seenPreIds.contains(preId)) {
             continue;
+          }
 
           final element = elementsByPreId[preId];
           if (element != null) {
@@ -388,8 +389,6 @@ class TimelineDataManager {
     var lastStageRowIndex = 0;
 
     for (final item in items) {
-      if (item == null) continue;
-
       // Safely access date fields with error handling
       final sdateStr = item['sdate'];
       final edateStr = item['edate'];

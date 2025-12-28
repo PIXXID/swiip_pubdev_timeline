@@ -41,6 +41,7 @@ class TimelineController extends ChangeNotifier {
   double? _viewportWidth;
 
   /// First element margin for centering calculations
+  // ignore: unused_field
   double? _firstElementMargin;
 
   /// Timer for throttling scroll updates

@@ -201,8 +201,6 @@ void main() {
       final timelineFinder = find.byType(Timeline);
       expect(timelineFinder, findsOneWidget);
 
-      final timelineState = tester.state(timelineFinder) as dynamic;
-
       // Find the scrollable widget
       final scrollableFinder = find.byType(SingleChildScrollView).first;
       expect(scrollableFinder, findsOneWidget);
@@ -299,8 +297,6 @@ void main() {
 
       final timelineFinder = find.byType(Timeline);
       expect(timelineFinder, findsOneWidget);
-
-      final timelineState = tester.state(timelineFinder) as dynamic;
 
       // Find the scrollable widget
       final scrollableFinder = find.byType(SingleChildScrollView).first;

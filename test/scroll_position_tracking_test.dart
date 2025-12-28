@@ -189,6 +189,7 @@ void main() {
 
       // Track center date updates via callback
       String? lastCenterDate;
+      // ignore: unused_local_variable
       int callbackCount = 0;
 
       await tester.pumpWidget(
@@ -229,8 +230,6 @@ void main() {
       final timelineState = tester.state(timelineFinder) as dynamic;
 
       // Get configuration values from the timeline
-      final dayWidth = timelineState.dayWidth as double;
-      final dayMargin = timelineState.dayMargin as double;
       final days = timelineState.days as List;
 
       // Property Test: Run 100 iterations with random date indices

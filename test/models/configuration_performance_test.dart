@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:math';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:swiip_pubdev_timeline/src/timeline/models/models.dart';
 
@@ -70,7 +71,7 @@ void main() {
           reason:
               'Max loading time should be under 100ms (was ${maxTime.inMilliseconds}ms)');
 
-      print(
+      debugPrint(
           'Loading performance: avg=${averageTime.inMilliseconds}ms, max=${maxTime.inMilliseconds}ms');
     });
 
@@ -124,7 +125,7 @@ void main() {
           reason:
               'Average loading time should be under 100ms (was ${averageTime.inMilliseconds}ms)');
 
-      print(
+      debugPrint(
           'Medium file loading: avg=${averageTime.inMilliseconds}ms, max=${maxTime.inMilliseconds}ms');
     });
 
@@ -179,7 +180,7 @@ void main() {
           reason:
               'Average loading time should be under 100ms (was ${averageTime.inMilliseconds}ms)');
 
-      print(
+      debugPrint(
           'Large file loading: avg=${averageTime.inMilliseconds}ms, max=${maxTime.inMilliseconds}ms');
     });
   });

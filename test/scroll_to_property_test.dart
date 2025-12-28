@@ -57,6 +57,7 @@ void main() {
       };
 
       // Track which dates were successfully scrolled to
+      // ignore: unused_local_variable
       String? currentDate;
 
       // Build Timeline widget

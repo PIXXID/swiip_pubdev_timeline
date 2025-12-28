@@ -33,8 +33,6 @@ void main() {
       const dayWidth = 45.0;
       const dayMargin = 5.0;
       const totalDays = 100;
-      const firstElementMargin =
-          (viewportWidth - (dayWidth - dayMargin)) / 2; // 380.0
 
       // Act
       final result = calculateCenterDateIndex(
@@ -59,8 +57,6 @@ void main() {
       const dayWidth = 45.0;
       const dayMargin = 5.0;
       const totalDays = 100;
-      const firstElementMargin =
-          (viewportWidth - (dayWidth - dayMargin)) / 2; // 380.0
 
       // Act
       final result = calculateCenterDateIndex(
@@ -83,8 +79,6 @@ void main() {
       const dayWidth = 45.0;
       const dayMargin = 5.0;
       const totalDays = 100;
-      const firstElementMargin =
-          (viewportWidth - (dayWidth - dayMargin)) / 2; // 380.0
 
       // Act - Appeler 10 fois avec les mêmes paramètres
       final results = List.generate(
@@ -112,8 +106,6 @@ void main() {
       const dayWidth = 45.0;
       const dayMargin = 5.0;
       const totalDays = 100;
-      const firstElementMargin =
-          (viewportWidth - (dayWidth - dayMargin)) / 2; // 380.0
 
       // Act
       final result = calculateCenterDateIndex(
@@ -135,8 +127,6 @@ void main() {
       const dayWidth = 60.0; // Largeur différente
       const dayMargin = 10.0; // Marge différente
       const totalDays = 100;
-      const firstElementMargin =
-          (viewportWidth - (dayWidth - dayMargin)) / 2; // 275.0
 
       // Act
       final result = calculateCenterDateIndex(
@@ -547,7 +537,6 @@ void main() {
       const dayWidth = 45.0;
       const dayMargin = 5.0;
       const totalDays = 100;
-      const firstElementMargin = (viewportWidth - (dayWidth - dayMargin)) / 2;
 
       // Act
       calculateCenterDateIndex(

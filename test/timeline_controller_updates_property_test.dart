@@ -98,7 +98,6 @@ void main() {
         try {
           // Track callback state before scroll
           final previousCallbackCount = callbackCount;
-          final previousDate = lastCenterDate;
 
           // Scroll to the target date index
           timelineState.scrollTo(targetDateIndex, animated: false);
