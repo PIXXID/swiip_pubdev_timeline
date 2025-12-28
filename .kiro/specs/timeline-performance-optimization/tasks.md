@@ -231,20 +231,20 @@ Ce plan d'implémentation transforme la conception en tâches concrètes pour op
     - Vérifier le disposal des AnimationControllers
     - _Requirements: 9.1, 9.4, 9.5_
 
-- [ ] 17. Implémenter les indicateurs de chargement
-  - [ ] 17.1 Créer LoadingIndicatorOverlay widget
+- [x] 17. Implémenter les indicateurs de chargement
+  - [x] 17.1 Créer LoadingIndicatorOverlay widget
     - Créer un widget overlay pour afficher un indicateur de chargement
     - Implémenter la logique pour afficher/masquer basée sur un ValueNotifier
     - Ajouter un seuil de temps avant d'afficher (200ms)
     - _Requirements: 8.5_
 
-  - [ ] 17.2 Intégrer les indicateurs dans Timeline
+  - [x] 17.2 Intégrer les indicateurs dans Timeline
     - Ajouter un ValueNotifier<bool> isLoading dans TimelineController
     - Mesurer le temps des opérations longues (formatage, calculs)
     - Afficher LoadingIndicatorOverlay si l'opération dépasse 200ms
     - _Requirements: 8.5_
 
-  - [ ] 17.3 Écrire le test de propriété pour les indicateurs de chargement
+  - [x] 17.3 Écrire le test de propriété pour les indicateurs de chargement
     - **Property 13: Loading Indicators**
     - **Validates: Requirements 8.5**
 
