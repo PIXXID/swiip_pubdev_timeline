@@ -37,21 +37,7 @@ class _TimelineDayDate extends State<TimelineDayDate>
     double margin = widget.dayMargin;
 
     final DateTime date = day['date'];
-    Color dayTextColor = colors['primaryText'] ?? Colors.white;
-
-    // Gestion de l'affichage des dates en fonction de la la date au centre.
-    int idxCenter = widget.centerItemIndex - widget.index;
-    if (idxCenter == 0) {
-      dayTextColor = colors['primaryText']!;
-    } else if ((idxCenter >= 1 && idxCenter < 4) ||
-        (idxCenter <= -1 && idxCenter > -4)) {
-      dayTextColor = colors['secondaryText']!;
-    } else if ((idxCenter >= 4 && idxCenter < 6) ||
-        (idxCenter <= -4 && idxCenter > -6)) {
-      dayTextColor = colors['accent1']!;
-    } else {
-      dayTextColor = Colors.transparent;
-    }
+    final int idxCenter = widget.centerItemIndex - widget.index;
 
     return Align(
         alignment: Alignment.bottomCenter,
@@ -71,19 +57,27 @@ class _TimelineDayDate extends State<TimelineDayDate>
                             .toUpperCase()
                             .substring(0, 1),
                         style: TextStyle(
-                            color: dayTextColor,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500),
+                            color: (idxCenter == 0)
+                                ? colors['primaryText']
+                                : colors['secondaryText'],
+                            fontSize: (idxCenter == 0) ? 14 : 12,
+                            fontWeight: (idxCenter == 0)
+                                ? FontWeight.w800
+                                : FontWeight.w200),
                         overflow: TextOverflow.clip,
                       ),
                     ),
                     Flexible(
                       child: Text(
-                        DateFormat('dd').format(date),
+                        DateFormat.Md(widget.lang).format(date),
                         style: TextStyle(
-                            color: dayTextColor,
+                            color: (idxCenter == 0)
+                                ? colors['primaryText']
+                                : colors['secondaryText'],
                             fontSize: 12,
-                            fontWeight: FontWeight.w500),
+                            fontWeight: (idxCenter == 0)
+                                ? FontWeight.w800
+                                : FontWeight.w200),
                         overflow: TextOverflow.clip,
                       ),
                     ),
@@ -91,13 +85,13 @@ class _TimelineDayDate extends State<TimelineDayDate>
                     if (day['eicon'] != null)
                       Flexible(
                           child: Padding(
-                              padding: const EdgeInsets.only(top: 3, bottom: 5),
+                              padding: const EdgeInsets.only(top: 2, bottom: 2),
                               child: Text(
                                 '${day['eicon']}',
                                 style: TextStyle(
                                   color: colors['primaryText'],
                                   fontWeight: FontWeight.w300,
-                                  fontSize: 16,
+                                  fontSize: 18,
                                 ),
                                 overflow: TextOverflow.clip,
                               )))

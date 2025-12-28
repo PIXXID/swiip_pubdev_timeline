@@ -1,7 +1,7 @@
 {
   "_comment": "Configuration optimisée pour le maximum de FPS",
-  "dayWidth": 45.0,
-  "dayMargin": 5.0,
+  "dayWidth": 55.0,
+  "dayMargin": 2.0,
   "bufferDays": 5,
   "scrollThrottleMs": 16,
   "animationDurationMs": 200,
