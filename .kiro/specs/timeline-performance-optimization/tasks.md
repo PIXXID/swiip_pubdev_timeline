@@ -201,7 +201,7 @@ Ce plan d'implémentation transforme la conception en tâches concrètes pour op
     - Tester avec un scroll au-delà des limites
     - _Requirements: 6.4_
 
-- [ ] 15. Checkpoint - Vérifier la robustesse
+- [x] 15. Checkpoint - Vérifier la robustesse
   - S'assurer que tous les tests passent
   - Tester avec des données invalides et des cas limites
   - Vérifier que les erreurs sont gérées gracieusement

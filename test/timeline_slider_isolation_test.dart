@@ -257,7 +257,7 @@ void main() {
         final stopwatch = Stopwatch()..start();
         
         for (var i = 0; i < 10; i++) {
-          await tester.drag(sliderFinder, Offset(20, 0));
+          await tester.drag(sliderFinder, const Offset(20, 0), warnIfMissed: false);
           await tester.pump();
         }
         
