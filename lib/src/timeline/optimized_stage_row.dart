@@ -43,22 +43,28 @@ class OptimizedStageRow extends StatefulWidget {
 }
 
 class _OptimizedStageRowState extends State<OptimizedStageRow> {
-  // Cached widgets to avoid rebuilding
-  late List<Widget> _cachedStageItems;
-  late List<Widget> _cachedLabels;
-  late List<Widget> _cachedSpacers;
+  // Cached stage items with their positions (calculated once)
+  List<_StageItemData> _stageItemsData = [];
+
+  // Cached widgets for each stage (built once, reused)
+  Map<int, Widget> _cachedStageWidgets = {};
+
+  // Cached widgets for labels
+  final List<Widget> _cachedLabels = [];
 
   // Track last values to detect changes
   int? _lastCenterIndex;
   VisibleRange? _lastVisibleRange;
 
-  // Current position for layout
-  double _currentPosition = 0;
+  // Total width for layout
+  double _totalWidth = 0;
 
   @override
   void initState() {
     super.initState();
-    _buildStageWidgets();
+    // Calculate positions once and cache them
+    _calculateStagePositions();
+    _updateLabelsVisibility();
 
     // Listen to state changes with conditional rebuild
     widget.centerItemIndexNotifier.addListener(_onCenterIndexChanged);
@@ -95,7 +101,7 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
     if (_shouldRebuildForRangeChange(newRange)) {
       setState(() {
         _lastVisibleRange = newRange;
-        _buildStageWidgets();
+        // No need to recalculate positions, just trigger rebuild
       });
     }
   }
@@ -127,28 +133,17 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
         newRange.overlaps(stage['startDateIndex'], stage['endDateIndex']));
   }
 
-  /// Builds all stage widgets, spacers, and labels.
-  ///
-  /// This method is called during initialization and when the visible range changes.
-  /// It creates cached widgets that can be reused until the next rebuild.
-  void _buildStageWidgets() {
-    _cachedStageItems = [];
-    _cachedLabels = [];
-    _cachedSpacers = [];
-    _currentPosition = 0;
-
-    final visibleRange = widget.visibleRangeNotifier.value;
-    final centerIndex = widget.centerItemIndexNotifier.value;
+  /// Calculates and caches the positions of all stage items.
+  /// This is called ONCE during initialization and positions never change.
+  void _calculateStagePositions() {
+    _stageItemsData = [];
+    _cachedStageWidgets = {};
+    double currentPosition = 0;
 
     for (int index = 0; index < widget.stagesList.length; index++) {
       final stage = widget.stagesList[index];
       final startIndex = stage['startDateIndex'] as int;
       final endIndex = stage['endDateIndex'] as int;
-
-      // Skip stages that are completely outside the visible range
-      if (endIndex < visibleRange.start || startIndex > visibleRange.end) {
-        continue;
-      }
 
       // Calculate dimensions
       int daysWidth = endIndex - startIndex + 1;
@@ -169,35 +164,33 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
         spacerWidth = startIndex * (widget.dayWidth - widget.dayMargin);
       }
 
-      // Add spacer if needed
-      if (spacerWidth > 0) {
-        _cachedSpacers.add(
-          Positioned(
-            left: _currentPosition,
-            child: SizedBox(
-              width: spacerWidth,
-              height: widget.height,
-            ),
-          ),
-        );
-        _currentPosition += spacerWidth;
-      }
+      // Add spacer width to position
+      currentPosition += spacerWidth;
 
-      // Store position for this stage
-      double stageItemPosition = _currentPosition;
+      // Store the stage data with its fixed position
+      _stageItemsData.add(_StageItemData(
+        stage: stage,
+        position: currentPosition,
+        itemWidth: itemWidth,
+        daysWidth: daysWidth,
+        startIndex: startIndex,
+        endIndex: endIndex,
+        index: index,
+      ));
 
-      // Build the stage item
-      _cachedStageItems
-          .add(_buildStageItem(stage, stageItemPosition, itemWidth, daysWidth));
-
-      // Build label if needed
-      if (_shouldShowLabel(stage, centerIndex, daysWidth)) {
-        _cachedLabels.add(_buildLabel(stage, stageItemPosition));
-      }
+      // Build and cache the stage widget once
+      _cachedStageWidgets[index] = _buildStageItem(
+        stage,
+        currentPosition,
+        itemWidth,
+        daysWidth,
+      );
 
       // Update position for next stage
-      _currentPosition += itemWidth;
+      currentPosition += itemWidth;
     }
+
+    _totalWidth = currentPosition;
   }
 
   /// Builds a single stage item widget.
@@ -344,55 +337,47 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
     _cachedLabels.clear();
 
     final centerIndex = widget.centerItemIndexNotifier.value;
-    double currentPos = 0;
 
-    for (int index = 0; index < widget.stagesList.length; index++) {
-      final stage = widget.stagesList[index];
-      final startIndex = stage['startDateIndex'] as int;
-      final endIndex = stage['endDateIndex'] as int;
-      int daysWidth = endIndex - startIndex + 1;
-      double itemWidth = daysWidth * (widget.dayWidth - widget.dayMargin);
-
-      // Calculate spacer
-      var previousItem = index > 0 ? widget.stagesList[index - 1] : null;
-      double spacerWidth = 0;
-
-      if (previousItem != null) {
-        int daysBetweenElements =
-            startIndex - (previousItem['endDateIndex'] as int) - 1;
-        if (daysBetweenElements > 0) {
-          spacerWidth =
-              daysBetweenElements * (widget.dayWidth - widget.dayMargin);
-        }
-      } else {
-        spacerWidth = startIndex * (widget.dayWidth - widget.dayMargin);
-      }
-
-      currentPos += spacerWidth;
-      double stageItemPosition = currentPos;
-
+    for (final itemData in _stageItemsData) {
       // Add label if needed
-      if (_shouldShowLabel(stage, centerIndex, daysWidth)) {
-        _cachedLabels.add(_buildLabel(stage, stageItemPosition));
+      if (_shouldShowLabel(itemData.stage, centerIndex, itemData.daysWidth)) {
+        _cachedLabels.add(_buildLabel(itemData.stage, itemData.position));
       }
-
-      currentPos += itemWidth;
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final visibleRange = widget.visibleRangeNotifier.value;
+
+    // Build only visible stage items based on current visible range
+    // Use cached widgets instead of rebuilding them
+    final visibleStageItems = <Widget>[];
+
+    for (final itemData in _stageItemsData) {
+      // Check if stage overlaps with visible range (with buffer for smooth scrolling)
+      bool isVisible = !(itemData.endIndex < visibleRange.start - 2 ||
+          itemData.startIndex > visibleRange.end + 2);
+
+      if (isVisible) {
+        // Use the cached widget
+        final cachedWidget = _cachedStageWidgets[itemData.index];
+        if (cachedWidget != null) {
+          visibleStageItems.add(cachedWidget);
+        }
+      }
+    }
+
     return RepaintBoundary(
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: SizedBox(
-          width: _currentPosition,
+          width: _totalWidth,
           height: widget.height,
           child: Stack(
             clipBehavior: Clip.none,
             children: [
-              ..._cachedSpacers,
-              ..._cachedStageItems,
+              ...visibleStageItems,
               ..._cachedLabels,
             ],
           ),
@@ -400,4 +385,25 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
       ),
     );
   }
+}
+
+/// Data class to store stage item information with fixed position
+class _StageItemData {
+  final Map<String, dynamic> stage;
+  final double position;
+  final double itemWidth;
+  final int daysWidth;
+  final int startIndex;
+  final int endIndex;
+  final int index;
+
+  _StageItemData({
+    required this.stage,
+    required this.position,
+    required this.itemWidth,
+    required this.daysWidth,
+    required this.startIndex,
+    required this.endIndex,
+    required this.index,
+  });
 }

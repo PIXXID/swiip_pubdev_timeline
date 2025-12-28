@@ -1,9 +1,10 @@
 {
+  "_comment": "Configuration optimisée pour le maximum de FPS",
   "dayWidth": 45.0,
   "dayMargin": 5.0,
-  "bufferDays": 7,
-  "scrollThrottleMs": 20,
-  "animationDurationMs": 250,
+  "bufferDays": 5,
+  "scrollThrottleMs": 16,
+  "animationDurationMs": 200,
   "rowHeight": 30.0,
   "rowMargin": 3.0,
   "datesHeight": 65.0,
