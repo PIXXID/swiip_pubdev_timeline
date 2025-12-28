@@ -153,7 +153,7 @@ Ce plan d'implémentation décompose la refactorisation du mécanisme de scroll 
   - Vérifier que la performance est maintenue
   - _Requirements: 6.1, 6.2, 6.3, 6.4_
 
-- [ ] 16. Checkpoint final - Vérifier que tout fonctionne
+- [x] 16. Checkpoint final - Vérifier que tout fonctionne
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes
