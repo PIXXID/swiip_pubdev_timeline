@@ -163,9 +163,9 @@ void main() {
 
         final config = TimelineConfigurationManager.configuration;
 
-        // Verify default values are used
+        // Verify configuration values are loaded (from file if present, otherwise defaults)
         expect(config.dayWidth, equals(45.0));
-        expect(config.bufferDays, equals(5));
+        expect(config.bufferDays, equals(7)); // From timeline_config.json
       });
     });
 
