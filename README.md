@@ -107,38 +107,84 @@ Only visible items are rendered:
 // This keeps memory usage low even with hundreds of days
 ```
 
-### Configuration Options
+### External Configuration
 
-You can customize the timeline's performance characteristics:
+The timeline now supports external configuration through a JSON file, allowing you to customize performance and rendering parameters without modifying code. This is especially useful for optimizing the timeline for different dataset sizes.
 
-```dart
-// These are the default values used internally
-// Future versions may expose these as configuration parameters
+#### Quick Start with Configuration
 
-const config = TimelineConfiguration(
-  dayWidth: 45.0,           // Width of each day item
-  dayMargin: 5.0,           // Margin between days
-  datesHeight: 65.0,        // Height of date section
-  timelineHeight: 300.0,    // Height of timeline section
-  rowHeight: 30.0,          // Height of each stage row
-  rowMargin: 3.0,           // Margin between rows
-  bufferDays: 5,            // Buffer days outside viewport
-  scrollThrottleDuration: Duration(milliseconds: 16), // ~60 FPS
-  animationDuration: Duration(milliseconds: 220),
-);
-```
+1. **Copy the template file**:
+   ```bash
+   cp timeline_config.template.json timeline_config.json
+   ```
+
+2. **Add to pubspec.yaml**:
+   ```yaml
+   flutter:
+     assets:
+       - timeline_config.json
+   ```
+
+3. **Customize parameters**:
+   ```json
+   {
+     "dayWidth": 50.0,
+     "bufferDays": 10,
+     "scrollThrottleMs": 25
+   }
+   ```
+
+4. **Restart your app** to apply changes
+
+#### Recommended Configurations
+
+- **Small datasets (< 100 days)**: `dayWidth: 70.0`, `bufferDays: 5`, `scrollThrottleMs: 16`
+- **Medium datasets (100-500 days)**: Default values - `dayWidth: 65.0`, `bufferDays: 8`, `scrollThrottleMs: 20`
+- **Large datasets (> 500 days)**: `dayWidth: 50.0`, `bufferDays: 10`, `scrollThrottleMs: 25`
+
+#### Configuration Parameters
+
+All parameters are optional. If not specified, sensible defaults are used:
+
+| Parameter | Type | Range | Default | Description |
+|-----------|------|-------|---------|-------------|
+| `dayWidth` | double | 20.0 - 100.0 | 65.0 | Width of each day column |
+| `dayMargin` | double | 0.0 - 20.0 | 5.0 | Spacing between days |
+| `bufferDays` | int | 1 - 20 | 8 | Days rendered outside viewport |
+| `scrollThrottleMs` | int | 8 - 100 | 20 | Scroll update throttling (ms) |
+| `animationDurationMs` | int | 100 - 500 | 250 | Animation duration (ms) |
+| `rowHeight` | double | 20.0 - 60.0 | 30.0 | Height of each stage row |
+| `rowMargin` | double | 0.0 - 10.0 | 3.0 | Spacing between rows |
+| `datesHeight` | double | 40.0 - 100.0 | 65.0 | Height of date header |
+| `timelineHeight` | double | 100.0 - 1000.0 | 300.0 | Total timeline height |
+
+For detailed configuration documentation, see [CONFIGURATION.md](CONFIGURATION.md).
 
 ### Performance Tips
 
 For optimal performance with large datasets:
 
-1. **Use appropriate buffer size**: The default 5-day buffer works well for most cases. Increase it if you see blank areas during fast scrolling.
+1. **Use recommended configurations**: Start with the recommended values for your dataset size from the template file:
+   - Small datasets (< 100 days): Better visuals, lower buffer
+   - Medium datasets (100-500 days): Default values (balanced)
+   - Large datasets (> 500 days): Optimized for smoothness
 
-2. **Minimize data updates**: The timeline caches formatted data. Avoid unnecessary updates to `elements`, `stages`, or `capacities` props.
+2. **Adjust buffer size**: The `bufferDays` parameter has the biggest impact on memory usage:
+   - Small datasets: `5` days
+   - Medium datasets: `8` days (default)
+   - Large datasets: `10-12` days
+   - ⚠️ Values > 12 can cause memory issues
 
-3. **Provide stable keys**: When using the timeline in a list or with dynamic data, provide stable keys to help Flutter optimize rebuilds.
+3. **Optimize scroll throttling**: For large datasets or low-end devices, increase `scrollThrottleMs` to 25ms to reduce CPU usage. Default is 20ms.
 
-4. **Monitor performance**: In debug mode, the timeline logs performance metrics. Use these to identify bottlenecks.
+4. **Minimize data updates**: The timeline caches formatted data. Avoid unnecessary updates to `elements`, `stages`, or `capacities` props.
+
+5. **Provide stable keys**: When using the timeline in a list or with dynamic data, provide stable keys to help Flutter optimize rebuilds.
+
+6. **Monitor performance**: Enable debug mode to see active configuration:
+   ```dart
+   TimelineConfigurationManager.enableDebugMode();
+   ```
 
 ### Advanced Usage
 
@@ -198,17 +244,106 @@ On a typical device with 500 days and 100 stages:
 
 **Issue**: Timeline renders slowly with large datasets
 
-**Solution**: Ensure you're using the latest version which includes lazy rendering optimizations. Check that your data is properly formatted and doesn't contain excessive nested structures.
+**Solution**: Use the recommended configuration for large datasets in your configuration file, or adjust `bufferDays` and `scrollThrottleMs` parameters. See [CONFIGURATION.md](CONFIGURATION.md) for detailed tuning guide.
+
+**Issue**: Configuration not loading
+
+**Solution**: Ensure the file is named `timeline_config.json` and is in the package root directory. Check console for validation errors. Enable debug mode to see active configuration.
 
 **Issue**: Blank areas appear during fast scrolling
 
-**Solution**: Increase the buffer size by modifying the internal `bufferDays` configuration (future versions will expose this as a parameter).
+**Solution**: Increase `bufferDays` in your configuration (try 8-10 for large datasets). Note that higher values use more memory.
 
 **Issue**: Memory usage is high
 
-**Solution**: Verify that you're properly disposing of the Timeline widget when it's no longer needed. Check for memory leaks in your own code that might be holding references to timeline data.
+**Solution**: Reduce `bufferDays` to 5-8 and `dayWidth` to 50-60. Use the recommended configuration for your dataset size. Verify proper widget disposal.
+
+**Issue**: Laggy scrolling
+
+**Solution**: Increase `scrollThrottleMs` to 25ms in your configuration. This reduces CPU usage at the cost of slightly less responsive scrolling. Default is 20ms.
+
+For more troubleshooting help, see [CONFIGURATION.md](CONFIGURATION.md).
+
+## Migration Guide
+
+### Upgrading to External Configuration
+
+If you're upgrading from a previous version, your existing code will continue to work without any changes. The external configuration system is completely optional and backward compatible.
+
+#### No Changes Required
+
+Your existing Timeline widgets will work exactly as before:
+
+```dart
+Timeline(
+  width: 800,
+  height: 600,
+  // ... your existing parameters
+)
+```
+
+#### Gradual Adoption (Recommended)
+
+1. **Start with recommended values**:
+   Create `timeline_config.json` with recommended values for your dataset size:
+   ```json
+   {
+     "dayWidth": 50.0,
+     "bufferDays": 10,
+     "scrollThrottleMs": 25
+   }
+   ```
+
+2. **Test and verify**:
+   Run your app and verify everything works as expected.
+
+3. **Fine-tune as needed**:
+   Add or adjust specific parameters to customize further:
+   ```json
+   {
+     "dayWidth": 50.0,
+     "bufferDays": 12,
+     "scrollThrottleMs": 20
+   }
+   ```
+
+#### Moving from Hardcoded Values
+
+If you were using custom configuration values in your code, you can now move them to the configuration file:
+
+**Before**:
+```dart
+// Custom values hardcoded in your app
+final customDayWidth = 50.0;
+final customBufferDays = 10;
+// ... use these values
+```
+
+**After**:
+```json
+{
+  "dayWidth": 50.0,
+  "bufferDays": 10
+}
+```
+
+The configuration will be loaded automatically from `timeline_config.json`.
+
+#### Benefits of Migration
+
+- **Easier tuning**: Adjust performance without rebuilding your app
+- **Environment-specific configs**: Different settings for development vs production
+- **Better performance**: Use optimized configurations for your dataset size
+- **Cleaner code**: Separate configuration from application logic
+
+For detailed migration instructions and examples, see [CONFIGURATION.md](CONFIGURATION.md).
 
 ## Additional Information
+
+### Documentation
+
+- **[CONFIGURATION.md](CONFIGURATION.md)**: Comprehensive guide to external configuration
+- **[timeline_config.template.json](timeline_config.template.json)**: Template configuration file with detailed comments
 
 ### Contributing
 

@@ -1,0 +1,139 @@
+{
+  "_comment": "Timeline Configuration Template",
+  "_description": "Configure performance and rendering parameters for the swiip_pubdev_timeline widget. Copy this file to 'timeline_config.json' in your package root and customize as needed.",
+  
+  "dayWidth": 65.0,
+  "_dayWidth_info": {
+    "type": "double",
+    "range": "20.0 - 100.0",
+    "default": 65.0,
+    "description": "Width of each day column in pixels",
+    "performance_impact": "Larger values = more detail and easier to read, but higher memory usage and more rendering work. Smaller values = more days visible at once but harder to read.",
+    "recommendation": "Use 70.0 for small datasets, 65.0 for medium (default), 50.0 for large"
+  },
+  
+  "dayMargin": 5.0,
+  "_dayMargin_info": {
+    "type": "double",
+    "range": "0.0 - 20.0",
+    "default": 5.0,
+    "description": "Horizontal spacing between day columns in pixels",
+    "performance_impact": "Minimal impact on performance. Affects visual density and readability.",
+    "recommendation": "Use 5.0 for most cases, reduce to 3.0-4.0 for large datasets to fit more days"
+  },
+  
+  "bufferDays": 8,
+  "_bufferDays_info": {
+    "type": "int",
+    "range": "1 - 20",
+    "default": 8,
+    "description": "Number of days to render outside the visible viewport on each side",
+    "performance_impact": "CRITICAL: Higher values = smoother scrolling but significantly higher memory usage. Each buffer day renders all rows for that day.",
+    "recommendation": "Use 5 for small datasets, 8 for medium (default), 10 for large. Values > 12 may cause memory issues on low-end devices.",
+    "warning": "⚠️ Values greater than 12 can cause significant memory usage, especially with many rows. Monitor memory usage if increasing this value."
+  },
+  
+  "scrollThrottleMs": 20,
+  "_scrollThrottleMs_info": {
+    "type": "int",
+    "range": "8 - 100",
+    "default": 20,
+    "description": "Minimum time in milliseconds between scroll updates (throttling)",
+    "performance_impact": "Lower values = more responsive scrolling but higher CPU usage. Higher values = less CPU usage but may feel laggy.",
+    "recommendation": "Use 16ms (60 FPS) for small datasets. Use 20ms (default) for medium datasets. Increase to 25ms for large datasets on lower-end devices.",
+    "note": "16ms corresponds to 60 FPS, which is the standard for smooth animations"
+  },
+  
+  "animationDurationMs": 250,
+  "_animationDurationMs_info": {
+    "type": "int",
+    "range": "100 - 500",
+    "default": 250,
+    "description": "Duration of scroll animations in milliseconds",
+    "performance_impact": "Longer animations feel smoother but take more time. Shorter animations are snappier but may feel abrupt.",
+    "recommendation": "Use 200ms for small datasets, 220ms for medium, 250ms for large",
+    "note": "This affects programmatic scrolling and auto-scroll behaviors"
+  },
+  
+  "rowHeight": 30.0,
+  "_rowHeight_info": {
+    "type": "double",
+    "range": "20.0 - 60.0",
+    "default": 30.0,
+    "description": "Height of each stage row in pixels",
+    "performance_impact": "Larger values = easier to read and interact with, but fewer rows visible at once. Affects total timeline height.",
+    "recommendation": "Use 35.0 for better touch targets, 30.0 for standard, 25.0 to fit more rows"
+  },
+  
+  "rowMargin": 3.0,
+  "_rowMargin_info": {
+    "type": "double",
+    "range": "0.0 - 10.0",
+    "default": 3.0,
+    "description": "Vertical spacing between stage rows in pixels",
+    "performance_impact": "Minimal impact. Affects visual density and separation between rows.",
+    "recommendation": "Use 3.0 for most cases, reduce to 2.0 for compact layouts"
+  },
+  
+  "datesHeight": 65.0,
+  "_datesHeight_info": {
+    "type": "double",
+    "range": "40.0 - 100.0",
+    "default": 65.0,
+    "description": "Height of the date header row in pixels",
+    "performance_impact": "Minimal impact. Affects how much space the date indicators take.",
+    "recommendation": "Use 65.0 for standard layouts, adjust based on your date formatting needs"
+  },
+  
+  "timelineHeight": 300.0,
+  "_timelineHeight_info": {
+    "type": "double",
+    "range": "100.0 - 1000.0",
+    "default": 300.0,
+    "description": "Total height of the timeline widget in pixels",
+    "performance_impact": "Larger values = more rows visible at once but more rendering work. Smaller values = less rendering but more scrolling needed.",
+    "recommendation": "Adjust based on your layout needs. Consider rowHeight * expected_visible_rows + datesHeight"
+  },
+  
+  "_usage_notes": {
+    "1": "Copy this file to 'timeline_config.json' in your package root directory",
+    "2": "Remove all lines starting with '_' (these are comments and will be ignored by the parser)",
+    "3": "Modify only the values you want to customize",
+    "4": "If a parameter is invalid or missing, the default value will be used automatically",
+    "5": "Check the console for validation warnings if your configuration isn't working as expected"
+  },
+  
+  "_recommended_configurations": {
+    "description": "Recommended parameter values for different dataset sizes",
+    "small_datasets": {
+      "description": "For < 100 days - Better visuals, smoother animations",
+      "dayWidth": 70.0,
+      "bufferDays": 5,
+      "scrollThrottleMs": 16,
+      "animationDurationMs": 200
+    },
+    "medium_datasets": {
+      "description": "For 100-500 days - Balanced performance (default values)",
+      "dayWidth": 65.0,
+      "bufferDays": 8,
+      "scrollThrottleMs": 20,
+      "animationDurationMs": 250
+    },
+    "large_datasets": {
+      "description": "For > 500 days - Prioritizes smoothness and performance",
+      "dayWidth": 50.0,
+      "dayMargin": 4.0,
+      "bufferDays": 10,
+      "scrollThrottleMs": 25,
+      "animationDurationMs": 300
+    }
+  },
+  
+  "_troubleshooting": {
+    "configuration_not_loading": "Ensure the file is named 'timeline_config.json' and is in the package root directory",
+    "values_not_applied": "Check console for validation errors. Invalid values are replaced with defaults.",
+    "performance_issues": "Try using a preset for your dataset size, or reduce bufferDays and increase scrollThrottleMs",
+    "memory_issues": "Reduce bufferDays (try 3-5) and dayWidth (try 35-40)",
+    "laggy_scrolling": "Increase scrollThrottleMs to 20-25ms, reduce bufferDays"
+  }
+}

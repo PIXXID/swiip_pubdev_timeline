@@ -18,6 +18,7 @@ import 'models/timeline_error_handler.dart';
 import 'models/performance_monitor.dart';
 import 'models/timeline_configuration.dart';
 import 'models/timeline_configuration_manager.dart';
+import 'models/configuration_loader.dart';
 
 import 'package:swiip_pubdev_timeline/src/tools/tools.dart';
 import 'package:swiip_pubdev_timeline/src/platform/platform_language.dart';
@@ -128,17 +129,58 @@ class _Timeline extends State<Timeline> {
   Timer? _verticalScrollDebounceTimer;
   static const _verticalScrollDebounceDuration = Duration(milliseconds: 100);
 
+  // Track initialization state
+  bool _isInitialized = false;
+
   // Initialisation
   @override
   void initState() {
     super.initState();
-    debugPrint('------ Timeline InitState');
 
     // Initialize configuration manager if not already initialized
     if (!TimelineConfigurationManager.isInitialized) {
+      // Load configuration asynchronously
+      _initializeConfiguration();
+    } else {
+      // Configuration already initialized, use it
+      _config = TimelineConfigurationManager.configuration;
+      _initializeTimeline();
+      _isInitialized = true;
+    }
+  }
+
+  /// Initialize configuration asynchronously
+  Future<void> _initializeConfiguration() async {
+    try {
+      debugPrint('Loading timeline configuration...');
+      final fileConfig = await ConfigurationLoader.loadConfiguration();
+
+      // Initialize with loaded configuration
+      TimelineConfigurationManager.initialize(
+        fileConfig: fileConfig,
+      );
+
+      debugPrint('Timeline configuration initialized');
+    } catch (e) {
+      debugPrint('Error loading configuration: $e');
+      // Initialize with defaults
       TimelineConfigurationManager.initialize();
     }
 
+    // Get configuration
+    _config = TimelineConfigurationManager.configuration;
+
+    // Continue initialization
+    if (mounted) {
+      setState(() {
+        _initializeTimeline();
+        _isInitialized = true;
+      });
+    }
+  } // End of _initializeConfiguration()
+
+  /// Initialize timeline components
+  void _initializeTimeline() {
     // Get configuration (widget parameter takes precedence)
     _config = TimelineConfigurationManager.configuration;
 
@@ -346,7 +388,7 @@ class _Timeline extends State<Timeline> {
       scrollTo(widget.defaultDate != null ? defaultDateIndex : nowIndex,
           animated: true);
     });
-  }
+  } // End of _initializeTimeline()
 
   // Destruction du widget
   @override
@@ -477,6 +519,18 @@ class _Timeline extends State<Timeline> {
 
   @override
   Widget build(BuildContext context) {
+    // If not initialized yet, show loading indicator
+    if (!_isInitialized) {
+      return Scaffold(
+        backgroundColor: widget.colors['primaryBackground'],
+        body: Center(
+          child: CircularProgressIndicator(
+            color: widget.colors['primary'],
+          ),
+        ),
+      );
+    }
+
     // Track rebuild
     _performanceMonitor.trackRebuild();
 

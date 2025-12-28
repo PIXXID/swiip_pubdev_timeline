@@ -1,54 +1,36 @@
 import 'dart:convert';
-import 'dart:io';
+import 'package:flutter/services.dart' show rootBundle;
 import 'configuration_logger.dart';
 
 /// Loads configuration from JSON files.
 ///
 /// This class provides methods to load and parse timeline configuration
-/// from JSON files, with proper error handling and performance considerations.
+/// from JSON files (Flutter assets), with proper error handling and
+/// performance considerations.
 class ConfigurationLoader {
-  /// Maximum file size in bytes (10KB).
-  static const int maxFileSizeBytes = 10 * 1024;
-
-  /// Loads configuration synchronously from the specified path.
+  /// Loads configuration asynchronously from Flutter assets.
   ///
   /// Returns a Map containing the parsed configuration, or null if:
-  /// - The file doesn't exist (silent failure)
+  /// - The file doesn't exist in assets (silent failure)
   /// - The file cannot be read (logs error)
   /// - The JSON is malformed (logs error)
   ///
-  /// Logs a warning if the file size exceeds 10KB.
-  ///
-  /// [configPath] defaults to 'timeline_config.json' in the current directory.
-  static Map<String, dynamic>? loadConfigurationSync({
+  /// [configPath] defaults to 'timeline_config.json'.
+  static Future<Map<String, dynamic>?> loadConfiguration({
     String configPath = 'timeline_config.json',
-  }) {
+  }) async {
     try {
-      final file = File(configPath);
-
-      // Check if file exists
-      if (!file.existsSync()) {
-        // Silent failure - file not found is expected when no config is provided
-        return null;
-      }
-
-      // Check file size
-      final fileSize = file.lengthSync();
-      if (fileSize > maxFileSizeBytes) {
-        ConfigurationLogger.warning(
-          'File Size',
-          'File size ($fileSize bytes) exceeds recommended maximum ($maxFileSizeBytes bytes)',
-          details: 'Large configuration files may impact startup performance',
-        );
-      }
-
-      // Read file content
-      final content = file.readAsStringSync();
+      // Load from Flutter assets
+      final content = await rootBundle.loadString(configPath);
 
       // Parse JSON
       try {
         final parsed = jsonDecode(content);
         if (parsed is Map<String, dynamic>) {
+          ConfigurationLogger.info(
+            'Configuration',
+            'Successfully loaded configuration from assets: $configPath',
+          );
           return parsed;
         } else {
           ConfigurationLogger.error(
@@ -59,7 +41,6 @@ class ConfigurationLoader {
           return null;
         }
       } on FormatException catch (e) {
-        // JSON parsing error - try to extract line number
         final lineNumber = _extractLineNumber(e.message);
         ConfigurationLogger.jsonParsingError(
           configPath,
@@ -68,16 +49,12 @@ class ConfigurationLoader {
         );
         return null;
       }
-    } on FileSystemException catch (e) {
-      // File system error (permissions, etc.)
-      ConfigurationLogger.fileSystemError(configPath, e.message);
-      return null;
     } catch (e) {
-      // Unexpected error
-      ConfigurationLogger.error(
-        'Unexpected Error',
-        'Failed to load configuration from $configPath',
-        details: e.toString(),
+      // Assets loading failed - file not found or other error
+      ConfigurationLogger.info(
+        'Configuration',
+        'Could not load configuration from assets: $configPath',
+        details: 'Using default configuration values. Error: ${e.toString()}',
       );
       return null;
     }
