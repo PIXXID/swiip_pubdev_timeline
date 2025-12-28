@@ -15,6 +15,7 @@ import 'loading_indicator_overlay.dart';
 import 'models/timeline_controller.dart';
 import 'models/timeline_data_manager.dart';
 import 'models/timeline_error_handler.dart';
+import 'models/performance_monitor.dart';
 
 import 'package:swiip_pubdev_timeline/src/tools/tools.dart';
 import 'package:swiip_pubdev_timeline/src/platform/platform_language.dart';
@@ -69,6 +70,9 @@ class _Timeline extends State<Timeline> {
 
   // TimelineDataManager for data formatting and caching
   late TimelineDataManager _dataManager;
+
+  // PerformanceMonitor for tracking performance metrics
+  late PerformanceMonitor _performanceMonitor;
 
   // Valeur du slider
   double sliderValue = 0.0;
@@ -126,6 +130,10 @@ class _Timeline extends State<Timeline> {
     super.initState();
     debugPrint('------ Timeline InitState');
 
+    // Initialize PerformanceMonitor (only enabled in debug mode)
+    _performanceMonitor = PerformanceMonitor();
+    _performanceMonitor.startOperation('timeline_init');
+
     // Initialize TimelineDataManager
     _dataManager = TimelineDataManager();
 
@@ -152,6 +160,7 @@ class _Timeline extends State<Timeline> {
     }
 
     // Use TimelineDataManager for formatting with caching and error handling
+    _performanceMonitor.startOperation('format_days');
     days = TimelineErrorHandler.withErrorHandling(
       'getFormattedDays',
       () => _dataManager.getFormattedDays(
@@ -168,8 +177,10 @@ class _Timeline extends State<Timeline> {
       ),
       [], // Fallback to empty list on error
     );
+    _performanceMonitor.endOperation('format_days');
 
     // Use TimelineDataManager for formatting stage rows with caching and error handling
+    _performanceMonitor.startOperation('format_stage_rows');
     stagesRows = TimelineErrorHandler.withErrorHandling(
       'getFormattedStageRows',
       () => _dataManager.getFormattedStageRows(
@@ -181,6 +192,7 @@ class _Timeline extends State<Timeline> {
       ),
       [], // Fallback to empty list on error
     );
+    _performanceMonitor.endOperation('format_stage_rows');
 
     // On positionne le stage de la première ligne par jour
     days = getStageByDay(days, stagesRows);
@@ -213,6 +225,8 @@ class _Timeline extends State<Timeline> {
     double oldSliderValue = 0.0;
     int oldCenterItemIndex = 0;
     _controllerTimeline.addListener(() {
+      _performanceMonitor.startOperation('scroll_update');
+
       if (_controllerTimeline.offset >= 0 &&
           _controllerTimeline.offset < sliderMaxValue) {
         // Update TimelineController with throttling
@@ -256,6 +270,8 @@ class _Timeline extends State<Timeline> {
           }
         }
       }
+
+      _performanceMonitor.endOperation('scroll_update');
     });
 
     // On vérifie si la timeline affiche un ou plusieurs projets
@@ -298,6 +314,12 @@ class _Timeline extends State<Timeline> {
 
     // Exécuter une seule fois après la construction du widget
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Complete initial render tracking
+      _performanceMonitor.endOperation('timeline_init');
+
+      // Log metrics in debug mode
+      _performanceMonitor.logMetrics();
+
       // On scroll sur la date du jour par défaut
       scrollTo(widget.defaultDate != null ? defaultDateIndex : nowIndex,
           animated: true);
@@ -433,6 +455,9 @@ class _Timeline extends State<Timeline> {
 
   @override
   Widget build(BuildContext context) {
+    // Track rebuild
+    _performanceMonitor.trackRebuild();
+
     // On calcule le padding pour avoir le début et la fin de la timeline au milieu de l'écran
     // double screenWidth = MediaQuery.sizeOf(context).width;
     double screenWidth = widget.width;

@@ -248,22 +248,22 @@ Ce plan d'implémentation transforme la conception en tâches concrètes pour op
     - **Property 13: Loading Indicators**
     - **Validates: Requirements 8.5**
 
-- [ ] 18. Implémenter le monitoring des performances
-  - [ ] 18.1 Créer PerformanceMonitor
+- [x] 18. Implémenter le monitoring des performances
+  - [x] 18.1 Créer PerformanceMonitor
     - Implémenter startOperation et endOperation pour mesurer les temps
     - Implémenter trackRebuild pour compter les rebuilds
     - Implémenter getMetrics pour obtenir les métriques
     - Ajouter des hooks de profiling pour le mode développement
     - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5_
 
-  - [ ] 18.2 Intégrer PerformanceMonitor dans Timeline
+  - [x] 18.2 Intégrer PerformanceMonitor dans Timeline
     - Créer une instance de PerformanceMonitor en mode debug
     - Mesurer les temps de rendu initial
     - Mesurer les temps de scroll
     - Logger les métriques en mode debug
     - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5_
 
-  - [ ] 18.3 Écrire les tests unitaires pour le monitoring
+  - [x] 18.3 Écrire les tests unitaires pour le monitoring
     - Vérifier que les hooks de profiling existent
     - Vérifier que les logs sont produits en mode debug
     - Vérifier que les métriques sont collectées
