@@ -1110,10 +1110,7 @@ void main() {
         await tester.pumpWidget(
           MaterialApp(
             home: Timeline(
-              width: 800,
-              height: 600,
               colors: testColors,
-              mode: 'chronology',
               infos: testInfos,
               elements: [],
               elementsDone: [],
@@ -1200,7 +1197,6 @@ void main() {
             width: 800,
             height: 600,
             colors: testColors,
-            mode: 'chronology',
             infos: {},
             elements: [],
             elementsDone: [],
