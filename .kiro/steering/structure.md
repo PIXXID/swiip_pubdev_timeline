@@ -30,7 +30,6 @@ lib/
 - `timeline_item.dart` - Timeline item widget
 - `timeline_day_date.dart` - Date header display
 - `timeline_day_indicators.dart` - Day indicator widgets
-- `timeline_day_info.dart` - Day information display
 - `loading_indicator_overlay.dart` - Loading state overlay
 
 ### Models (`lib/src/timeline/models/`)

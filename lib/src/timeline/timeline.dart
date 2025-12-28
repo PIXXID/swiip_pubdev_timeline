@@ -4,7 +4,6 @@ import 'package:flutter/gestures.dart';
 import 'package:intl/intl.dart';
 
 // Widgets
-import 'timeline_day_info.dart';
 import 'timeline_day_date.dart';
 import 'lazy_timeline_viewport.dart';
 import 'lazy_stage_rows_viewport.dart';
@@ -827,50 +826,30 @@ class _Timeline extends State<Timeline> {
                       ),
                     ),
 
-                    // JOUR ET ICONES ELEMENTS
-                    ValueListenableBuilder<int>(
-                      valueListenable: _timelineController.centerItemIndex,
-                      builder: (context, centerItemIndex, _) {
-                        // Guard against empty days or invalid index
-                        if (days.isEmpty || centerItemIndex >= days.length) {
-                          return const SizedBox.shrink();
-                        }
-                        return TimelineDayInfo(
-                            lang: lang,
-                            day: days[centerItemIndex],
-                            colors: widget.colors,
-                            elements: widget.elements,
-                            openDayDetail: widget.openDayDetail);
-                      },
-                    ),
-                    // ALERTES
-
                     // Slider
-                    Positioned(
-                        bottom: 0,
-                        child: SizedBox(
-                            width: screenWidth - (sliderMargin * 2),
-                            child: SliderTheme(
-                              data: SliderTheme.of(context).copyWith(
-                                thumbColor: widget.colors['primary'],
-                                thumbShape: const RoundSliderThumbShape(
-                                    enabledThumbRadius: 8.0),
-                                activeTrackColor: widget.colors['primary'],
-                                inactiveTrackColor:
-                                    widget.colors['secondaryBackground'],
-                                trackHeight: 2,
-                              ),
-                              child: Slider(
-                                value: sliderValue,
-                                min: 0,
-                                max: sliderMaxValue,
-                                divisions: days.length,
-                                onChanged: (double value) {
-                                  sliderValue = value;
-                                  _scrollH(value);
-                                },
-                              ),
-                            )))
+                    SizedBox(
+                        width: screenWidth - (sliderMargin * 2),
+                        child: SliderTheme(
+                          data: SliderTheme.of(context).copyWith(
+                            thumbColor: widget.colors['primary'],
+                            thumbShape: const RoundSliderThumbShape(
+                                enabledThumbRadius: 8.0),
+                            activeTrackColor: widget.colors['primary'],
+                            inactiveTrackColor:
+                                widget.colors['secondaryBackground'],
+                            trackHeight: 2,
+                          ),
+                          child: Slider(
+                            value: sliderValue,
+                            min: 0,
+                            max: sliderMaxValue,
+                            divisions: days.length,
+                            onChanged: (double value) {
+                              sliderValue = value;
+                              _scrollH(value);
+                            },
+                          ),
+                        ))
                   ]),
                 ),
                 // SCROLLBAR CUSTOM
