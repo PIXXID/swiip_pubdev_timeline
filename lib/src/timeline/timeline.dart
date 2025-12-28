@@ -72,11 +72,6 @@ class _Timeline extends State<Timeline> {
   // Configuration for timeline
   late TimelineConfiguration _config;
 
-  // Valeur du slider
-  double sliderValue = 0.0;
-  double sliderMargin = 25;
-  double sliderMaxValue = 10;
-
   // Largeur d'un item jour
   double dayWidth = 45.0;
   double dayMargin = 5;
@@ -254,9 +249,6 @@ class _Timeline extends State<Timeline> {
     // On positionne le stage de la première ligne par jour
     days = getStageByDay(days, stagesRows);
 
-    // Calcule la valeur maximum du slider
-    sliderMaxValue = days.length.toDouble() * (dayWidth - dayMargin);
-
     // Calcule l'index de la date du jour
     nowIndex = now.difference(startDate).inDays;
 
@@ -287,16 +279,11 @@ class _Timeline extends State<Timeline> {
     _controllerTimeline.addListener(() {
       _performanceMonitor.startOperation('scroll_update');
 
+      final maxScrollExtent = _controllerTimeline.position.maxScrollExtent;
       if (_controllerTimeline.offset >= 0 &&
-          _controllerTimeline.offset < sliderMaxValue) {
+          _controllerTimeline.offset < maxScrollExtent) {
         // Update TimelineController with throttling
         _timelineController.updateScrollOffset(_controllerTimeline.offset);
-
-        // Met à jour les valeurs
-        setState(() {
-          // On met à jour la valeur du slider
-          sliderValue = _controllerTimeline.offset;
-        });
 
         // Get centerItemIndex from controller
         final centerItemIndex = _timelineController.centerItemIndex.value;
@@ -317,7 +304,7 @@ class _Timeline extends State<Timeline> {
         }
 
         // Mise à jour de la position précédente
-        oldSliderValue = sliderValue;
+        oldSliderValue = _controllerTimeline.offset;
 
         if (widget.updateCurrentDate != null && days.isNotEmpty) {
           // Use clampIndex to ensure safe array access
@@ -396,40 +383,34 @@ class _Timeline extends State<Timeline> {
 
   // Scroll à une date
   void scrollTo(int dateIndex, {bool animated = false}) {
+    // Early return if timeline is empty or controller not ready
+    if (days.isEmpty || !_controllerTimeline.hasClients) {
+      return;
+    }
+
     // Clamp the index to valid range
     final safeIndex =
         TimelineErrorHandler.clampIndex(dateIndex, 0, days.length - 1);
 
-    if (safeIndex >= 0 && days.isNotEmpty) {
+    if (safeIndex >= 0) {
       // On calcule la valeur du scroll en fonction de la date
       double scroll = safeIndex * (dayWidth - dayMargin);
 
-      // Clamp scroll offset to valid range
-      scroll = TimelineErrorHandler.clampScrollOffset(scroll, sliderMaxValue);
+      // Clamp scroll offset to valid range using ScrollController's maxScrollExtent
+      final maxScroll = _controllerTimeline.position.maxScrollExtent;
+      scroll = TimelineErrorHandler.clampScrollOffset(scroll, maxScroll);
 
-      // Met à jour la valeur du scroll et scroll
-      setState(() {
-        sliderValue = scroll;
-      });
+      // Scroll using ScrollController directly
       if (animated) {
-        _scrollHAnimated(sliderValue);
+        _controllerTimeline.animateTo(
+          scroll,
+          duration: _config.animationDuration,
+          curve: Curves.easeInOut,
+        );
       } else {
-        _scrollH(sliderValue);
+        _controllerTimeline.jumpTo(scroll);
       }
     }
-  }
-
-  // Déclenche le scroll dans le controller timeline
-  void _scrollH(double sliderValue) {
-    // gestion du scroll via le slide
-    _controllerTimeline.jumpTo(sliderValue);
-  }
-
-  // Déclenche le scroll dans le controller timeline
-  void _scrollHAnimated(double sliderValue) {
-    // gestion du scroll via le slide
-    _controllerTimeline.animateTo(sliderValue,
-        duration: _config.animationDuration, curve: Curves.easeInOut);
   }
 
   // Scroll vertical des stages automatique
@@ -499,7 +480,8 @@ class _Timeline extends State<Timeline> {
 
     // On ne calcule l'élément le plus bas que si on scroll vers la gauche
     // et que l'utilisateur a scrollé à la main (optimisation)
-    if (sliderValue < oldSliderValue && userScrollOffset != null) {
+    if (_controllerTimeline.offset < oldSliderValue &&
+        userScrollOffset != null) {
       // Index à droite de l'écran - clamp to valid range
       int rightItemIndex = TimelineErrorHandler.clampIndex(
           centerItemIndex + 4, 0, days.length - 1);
@@ -825,31 +807,6 @@ class _Timeline extends State<Timeline> {
                         ),
                       ),
                     ),
-
-                    // Slider
-                    SizedBox(
-                        width: screenWidth - (sliderMargin * 2),
-                        child: SliderTheme(
-                          data: SliderTheme.of(context).copyWith(
-                            thumbColor: widget.colors['primary'],
-                            thumbShape: const RoundSliderThumbShape(
-                                enabledThumbRadius: 8.0),
-                            activeTrackColor: widget.colors['primary'],
-                            inactiveTrackColor:
-                                widget.colors['secondaryBackground'],
-                            trackHeight: 2,
-                          ),
-                          child: Slider(
-                            value: sliderValue,
-                            min: 0,
-                            max: sliderMaxValue,
-                            divisions: days.length,
-                            onChanged: (double value) {
-                              sliderValue = value;
-                              _scrollH(value);
-                            },
-                          ),
-                        ))
                   ]),
                 ),
                 // SCROLLBAR CUSTOM
@@ -857,7 +814,7 @@ class _Timeline extends State<Timeline> {
                 Positioned(
                   right: 0,
                   top: 65,
-                  bottom: 100, // Use bottom constraint instead of fixed height
+                  bottom: 20, // Reduced from 100 to 20 after slider removal
                   child: SizedBox(
                     width: 8,
                     child: LayoutBuilder(
