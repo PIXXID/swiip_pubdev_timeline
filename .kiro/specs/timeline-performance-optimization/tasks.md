@@ -207,25 +207,25 @@ Ce plan d'implémentation transforme la conception en tâches concrètes pour op
   - Vérifier que les erreurs sont gérées gracieusement
   - Demander à l'utilisateur si des questions se posent
 
-- [ ] 16. Optimiser les animations
-  - [ ] 16.1 Refactoriser les animations avec AnimatedBuilder
+- [x] 16. Optimiser les animations
+  - [x] 16.1 Refactoriser les animations avec AnimatedBuilder
     - Identifier les animations dans TimelineItem
     - Remplacer AnimatedContainer par AnimatedBuilder où approprié
     - Utiliser Transform pour les animations de position
     - Ajouter RepaintBoundary autour des widgets animés
     - _Requirements: 9.1, 9.4_
 
-  - [ ] 16.2 Implémenter le contrôle des animations par viewport
+  - [x] 16.2 Implémenter le contrôle des animations par viewport
     - Désactiver les animations pour les widgets hors viewport
     - Créer un AnimationController par widget animé
     - Disposer les controllers proprement
     - _Requirements: 9.3, 9.5_
 
-  - [ ] 16.3 Écrire le test de propriété pour le scoping des animations
+  - [x] 16.3 Écrire le test de propriété pour le scoping des animations
     - **Property 12: Animation Scoping**
     - **Validates: Requirements 9.2, 9.3**
 
-  - [ ] 16.4 Écrire les tests unitaires pour la structure des animations
+  - [x] 16.4 Écrire les tests unitaires pour la structure des animations
     - Vérifier l'utilisation d'AnimatedBuilder
     - Vérifier l'utilisation de Transform
     - Vérifier le disposal des AnimationControllers

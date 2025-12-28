@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'models/visible_range.dart';
 
 /// Optimized version of TimelineItem using ValueListenableBuilder and RepaintBoundary.
 /// 
@@ -9,10 +10,12 @@ import 'package:intl/intl.dart';
 /// - Wrapping content in RepaintBoundary to isolate repaints
 /// - Using const constructors where possible
 /// - Extracting calculation methods to reduce build complexity
-class OptimizedTimelineItem extends StatelessWidget {
+/// - Using AnimatedBuilder with Transform for efficient animations
+class OptimizedTimelineItem extends StatefulWidget {
   final Map<String, Color> colors;
   final int index;
   final ValueNotifier<int> centerItemIndexNotifier;
+  final ValueNotifier<VisibleRange>? visibleRangeNotifier;
   final int nowIndex;
   final Map<String, dynamic> day;
   final List elements;
@@ -27,6 +30,7 @@ class OptimizedTimelineItem extends StatelessWidget {
     required this.colors,
     required this.index,
     required this.centerItemIndexNotifier,
+    this.visibleRangeNotifier,
     required this.nowIndex,
     required this.day,
     required this.elements,
@@ -36,18 +40,144 @@ class OptimizedTimelineItem extends StatelessWidget {
     this.openDayDetail,
   });
 
+  @override
+  State<OptimizedTimelineItem> createState() => _OptimizedTimelineItemState();
+}
+
+class _OptimizedTimelineItemState extends State<OptimizedTimelineItem>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _progressAnimationController;
+  late Animation<double> _progressAnimation;
+  double _targetHeight = 0.0;
+  bool _isVisible = false;
+  bool _isInViewport = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _progressAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 400),
+      vsync: this,
+    );
+    _progressAnimation = Tween<double>(begin: 0.0, end: 0.0).animate(
+      CurvedAnimation(
+        parent: _progressAnimationController,
+        curve: Curves.easeInOut,
+      ),
+    );
+    
+    // Listen to centerItemIndex changes to control animation
+    widget.centerItemIndexNotifier.addListener(_onCenterIndexChanged);
+    
+    // Listen to visibleRange changes to control animation based on viewport
+    widget.visibleRangeNotifier?.addListener(_onVisibleRangeChanged);
+    
+    _onCenterIndexChanged(); // Initialize visibility
+    _onVisibleRangeChanged(); // Initialize viewport visibility
+  }
+
+  @override
+  void dispose() {
+    widget.centerItemIndexNotifier.removeListener(_onCenterIndexChanged);
+    widget.visibleRangeNotifier?.removeListener(_onVisibleRangeChanged);
+    _progressAnimationController.dispose();
+    super.dispose();
+  }
+
+  void _onCenterIndexChanged() {
+    final centerIndex = widget.centerItemIndexNotifier.value;
+    final dayTextColor = _calculateDayTextColor(centerIndex);
+    final newIsVisible = dayTextColor != Colors.transparent;
+    
+    if (newIsVisible != _isVisible) {
+      setState(() {
+        _isVisible = newIsVisible;
+      });
+    }
+  }
+
+  void _onVisibleRangeChanged() {
+    if (widget.visibleRangeNotifier == null) {
+      _isInViewport = true;
+      return;
+    }
+    
+    final visibleRange = widget.visibleRangeNotifier!.value;
+    final newIsInViewport = visibleRange.contains(widget.index);
+    
+    if (newIsInViewport != _isInViewport) {
+      setState(() {
+        _isInViewport = newIsInViewport;
+      });
+      
+      // Stop animation if widget is outside viewport
+      if (!_isInViewport && _progressAnimationController.isAnimating) {
+        _progressAnimationController.stop();
+      }
+    }
+  }
+
+  @override
+  void didUpdateWidget(OptimizedTimelineItem oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    
+    // Update animation if day data changed
+    if (oldWidget.day != widget.day) {
+      _updateProgressAnimation();
+    }
+  }
+
+  void _updateProgressAnimation() {
+    // Don't animate if widget is outside viewport
+    if (!_isInViewport) {
+      return;
+    }
+    
+    final heightCompeff = _calculateCompletedHeight();
+    
+    if (_targetHeight != heightCompeff) {
+      _progressAnimation = Tween<double>(
+        begin: _progressAnimation.value,
+        end: heightCompeff,
+      ).animate(
+        CurvedAnimation(
+          parent: _progressAnimationController,
+          curve: Curves.easeInOut,
+        ),
+      );
+      
+      _targetHeight = heightCompeff;
+      _progressAnimationController.forward(from: 0.0);
+    }
+  }
+
+  double _calculateCompletedHeight() {
+    final heightLmax = widget.height;
+    double heightCompeff = 0;
+    
+    if (widget.day['compeff'] > 0) {
+      heightCompeff = (heightLmax * widget.day['compeff']) / 
+          ((widget.day['lmax'] > 0) ? widget.day['lmax'] : 1);
+      if (heightCompeff >= heightLmax) {
+        heightCompeff = heightLmax;
+      }
+    }
+    
+    return heightCompeff;
+  }
+
   /// Calculates the day text color based on distance from center.
   Color _calculateDayTextColor(int centerIndex) {
-    final idxCenter = centerIndex - index;
+    final idxCenter = centerIndex - widget.index;
 
     if (idxCenter == 0) {
-      return colors['primaryText']!;
+      return widget.colors['primaryText']!;
     } else if ((idxCenter >= 1 && idxCenter < 4) ||
         (idxCenter <= -1 && idxCenter > -4)) {
-      return colors['secondaryText']!;
+      return widget.colors['secondaryText']!;
     } else if ((idxCenter >= 4 && idxCenter < 6) ||
         (idxCenter <= -4 && idxCenter > -6)) {
-      return colors['accent1']!;
+      return widget.colors['accent1']!;
     } else {
       return Colors.transparent;
     }
@@ -55,35 +185,34 @@ class OptimizedTimelineItem extends StatelessWidget {
 
   /// Builds the day content with bars and indicators.
   Widget _buildDayContent(Color dayTextColor) {
-    final DateTime date = day['date'];
-    Color busyColor = colors['secondaryText'] ?? Colors.grey;
-    Color completeColor = colors['secondaryText'] ?? Colors.white;
-    const double margin = 0.0; // Use dayMargin from widget
+    final DateTime date = widget.day['date'];
+    Color busyColor = widget.colors['secondaryText'] ?? Colors.grey;
+    Color completeColor = widget.colors['secondaryText'] ?? Colors.white;
 
     // Hauteur MAX
-    final double heightLmax = height;
+    final double heightLmax = widget.height;
 
     // On calcule la hauteur de chaque barre
     double heightCapeff = 0, heightBuseff = 0, heightCompeff = 0;
     bool dayIsCompleted = false;
     
-    if (day['capeff'] > 0) {
+    if (widget.day['capeff'] > 0) {
       heightCapeff =
-          (heightLmax * day['capeff']) / ((day['lmax'] > 0) ? day['lmax'] : 1);
+          (heightLmax * widget.day['capeff']) / ((widget.day['lmax'] > 0) ? widget.day['lmax'] : 1);
     }
-    if (day['buseff'] > 0) {
+    if (widget.day['buseff'] > 0) {
       heightBuseff =
-          (heightLmax * day['buseff']) / ((day['lmax'] > 0) ? day['lmax'] : 1);
+          (heightLmax * widget.day['buseff']) / ((widget.day['lmax'] > 0) ? widget.day['lmax'] : 1);
     }
-    if (day['compeff'] > 0) {
+    if (widget.day['compeff'] > 0) {
       heightCompeff =
-          (heightLmax * day['compeff']) / ((day['lmax'] > 0) ? day['lmax'] : 1);
+          (heightLmax * widget.day['compeff']) / ((widget.day['lmax'] > 0) ? widget.day['lmax'] : 1);
       if (heightCompeff >= heightLmax) {
         heightCompeff = heightLmax;
         dayIsCompleted = true;
       }
       // Met à jour la couleur si progression
-      completeColor = colors['primary']!;
+      completeColor = widget.colors['primary']!;
     }
 
     // Réduit la hauteur en cas de dépassement excessif
@@ -99,9 +228,9 @@ class OptimizedTimelineItem extends StatelessWidget {
 
     // Indicateurs de capacité et charges
     final dayIndicators = {
-      'capacity': day['capeff'],
-      'busy': day['buseff'],
-      'completed': day['compeff']
+      'capacity': widget.day['capeff'],
+      'busy': widget.day['buseff'],
+      'completed': widget.day['compeff']
     };
 
     return Align(
@@ -111,52 +240,52 @@ class OptimizedTimelineItem extends StatelessWidget {
         onTap: () {
           // On calcule la progression du jour pour le renvoyer en callback
           double dayProgress = 0;
-          if (day['buseff'] != null && day['buseff'] > 0) {
-            dayProgress = 100 * day['compeff'] / day['buseff'];
+          if (widget.day['buseff'] != null && widget.day['buseff'] > 0) {
+            dayProgress = 100 * widget.day['compeff'] / widget.day['buseff'];
           }
 
           // Liste des éléments présents sur la journée
-          final elementsDay = elements
+          final elementsDay = widget.elements
               .where(
                 (e) =>
-                    e['date'] == DateFormat('yyyy-MM-dd').format(day['date']),
+                    e['date'] == DateFormat('yyyy-MM-dd').format(widget.day['date']),
               )
               .toList();
 
           // Callback de la fonction d'ouverture du jour
-          openDayDetail?.call(
+          widget.openDayDetail?.call(
             DateFormat('yyyy-MM-dd').format(date),
             dayProgress,
-            (day['preIds'] as List<dynamic>).cast<String>(),
+            (widget.day['preIds'] as List<dynamic>).cast<String>(),
             elementsDay,
             dayIndicators,
           );
         },
         child: SizedBox(
-          width: dayWidth - dayMargin,
-          height: height,
+          width: widget.dayWidth - widget.dayMargin,
+          height: widget.height,
           child: Column(
             children: <Widget>[
               // Alertes
-              if (index == nowIndex)
+              if (widget.index == widget.nowIndex)
                 Padding(
                   padding: const EdgeInsets.only(top: 3, bottom: 5),
                   child: Icon(
                     Icons.circle_outlined,
                     size: 12,
-                    color: colors['primaryText'],
+                    color: widget.colors['primaryText'],
                   ),
                 )
-              else if (day['alertLevel'] != 0)
+              else if (widget.day['alertLevel'] != 0)
                 Padding(
                   padding: const EdgeInsets.only(top: 3, bottom: 5),
                   child: Icon(
                     Icons.circle_rounded,
                     size: 12,
-                    color: day['alertLevel'] == 1
-                        ? colors['warning']
-                        : (day['alertLevel'] == 2
-                            ? colors['error']
+                    color: widget.day['alertLevel'] == 1
+                        ? widget.colors['warning']
+                        : (widget.day['alertLevel'] == 2
+                            ? widget.colors['error']
                             : Colors.transparent),
                   ),
                 )
@@ -175,17 +304,17 @@ class OptimizedTimelineItem extends StatelessWidget {
                       right: 0,
                       child: Container(
                         margin: EdgeInsets.only(
-                          left: dayMargin / 2,
-                          right: dayMargin / 2,
-                          bottom: dayMargin / 3,
+                          left: widget.dayMargin / 2,
+                          right: widget.dayMargin / 2,
+                          bottom: widget.dayMargin / 3,
                         ),
-                        width: dayWidth - dayMargin - 15,
+                        width: widget.dayWidth - widget.dayMargin - 15,
                         height: (heightCapeff > 0) ? heightCapeff - 2 : heightLmax,
                         decoration: BoxDecoration(
                           border: Border(
                             top: BorderSide(
-                              color: (index == centerItemIndexNotifier.value)
-                                  ? colors['secondaryText']!
+                              color: (widget.index == widget.centerItemIndexNotifier.value)
+                                  ? widget.colors['secondaryText']!
                                   : const Color(0x00000000),
                               width: 1,
                             ),
@@ -199,7 +328,7 @@ class OptimizedTimelineItem extends StatelessWidget {
                                       heightCompeff == 0)
                                   ? Icon(
                                       Icons.sunny,
-                                      color: colors['secondaryBackground'],
+                                      color: widget.colors['secondaryBackground'],
                                       size: 14,
                                     )
                                   : null,
@@ -213,11 +342,11 @@ class OptimizedTimelineItem extends StatelessWidget {
                       right: 0,
                       child: Container(
                         margin: EdgeInsets.only(
-                          left: dayMargin / 2,
-                          right: dayMargin / 2,
-                          bottom: dayMargin / 3,
+                          left: widget.dayMargin / 2,
+                          right: widget.dayMargin / 2,
+                          bottom: widget.dayMargin / 3,
                         ),
-                        width: dayWidth - dayMargin - 16,
+                        width: widget.dayWidth - widget.dayMargin - 16,
                         // On affiche 1 pixel pour marquer une journée travaillée
                         height: (heightBuseff <= 0) ? 0.5 : heightBuseff,
                         decoration: BoxDecoration(
@@ -226,36 +355,43 @@ class OptimizedTimelineItem extends StatelessWidget {
                         ),
                       ),
                     ),
-                    // Barre de travail terminé
+                    // Barre de travail terminé - Using AnimatedBuilder with Transform
                     Positioned(
                       bottom: 0,
                       left: 0,
                       right: 0,
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 400),
-                        height: (dayTextColor != Colors.transparent)
-                            ? heightCompeff
-                            : 0,
-                        child: Container(
-                          margin: EdgeInsets.only(
-                            left: dayMargin / 2,
-                            right: dayMargin / 2,
-                            bottom: dayMargin / 3,
-                          ),
-                          width: dayWidth - dayMargin - 16,
-                          decoration: BoxDecoration(
-                            borderRadius: borderRadius,
-                            color: completeColor,
-                          ),
-                          child: (dayIsCompleted)
-                              ? Center(
-                                  child: Icon(
-                                    Icons.check,
-                                    color: colors['info'],
-                                    size: 16,
-                                  ),
-                                )
-                              : null,
+                      child: RepaintBoundary(
+                        child: AnimatedBuilder(
+                          animation: _progressAnimation,
+                          builder: (context, child) {
+                            final animatedHeight = _isVisible ? _progressAnimation.value : 0.0;
+                            
+                            return Transform.translate(
+                              offset: Offset(0, heightLmax - animatedHeight),
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                  left: widget.dayMargin / 2,
+                                  right: widget.dayMargin / 2,
+                                  bottom: widget.dayMargin / 3,
+                                ),
+                                width: widget.dayWidth - widget.dayMargin - 16,
+                                height: animatedHeight,
+                                decoration: BoxDecoration(
+                                  borderRadius: borderRadius,
+                                  color: completeColor,
+                                ),
+                                child: (dayIsCompleted && animatedHeight > 0)
+                                    ? Center(
+                                        child: Icon(
+                                          Icons.check,
+                                          color: widget.colors['info'],
+                                          size: 16,
+                                        ),
+                                      )
+                                    : null,
+                              ),
+                            );
+                          },
                         ),
                       ),
                     ),
@@ -272,9 +408,14 @@ class OptimizedTimelineItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Trigger animation update when widget is built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _updateProgressAnimation();
+    });
+    
     return RepaintBoundary(
       child: ValueListenableBuilder<int>(
-        valueListenable: centerItemIndexNotifier,
+        valueListenable: widget.centerItemIndexNotifier,
         builder: (context, centerIndex, child) {
           // Calculate the day text color based on distance from center
           final dayTextColor = _calculateDayTextColor(centerIndex);

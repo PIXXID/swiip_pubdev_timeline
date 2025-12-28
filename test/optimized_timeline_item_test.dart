@@ -408,8 +408,8 @@ void main() {
       centerItemIndexNotifier.dispose();
     });
 
-    testWidgets('is a StatelessWidget', (tester) async {
-      // Validates: Requirements 1.4
+    testWidgets('is a StatefulWidget with animation controller', (tester) async {
+      // Validates: Requirements 1.4, 9.1, 9.5
       
       final centerItemIndexNotifier = ValueNotifier<int>(0);
 
@@ -447,9 +447,9 @@ void main() {
         openDayDetail: null,
       );
 
-      // Verify it's a StatelessWidget
-      expect(widget, isA<StatelessWidget>());
-      expect(widget, isNot(isA<StatefulWidget>()));
+      // Verify it's a StatefulWidget (changed from StatelessWidget for animation support)
+      expect(widget, isA<StatefulWidget>());
+      expect(widget, isNot(isA<StatelessWidget>()));
 
       centerItemIndexNotifier.dispose();
     });
