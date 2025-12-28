@@ -12,3 +12,4 @@ export 'validation_error.dart';
 export 'parameter_constraints.dart';
 export 'configuration_validator.dart';
 export 'configuration_loader.dart';
+export 'timeline_configuration_manager.dart';

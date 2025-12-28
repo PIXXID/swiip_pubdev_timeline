@@ -82,8 +82,8 @@ This implementation plan breaks down the external configuration system into disc
     - *For any* config file under 10KB, loading should complete within 100ms
     - **Validates: Requirements 4.5, 10.5**
 
-- [ ] 4. Implement configuration manager
-  - [ ] 4.1 Create TimelineConfigurationManager class
+- [x] 4. Implement configuration manager
+  - [x] 4.1 Create TimelineConfigurationManager class
     - Implement singleton pattern
     - Implement `initialize()` method accepting file and programmatic configs
     - Implement precedence logic (programmatic overrides file)
@@ -93,17 +93,17 @@ This implementation plan breaks down the external configuration system into disc
     - Ensure configuration is immutable after initialization
     - _Requirements: 5.1-5.5, 8.4_
 
-  - [ ] 4.2 Write property test for configuration immutability
+  - [x] 4.2 Write property test for configuration immutability
     - **Property 6: Configuration Immutability**
     - *For any* initialized configuration, multiple accesses should return same values
     - **Validates: Requirements 5.2**
 
-  - [ ] 4.3 Write property test for programmatic override precedence
+  - [x] 4.3 Write property test for programmatic override precedence
     - **Property 7: Programmatic Override Precedence**
     - *For any* conflicting file and programmatic configs, programmatic should win
     - **Validates: Requirements 8.4**
 
-  - [ ] 4.4 Write property test for configuration caching
+  - [x] 4.4 Write property test for configuration caching
     - **Property 13: Configuration Caching**
     - *For any* initialized config, multiple accesses should not re-read file
     - **Validates: Requirements 10.3**
