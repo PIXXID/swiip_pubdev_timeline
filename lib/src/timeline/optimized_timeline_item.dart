@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'models/visible_range.dart';
 
 /// Optimized version of TimelineItem using ValueListenableBuilder and RepaintBoundary.
-/// 
+///
 /// This widget is optimized for performance by:
 /// - Using StatelessWidget instead of StatefulWidget
 /// - Using ValueListenableBuilder for selective rebuilds
@@ -59,19 +59,24 @@ class _OptimizedTimelineItemState extends State<OptimizedTimelineItem>
       duration: const Duration(milliseconds: 400),
       vsync: this,
     );
-    _progressAnimation = Tween<double>(begin: 0.0, end: 0.0).animate(
+
+    // Initialize animation with current height
+    final initialHeight = _calculateCompletedHeight();
+    _targetHeight = initialHeight;
+    _progressAnimation =
+        Tween<double>(begin: initialHeight, end: initialHeight).animate(
       CurvedAnimation(
         parent: _progressAnimationController,
         curve: Curves.easeInOut,
       ),
     );
-    
+
     // Listen to centerItemIndex changes to control animation
     widget.centerItemIndexNotifier.addListener(_onCenterIndexChanged);
-    
+
     // Listen to visibleRange changes to control animation based on viewport
     widget.visibleRangeNotifier?.addListener(_onVisibleRangeChanged);
-    
+
     _onCenterIndexChanged(); // Initialize visibility
     _onVisibleRangeChanged(); // Initialize viewport visibility
   }
@@ -88,7 +93,7 @@ class _OptimizedTimelineItemState extends State<OptimizedTimelineItem>
     final centerIndex = widget.centerItemIndexNotifier.value;
     final dayTextColor = _calculateDayTextColor(centerIndex);
     final newIsVisible = dayTextColor != Colors.transparent;
-    
+
     if (newIsVisible != _isVisible) {
       setState(() {
         _isVisible = newIsVisible;
@@ -101,15 +106,15 @@ class _OptimizedTimelineItemState extends State<OptimizedTimelineItem>
       _isInViewport = true;
       return;
     }
-    
+
     final visibleRange = widget.visibleRangeNotifier!.value;
     final newIsInViewport = visibleRange.contains(widget.index);
-    
+
     if (newIsInViewport != _isInViewport) {
       setState(() {
         _isInViewport = newIsInViewport;
       });
-      
+
       // Stop animation if widget is outside viewport
       if (!_isInViewport && _progressAnimationController.isAnimating) {
         _progressAnimationController.stop();
@@ -120,10 +125,15 @@ class _OptimizedTimelineItemState extends State<OptimizedTimelineItem>
   @override
   void didUpdateWidget(OptimizedTimelineItem oldWidget) {
     super.didUpdateWidget(oldWidget);
-    
+
     // Update animation if day data changed
     if (oldWidget.day != widget.day) {
-      _updateProgressAnimation();
+      // Schedule animation update after the current frame
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _updateProgressAnimation();
+        }
+      });
     }
   }
 
@@ -132,9 +142,9 @@ class _OptimizedTimelineItemState extends State<OptimizedTimelineItem>
     if (!_isInViewport) {
       return;
     }
-    
+
     final heightCompeff = _calculateCompletedHeight();
-    
+
     if (_targetHeight != heightCompeff) {
       _progressAnimation = Tween<double>(
         begin: _progressAnimation.value,
@@ -145,7 +155,7 @@ class _OptimizedTimelineItemState extends State<OptimizedTimelineItem>
           curve: Curves.easeInOut,
         ),
       );
-      
+
       _targetHeight = heightCompeff;
       _progressAnimationController.forward(from: 0.0);
     }
@@ -154,15 +164,15 @@ class _OptimizedTimelineItemState extends State<OptimizedTimelineItem>
   double _calculateCompletedHeight() {
     final heightLmax = widget.height;
     double heightCompeff = 0;
-    
+
     if (widget.day['compeff'] > 0) {
-      heightCompeff = (heightLmax * widget.day['compeff']) / 
+      heightCompeff = (heightLmax * widget.day['compeff']) /
           ((widget.day['lmax'] > 0) ? widget.day['lmax'] : 1);
       if (heightCompeff >= heightLmax) {
         heightCompeff = heightLmax;
       }
     }
-    
+
     return heightCompeff;
   }
 
@@ -195,18 +205,18 @@ class _OptimizedTimelineItemState extends State<OptimizedTimelineItem>
     // On calcule la hauteur de chaque barre
     double heightCapeff = 0, heightBuseff = 0, heightCompeff = 0;
     bool dayIsCompleted = false;
-    
+
     if (widget.day['capeff'] > 0) {
-      heightCapeff =
-          (heightLmax * widget.day['capeff']) / ((widget.day['lmax'] > 0) ? widget.day['lmax'] : 1);
+      heightCapeff = (heightLmax * widget.day['capeff']) /
+          ((widget.day['lmax'] > 0) ? widget.day['lmax'] : 1);
     }
     if (widget.day['buseff'] > 0) {
-      heightBuseff =
-          (heightLmax * widget.day['buseff']) / ((widget.day['lmax'] > 0) ? widget.day['lmax'] : 1);
+      heightBuseff = (heightLmax * widget.day['buseff']) /
+          ((widget.day['lmax'] > 0) ? widget.day['lmax'] : 1);
     }
     if (widget.day['compeff'] > 0) {
-      heightCompeff =
-          (heightLmax * widget.day['compeff']) / ((widget.day['lmax'] > 0) ? widget.day['lmax'] : 1);
+      heightCompeff = (heightLmax * widget.day['compeff']) /
+          ((widget.day['lmax'] > 0) ? widget.day['lmax'] : 1);
       if (heightCompeff >= heightLmax) {
         heightCompeff = heightLmax;
         dayIsCompleted = true;
@@ -248,7 +258,8 @@ class _OptimizedTimelineItemState extends State<OptimizedTimelineItem>
           final elementsDay = widget.elements
               .where(
                 (e) =>
-                    e['date'] == DateFormat('yyyy-MM-dd').format(widget.day['date']),
+                    e['date'] ==
+                    DateFormat('yyyy-MM-dd').format(widget.day['date']),
               )
               .toList();
 
@@ -296,109 +307,115 @@ class _OptimizedTimelineItemState extends State<OptimizedTimelineItem>
                 child: SizedBox(
                   height: heightLmax,
                   child: Stack(
-                  children: [
-                    // Barre de capacité
-                    Positioned(
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      child: Container(
-                        margin: EdgeInsets.only(
-                          left: widget.dayMargin / 2,
-                          right: widget.dayMargin / 2,
-                          bottom: widget.dayMargin / 3,
-                        ),
-                        width: widget.dayWidth - widget.dayMargin - 15,
-                        height: (heightCapeff > 0) ? heightCapeff - 2 : heightLmax,
-                        decoration: BoxDecoration(
-                          border: Border(
-                            top: BorderSide(
-                              color: (widget.index == widget.centerItemIndexNotifier.value)
-                                  ? widget.colors['secondaryText']!
-                                  : const Color(0x00000000),
-                              width: 1,
+                    children: [
+                      // Barre de capacité
+                      Positioned(
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        child: Container(
+                          margin: EdgeInsets.only(
+                            left: widget.dayMargin / 2,
+                            right: widget.dayMargin / 2,
+                            bottom: widget.dayMargin / 3,
+                          ),
+                          width: widget.dayWidth - widget.dayMargin - 15,
+                          height: (heightCapeff > 0)
+                              ? heightCapeff - 2
+                              : heightLmax,
+                          decoration: BoxDecoration(
+                            border: Border(
+                              top: BorderSide(
+                                color: (widget.index ==
+                                        widget.centerItemIndexNotifier.value)
+                                    ? widget.colors['secondaryText']!
+                                    : const Color(0x00000000),
+                                width: 1,
+                              ),
                             ),
                           ),
-                        ),
-                        child: Center(
-                          child:
-                              // Icon soleil si aucune capacité
-                              (heightCapeff == 0 &&
-                                      heightBuseff == 0 &&
-                                      heightCompeff == 0)
-                                  ? Icon(
-                                      Icons.sunny,
-                                      color: widget.colors['secondaryBackground'],
-                                      size: 14,
-                                    )
-                                  : null,
-                        ),
-                      ),
-                    ),
-                    // Barre de travail affecté (busy)
-                    Positioned(
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      child: Container(
-                        margin: EdgeInsets.only(
-                          left: widget.dayMargin / 2,
-                          right: widget.dayMargin / 2,
-                          bottom: widget.dayMargin / 3,
-                        ),
-                        width: widget.dayWidth - widget.dayMargin - 16,
-                        // On affiche 1 pixel pour marquer une journée travaillée
-                        height: (heightBuseff <= 0) ? 0.5 : heightBuseff,
-                        decoration: BoxDecoration(
-                          borderRadius: borderRadius,
-                          color: busyColor,
-                        ),
-                      ),
-                    ),
-                    // Barre de travail terminé - Using AnimatedBuilder with Transform
-                    Positioned(
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      child: RepaintBoundary(
-                        child: AnimatedBuilder(
-                          animation: _progressAnimation,
-                          builder: (context, child) {
-                            final animatedHeight = _isVisible ? _progressAnimation.value : 0.0;
-                            
-                            return Transform.translate(
-                              offset: Offset(0, heightLmax - animatedHeight),
-                              child: Container(
-                                margin: EdgeInsets.only(
-                                  left: widget.dayMargin / 2,
-                                  right: widget.dayMargin / 2,
-                                  bottom: widget.dayMargin / 3,
-                                ),
-                                width: widget.dayWidth - widget.dayMargin - 16,
-                                height: animatedHeight,
-                                decoration: BoxDecoration(
-                                  borderRadius: borderRadius,
-                                  color: completeColor,
-                                ),
-                                child: (dayIsCompleted && animatedHeight > 0)
-                                    ? Center(
-                                        child: Icon(
-                                          Icons.check,
-                                          color: widget.colors['info'],
-                                          size: 16,
-                                        ),
+                          child: Center(
+                            child:
+                                // Icon soleil si aucune capacité
+                                (heightCapeff == 0 &&
+                                        heightBuseff == 0 &&
+                                        heightCompeff == 0)
+                                    ? Icon(
+                                        Icons.sunny,
+                                        color: widget
+                                            .colors['secondaryBackground'],
+                                        size: 14,
                                       )
                                     : null,
-                              ),
-                            );
-                          },
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                      // Barre de travail affecté (busy)
+                      Positioned(
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        child: Container(
+                          margin: EdgeInsets.only(
+                            left: widget.dayMargin / 2,
+                            right: widget.dayMargin / 2,
+                            bottom: widget.dayMargin / 3,
+                          ),
+                          width: widget.dayWidth - widget.dayMargin - 16,
+                          // On affiche 1 pixel pour marquer une journée travaillée
+                          height: (heightBuseff <= 0) ? 0.5 : heightBuseff,
+                          decoration: BoxDecoration(
+                            borderRadius: borderRadius,
+                            color: busyColor,
+                          ),
+                        ),
+                      ),
+                      // Barre de travail terminé - Using AnimatedBuilder with Transform
+                      Positioned(
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        child: RepaintBoundary(
+                          child: AnimatedBuilder(
+                            animation: _progressAnimation,
+                            builder: (context, child) {
+                              final animatedHeight =
+                                  _isVisible ? _progressAnimation.value : 0.0;
+
+                              return Transform.translate(
+                                offset: Offset(0, heightLmax - animatedHeight),
+                                child: Container(
+                                  margin: EdgeInsets.only(
+                                    left: widget.dayMargin / 2,
+                                    right: widget.dayMargin / 2,
+                                    bottom: widget.dayMargin / 3,
+                                  ),
+                                  width:
+                                      widget.dayWidth - widget.dayMargin - 16,
+                                  height: animatedHeight,
+                                  decoration: BoxDecoration(
+                                    borderRadius: borderRadius,
+                                    color: completeColor,
+                                  ),
+                                  child: (dayIsCompleted && animatedHeight > 0)
+                                      ? Center(
+                                          child: Icon(
+                                            Icons.check,
+                                            color: widget.colors['info'],
+                                            size: 16,
+                                          ),
+                                        )
+                                      : null,
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
             ],
           ),
         ),
@@ -408,11 +425,6 @@ class _OptimizedTimelineItemState extends State<OptimizedTimelineItem>
 
   @override
   Widget build(BuildContext context) {
-    // Trigger animation update when widget is built
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _updateProgressAnimation();
-    });
-    
     return RepaintBoundary(
       child: ValueListenableBuilder<int>(
         valueListenable: widget.centerItemIndexNotifier,

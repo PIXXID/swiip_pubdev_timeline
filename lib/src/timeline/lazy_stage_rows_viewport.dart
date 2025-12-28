@@ -41,10 +41,12 @@ class LazyStageRowsViewport extends StatefulWidget {
   final bool isUniqueProject;
 
   /// Callback for editing a stage.
-  final Function(String?, String?, String?, String?, String?, double?, String?)? openEditStage;
+  final Function(String?, String?, String?, String?, String?, double?, String?)?
+      openEditStage;
 
   /// Callback for editing an element.
-  final Function(String?, String?, String?, String?, String?, double?, String?)? openEditElement;
+  final Function(String?, String?, String?, String?, String?, double?, String?)?
+      openEditElement;
 
   /// The scroll controller for vertical scrolling.
   final ScrollController verticalScrollController;
@@ -87,7 +89,7 @@ class _LazyStageRowsViewportState extends State<LazyStageRowsViewport> {
     super.initState();
     // Calculate initial visible range
     _updateVisibleRowRange();
-    
+
     // Listen to vertical scroll changes
     widget.verticalScrollController.addListener(_onVerticalScroll);
   }
@@ -106,23 +108,25 @@ class _LazyStageRowsViewportState extends State<LazyStageRowsViewport> {
   /// Calculates and updates the visible row range based on scroll position.
   void _updateVisibleRowRange() {
     if (!mounted) return;
-    
+
     final scrollOffset = widget.verticalScrollController.hasClients
         ? widget.verticalScrollController.offset
         : 0.0;
-    
+
     // Calculate which rows are visible
     final rowTotalHeight = widget.rowHeight + (widget.rowMargin * 2);
     final firstVisibleRow = (scrollOffset / rowTotalHeight).floor();
     final visibleRowCount = (widget.viewportHeight / rowTotalHeight).ceil();
     final lastVisibleRow = firstVisibleRow + visibleRowCount;
-    
+
     // Add buffer
-    final start = (firstVisibleRow - widget.bufferRows).clamp(0, widget.stagesRows.length - 1);
-    final end = (lastVisibleRow + widget.bufferRows).clamp(0, widget.stagesRows.length - 1);
-    
+    final start = (firstVisibleRow - widget.bufferRows)
+        .clamp(0, widget.stagesRows.length - 1);
+    final end = (lastVisibleRow + widget.bufferRows)
+        .clamp(0, widget.stagesRows.length - 1);
+
     final newRange = VisibleRange(start, end);
-    
+
     // Only update if range has changed
     if (newRange != _visibleRowRange) {
       setState(() {
@@ -134,14 +138,20 @@ class _LazyStageRowsViewportState extends State<LazyStageRowsViewport> {
   @override
   Widget build(BuildContext context) {
     // Calculate total height for proper layout
-    final totalHeight = widget.stagesRows.length * (widget.rowHeight + (widget.rowMargin * 2));
-    
+    final totalHeight =
+        widget.stagesRows.length * (widget.rowHeight + (widget.rowMargin * 2));
+
+    // Calculate the actual width based on timeline dimensions
+    final totalWidth = widget.totalDays * widget.dayWidth;
+
     // Build only visible rows
     final visibleRows = <Widget>[];
-    
-    for (var i = _visibleRowRange.start; i <= _visibleRowRange.end && i < widget.stagesRows.length; i++) {
+
+    for (var i = _visibleRowRange.start;
+        i <= _visibleRowRange.end && i < widget.stagesRows.length;
+        i++) {
       final rowTop = i * (widget.rowHeight + (widget.rowMargin * 2));
-      
+
       visibleRows.add(
         Positioned(
           top: rowTop,
@@ -167,8 +177,9 @@ class _LazyStageRowsViewportState extends State<LazyStageRowsViewport> {
         ),
       );
     }
-    
+
     return SizedBox(
+      width: totalWidth,
       height: totalHeight,
       child: Stack(
         children: visibleRows,
