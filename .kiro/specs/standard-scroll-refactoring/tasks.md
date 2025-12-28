@@ -132,10 +132,10 @@ This implementation plan breaks down the refactoring of the Timeline component t
     - Verify scrollbar height calculated correctly
     - _Requirements: 3.3_
 
-- [ ] 8. Checkpoint - Ensure all tests pass
+- [x] 8. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 9. Update documentation
+- [x] 9. Update documentation
   - Update README.md to remove slider references and describe standard scrolling
   - Update CONFIGURATION.md to remove slider-related configuration notes
   - Update code comments in timeline.dart to reflect ScrollController usage

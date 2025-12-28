@@ -8,6 +8,7 @@ A high-performance Flutter timeline/Gantt chart widget for displaying project sc
 - **Scroll Throttling**: Limits scroll calculations to ~60 FPS
 - **Conditional Rebuilds**: Rebuilds only affected widgets on state changes
 - **Memory Efficient**: Proper resource cleanup and disposal
+- **Standard Scrolling**: Native Flutter scrolling with mouse wheel, trackpad, and touch gestures
 
 ## Getting started
 
@@ -100,8 +101,22 @@ Only visible items are rendered:
 
 ```dart
 // The Timeline automatically calculates which items are visible
-// and renders only those items plus a 5-day buffer on each side
+// and renders only those items plus a configurable buffer
 // This keeps memory usage low even with hundreds of days
+```
+
+#### 4. Standard Scrolling
+
+The timeline uses native Flutter scrolling mechanisms:
+
+```dart
+// Horizontal scrolling works with:
+// - Mouse wheel (with Shift key on some platforms)
+// - Trackpad horizontal gestures
+// - Touch drag gestures
+// - Programmatic scrollTo() method
+//
+// Vertical scrolling works independently with the same gestures
 ```
 
 ### External Configuration

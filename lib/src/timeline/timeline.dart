@@ -22,6 +22,45 @@ import 'models/configuration_loader.dart';
 import 'package:swiip_pubdev_timeline/src/tools/tools.dart';
 import 'package:swiip_pubdev_timeline/src/platform/platform_language.dart';
 
+/// A high-performance Flutter timeline/Gantt chart widget for displaying project schedules.
+///
+/// The Timeline widget provides a scrollable view of project stages, milestones, and activities
+/// across a date range. It uses lazy rendering and granular state management to efficiently
+/// handle large datasets (500+ days with 100+ stages).
+///
+/// ## Features
+///
+/// - **Standard Scrolling**: Native Flutter scrolling with mouse wheel, trackpad, and touch gestures
+/// - **Lazy Rendering**: Only renders visible items plus a configurable buffer
+/// - **Data Caching**: Caches formatted data to avoid redundant calculations
+/// - **Scroll Throttling**: Limits scroll updates to ~60 FPS for smooth performance
+/// - **Auto-Scroll**: Vertical scrolling automatically follows horizontal position
+/// - **External Configuration**: Performance tuning via JSON configuration file
+///
+/// ## Scrolling Behavior
+///
+/// - **Horizontal**: Scroll through timeline days using mouse wheel (with Shift), trackpad gestures,
+///   or touch drag. Programmatic scrolling available via [scrollTo] method.
+/// - **Vertical**: Scroll through stage rows independently. Auto-scroll follows horizontal position
+///   when enabled.
+///
+/// ## Example
+///
+/// ```dart
+/// Timeline(
+///   colors: myColors,
+///   infos: {'startDate': '2024-01-01', 'endDate': '2024-12-31'},
+///   elements: myElements,
+///   elementsDone: [],
+///   capacities: [],
+///   stages: myStages,
+///   openDayDetail: (day) => print('Clicked: ${day['date']}'),
+/// )
+/// ```
+///
+/// See also:
+/// - [TimelineController] for scroll state management
+/// - [TimelineConfiguration] for performance tuning options
 class Timeline extends StatefulWidget {
   const Timeline(
       {super.key,
@@ -270,10 +309,9 @@ class _Timeline extends State<Timeline> {
 
     // Écoute du scroll pour :
     // - calculer quel élément est au centre
-    // - mettre à jour la valeur du slide
-    // - reporter le scroll sur les étapes
+    // - mettre à jour le TimelineController avec la position de scroll
     // - Si mode stages/éléments, scroll vertical automatique
-    double oldSliderValue = 0.0;
+    double oldScrollOffset = 0.0;
     int oldCenterItemIndex = 0;
     _controllerTimeline.addListener(() {
       _performanceMonitor.startOperation('scroll_update');
@@ -299,7 +337,7 @@ class _Timeline extends State<Timeline> {
           // Debounce the vertical scroll calculations
           _verticalScrollDebounceTimer =
               Timer(_verticalScrollDebounceDuration, () {
-            _performAutoScroll(centerItemIndex, oldSliderValue);
+            _performAutoScroll(centerItemIndex, oldScrollOffset);
           });
 
           // Mise à jour du centre précédent
@@ -307,7 +345,7 @@ class _Timeline extends State<Timeline> {
         }
 
         // Mise à jour de la position précédente
-        oldSliderValue = _controllerTimeline.offset;
+        oldScrollOffset = _controllerTimeline.offset;
 
         if (widget.updateCurrentDate != null && days.isNotEmpty) {
           // Use clampIndex to ensure safe array access
@@ -417,12 +455,12 @@ class _Timeline extends State<Timeline> {
   }
 
   // Scroll vertical des stages automatique
-  void _scrollV(double sliderValue) {
+  void _scrollV(double scrollOffset) {
     // Marque que c'est un scroll automatique
     _isAutoScrolling = true;
-    // gestion du scroll via le slide
+    // gestion du scroll via le ScrollController
     _controllerVerticalStages
-        .animateTo(sliderValue,
+        .animateTo(scrollOffset,
             duration: _config.animationDuration, curve: Curves.easeInOut)
         .then((_) {
       // Une fois l'animation terminée, on réinitialise le flag
@@ -431,7 +469,7 @@ class _Timeline extends State<Timeline> {
   }
 
   // Perform auto-scroll with optimized calculations
-  void _performAutoScroll(int centerItemIndex, double oldSliderValue) {
+  void _performAutoScroll(int centerItemIndex, double oldScrollOffset) {
     if (stagesRows.isEmpty) return; // Guard against empty stages
     if (!_controllerVerticalStages.hasClients) {
       return; // Guard against no scroll controller
@@ -483,7 +521,7 @@ class _Timeline extends State<Timeline> {
 
     // On ne calcule l'élément le plus bas que si on scroll vers la gauche
     // et que l'utilisateur a scrollé à la main (optimisation)
-    if (_controllerTimeline.offset < oldSliderValue &&
+    if (_controllerTimeline.offset < oldScrollOffset &&
         userScrollOffset != null) {
       // Index à droite de l'écran - clamp to valid range
       int rightItemIndex = TimelineErrorHandler.clampIndex(
