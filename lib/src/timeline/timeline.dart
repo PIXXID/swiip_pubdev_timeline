@@ -319,52 +319,42 @@ class _Timeline extends State<Timeline> {
     // - calculer quel élément est au centre
     // - mettre à jour le TimelineController avec la position de scroll
     // - Si mode stages/éléments, scroll vertical automatique
-    double oldScrollOffset = 0.0;
-    int oldCenterItemIndex = 0;
     _controllerTimeline.addListener(() {
       _performanceMonitor.startOperation('scroll_update');
 
+      final currentOffset = _controllerTimeline.offset;
       final maxScrollExtent = _controllerTimeline.position.maxScrollExtent;
-      if (_controllerTimeline.offset >= 0 &&
-          _controllerTimeline.offset < maxScrollExtent) {
-        // Update TimelineController with throttling
-        _timelineController.updateScrollOffset(_controllerTimeline.offset);
 
-        // Calculate center item index directly (don't wait for throttled update)
-        final viewportWidth = _timelineController.viewportWidth.value;
-        final centerPosition = _controllerTimeline.offset + (viewportWidth / 2);
-        final centerItemIndex = (centerPosition / (dayWidth - dayMargin))
-            .round()
-            .clamp(0, days.length - 1);
+      if (currentOffset >= 0 && currentOffset < maxScrollExtent) {
+        // 1. Mise à jour du TimelineController (throttled)
+        _timelineController.updateScrollOffset(currentOffset);
 
-        // On fait le croll vertical automatique uniquement si l'élément du centre a changé. (optimisation)
-        if (oldCenterItemIndex != centerItemIndex) {
-          // Cancel any pending debounce timer
+        // 2. Calcul de l'état de scroll (CALCUL PUR)
+        final scrollState = _calculateScrollState(
+          currentScrollOffset: currentOffset,
+          previousScrollOffset: _previousScrollOffset,
+        );
+
+        // 3. Vérification si le centre a changé
+        if (scrollState.centerDateIndex != _previousCenterIndex) {
+          // Annule le timer de debounce précédent
           _verticalScrollDebounceTimer?.cancel();
 
-          // Debounce the vertical scroll calculations
-          _verticalScrollDebounceTimer =
-              Timer(_verticalScrollDebounceDuration, () {
-            _performAutoScroll(centerItemIndex, oldScrollOffset);
-          });
+          // Debounce les calculs de scroll vertical
+          _verticalScrollDebounceTimer = Timer(
+            _verticalScrollDebounceDuration,
+            () => _applyAutoScroll(scrollState),
+          );
 
-          // Mise à jour du centre précédent
-          oldCenterItemIndex = centerItemIndex;
+          // Mise à jour du callback de date
+          _updateCurrentDateCallback(scrollState.centerDateIndex);
+
+          // Sauvegarde du centre précédent
+          _previousCenterIndex = scrollState.centerDateIndex;
         }
 
-        // Mise à jour de la position précédente
-        oldScrollOffset = _controllerTimeline.offset;
-
-        if (widget.updateCurrentDate != null && days.isNotEmpty) {
-          // Use clampIndex to ensure safe array access
-          final safeIndex = TimelineErrorHandler.clampIndex(
-              centerItemIndex, 0, days.length - 1);
-          if (days[safeIndex] != null && days[safeIndex]['date'] != null) {
-            String dayDate =
-                DateFormat('yyyy-MM-dd').format(days[safeIndex]['date']);
-            widget.updateCurrentDate!.call(dayDate);
-          }
-        }
+        // Sauvegarde de l'offset précédent
+        _previousScrollOffset = currentOffset;
       }
 
       _performanceMonitor.endOperation('scroll_update');
@@ -617,6 +607,42 @@ class _Timeline extends State<Timeline> {
 
     // Réinitialise le scroll utilisateur pour permettre de futurs auto-scrolls
     userScrollOffset = null;
+  }
+
+  /// Met à jour le callback de date actuelle.
+  ///
+  /// Cette fonction formate la date correspondant au centerDateIndex
+  /// et appelle le callback updateCurrentDate si fourni.
+  ///
+  /// ## Paramètres
+  ///
+  /// - [centerDateIndex]: L'index du jour au centre du viewport
+  ///
+  /// ## Validates
+  ///
+  /// Requirements 2.5, 6.5
+  void _updateCurrentDateCallback(int centerDateIndex) {
+    // Vérification: Le callback doit être fourni
+    if (widget.updateCurrentDate == null) return;
+
+    // Vérification: La liste des jours ne doit pas être vide
+    if (days.isEmpty) return;
+
+    // Clamp l'index pour éviter les erreurs d'accès
+    final safeIndex = TimelineErrorHandler.clampIndex(
+      centerDateIndex,
+      0,
+      days.length - 1,
+    );
+
+    // Vérification: Le jour doit exister et avoir une date
+    if (days[safeIndex] == null || days[safeIndex]['date'] == null) return;
+
+    // Formate la date au format YYYY-MM-DD
+    final dayDate = DateFormat('yyyy-MM-dd').format(days[safeIndex]['date']);
+
+    // Appelle le callback
+    widget.updateCurrentDate!.call(dayDate);
   }
 
   // Perform auto-scroll with optimized calculations

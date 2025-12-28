@@ -83,11 +83,11 @@ Ce plan d'implémentation décompose la refactorisation du mécanisme de scroll 
     - Vérifier que le scroll est déclenché uniquement dans ce cas
     - Run 3 iterations
 
-- [ ] 5. Checkpoint - Vérifier que les nouvelles fonctions sont correctes
+- [x] 5. Checkpoint - Vérifier que les nouvelles fonctions sont correctes
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 6. Refactoriser le listener de scroll horizontal
-  - [ ] 6.1 Simplifier le listener _controllerTimeline
+- [x] 6. Refactoriser le listener de scroll horizontal
+  - [x] 6.1 Simplifier le listener _controllerTimeline
     - Remplacer le calcul inline du centerItemIndex par un appel à _calculateScrollState()
     - Utiliser scrollState.centerDateIndex au lieu du calcul local
     - Remplacer l'appel à _performAutoScroll() par _applyAutoScroll(scrollState)
@@ -95,13 +95,13 @@ Ce plan d'implémentation décompose la refactorisation du mécanisme de scroll 
     - Conserver la mise à jour du TimelineController
     - _Requirements: 4.3, 4.4_
 
-  - [ ] 6.2 Extraire la logique de callback dans une fonction séparée
+  - [x] 6.2 Extraire la logique de callback dans une fonction séparée
     - Créer _updateCurrentDateCallback(int centerDateIndex)
     - Déplacer la logique de formatage de date et d'appel du callback
     - Appeler depuis le listener
     - _Requirements: 2.5, 6.5_
 
-  - [ ] 6.3 Écrire un property test pour le listener
+  - [x] 6.3 Écrire un property test pour le listener
     - **Property 2: Calcul Correct du DateIndex Central**
     - **Validates: Requirements 2.1, 2.2, 2.3**
     - Générer des positions de scroll aléatoires
