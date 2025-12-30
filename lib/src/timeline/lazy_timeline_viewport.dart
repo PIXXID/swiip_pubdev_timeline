@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'models/timeline_controller.dart';
-import 'models/visible_range.dart';
 
 /// A viewport widget that implements lazy rendering for timeline items.
 ///
@@ -9,11 +7,17 @@ import 'models/visible_range.dart';
 /// performance when dealing with large timelines by reducing the number of
 /// widgets that need to be built and maintained.
 ///
-/// The widget listens to the [TimelineController]'s visibleRange and rebuilds
-/// only when the visible range changes, ensuring minimal rebuilds.
+/// The widget receives visible range parameters directly and renders only
+/// items within that range, ensuring minimal rebuilds.
 class LazyTimelineViewport extends StatelessWidget {
-  /// The timeline controller managing scroll state and visible range.
-  final TimelineController controller;
+  /// Start index of the visible range (inclusive).
+  final int visibleStart;
+
+  /// End index of the visible range (exclusive).
+  final int visibleEnd;
+
+  /// Index of the center item in the viewport.
+  final int centerItemIndex;
 
   /// The complete list of data items (e.g., days) to be rendered.
   final List<dynamic> items;
@@ -31,12 +35,15 @@ class LazyTimelineViewport extends StatelessWidget {
 
   /// Creates a [LazyTimelineViewport] with the specified configuration.
   ///
-  /// The [controller] manages the visible range and scroll state.
+  /// The [visibleStart] and [visibleEnd] define the range of items to render.
+  /// The [centerItemIndex] is passed to the itemBuilder for highlighting.
   /// The [items] list contains all data to be rendered.
   /// The [itemBuilder] creates widgets for visible items.
   const LazyTimelineViewport({
     super.key,
-    required this.controller,
+    required this.visibleStart,
+    required this.visibleEnd,
+    required this.centerItemIndex,
     required this.items,
     required this.itemWidth,
     required this.itemMargin,
@@ -45,37 +52,32 @@ class LazyTimelineViewport extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<VisibleRange>(
-      valueListenable: controller.visibleRange,
-      builder: (context, range, _) {
-        // Calculate total width for proper positioning
-        final totalWidth = items.length * itemWidth;
+    // Calculate total width for proper positioning
+    final totalWidth = items.length * itemWidth;
 
-        // Build only visible widgets
-        final visibleWidgets = <Widget>[];
+    // Build only visible widgets
+    final visibleWidgets = <Widget>[];
 
-        // Ensure range is within bounds
-        final safeStart = range.start.clamp(0, items.length - 1);
-        final safeEnd = range.end.clamp(0, items.length - 1);
+    // Ensure range is within bounds
+    final safeStart = visibleStart.clamp(0, items.length - 1);
+    final safeEnd = visibleEnd.clamp(0, items.length - 1);
 
-        // Iterate through visible range and create positioned widgets
-        for (var i = safeStart; i <= safeEnd && i < items.length; i++) {
-          visibleWidgets.add(
-            Positioned(
-              left: i * (itemWidth - itemMargin),
-              child: itemBuilder(context, i),
-            ),
-          );
-        }
+    // Iterate through visible range and create positioned widgets
+    for (var i = safeStart; i <= safeEnd && i < items.length; i++) {
+      visibleWidgets.add(
+        Positioned(
+          left: i * (itemWidth - itemMargin),
+          child: itemBuilder(context, i),
+        ),
+      );
+    }
 
-        return SizedBox(
-          width: totalWidth,
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: visibleWidgets,
-          ),
-        );
-      },
+    return SizedBox(
+      width: totalWidth,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: visibleWidgets,
+      ),
     );
   }
 }

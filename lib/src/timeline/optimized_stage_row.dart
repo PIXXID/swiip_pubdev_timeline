@@ -115,9 +115,11 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
     if (_lastCenterIndex == newIndex) return false;
 
     // Check if any stage in this row contains the new center index
-    return widget.stagesList.any((stage) =>
-        stage['startDateIndex'] <= newIndex &&
-        stage['endDateIndex'] >= newIndex);
+    return widget.stagesList.any((stage) {
+      final startIndex = (stage['startDateIndex'] as int?) ?? 0;
+      final endIndex = (stage['endDateIndex'] as int?) ?? 0;
+      return startIndex <= newIndex && endIndex >= newIndex;
+    });
   }
 
   /// Determines if the row should rebuild based on visible range change.
@@ -129,8 +131,11 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
     if (_lastVisibleRange == newRange) return false;
 
     // Check if any stage in this row overlaps with the new visible range
-    return widget.stagesList.any((stage) =>
-        newRange.overlaps(stage['startDateIndex'], stage['endDateIndex']));
+    return widget.stagesList.any((stage) {
+      final startIndex = (stage['startDateIndex'] as int?) ?? 0;
+      final endIndex = (stage['endDateIndex'] as int?) ?? 0;
+      return newRange.overlaps(startIndex, endIndex);
+    });
   }
 
   /// Calculates and caches the positions of all stage items.
@@ -142,8 +147,9 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
 
     for (int index = 0; index < widget.stagesList.length; index++) {
       final stage = widget.stagesList[index];
-      final startIndex = stage['startDateIndex'] as int;
-      final endIndex = stage['endDateIndex'] as int;
+      // Handle missing or null date indices gracefully
+      final startIndex = (stage['startDateIndex'] as int?) ?? 0;
+      final endIndex = (stage['endDateIndex'] as int?) ?? 0;
 
       // Calculate dimensions
       int daysWidth = endIndex - startIndex + 1;
@@ -155,7 +161,7 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
 
       if (previousItem != null) {
         int daysBetweenElements =
-            startIndex - (previousItem['endDateIndex'] as int) - 1;
+            startIndex - ((previousItem['endDateIndex'] as int?) ?? 0) - 1;
         if (daysBetweenElements > 0) {
           spacerWidth =
               daysBetweenElements * (widget.dayWidth - widget.dayMargin);
@@ -223,8 +229,9 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
       stageColors['pcolor'] = Color(int.parse('ffffff', radix: 16));
     }
 
-    // Get entity ID
-    String entityId = isStage ? stage['prs_id'] : stage['pre_id'];
+    // Get entity ID - handle missing fields gracefully
+    String entityId =
+        isStage ? (stage['prs_id'] ?? '') : (stage['pre_id'] ?? '');
 
     return Positioned(
       left: position,
@@ -258,7 +265,8 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
   Widget _buildLabel(Map<String, dynamic> stage, double position) {
     bool isStage =
         ['milestone', 'cycle', 'sequence', 'stage'].contains(stage['type']);
-    String entityId = isStage ? stage['prs_id'] : stage['pre_id'];
+    String entityId =
+        isStage ? (stage['prs_id'] ?? '') : (stage['pre_id'] ?? '');
 
     String progressLabel = (stage['prog'] != null && stage['prog'] > 0)
         ? ' (${stage['prog']}%)'
@@ -323,10 +331,13 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
     bool isStage =
         ['milestone', 'cycle', 'sequence', 'stage'].contains(stage['type']);
 
+    final startIndex = (stage['startDateIndex'] as int?) ?? 0;
+    final endIndex = (stage['endDateIndex'] as int?) ?? 0;
+
     return !isStage &&
         daysWidth < 4 &&
-        stage['startDateIndex'] <= centerIndex &&
-        stage['endDateIndex'] >= centerIndex;
+        startIndex <= centerIndex &&
+        endIndex >= centerIndex;
   }
 
   /// Updates only the labels visibility without rebuilding all stages.
