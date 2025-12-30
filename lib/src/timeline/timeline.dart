@@ -732,13 +732,6 @@ class _Timeline extends State<Timeline> {
                     Expanded(
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 4),
-                        decoration: BoxDecoration(
-                          border: Border(
-                            bottom: BorderSide(
-                                color: widget.colors['secondaryBackground']!,
-                                width: 1.5),
-                          ),
-                        ),
                         child: LayoutBuilder(
                           builder: (context, innerConstraints) {
                             // Use available height from constraints
@@ -749,8 +742,7 @@ class _Timeline extends State<Timeline> {
 
                             return SizedBox(
                               width: screenWidth,
-                              height:
-                                  availableHeight, // Use available height instead of fixed timelineHeight
+                              height: availableHeight,
                               child: Listener(
                                 onPointerSignal: (event) {
                                   if (event is PointerScrollEvent) {
