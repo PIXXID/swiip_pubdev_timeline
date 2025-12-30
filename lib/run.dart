@@ -24,14 +24,11 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 /// 2. **Data Caching**: Formatted data is cached and only recomputed when
 ///    input data changes. This significantly improves performance for large datasets.
 ///
-/// 3. **Scroll Throttling**: Scroll calculations are throttled to ~60 FPS
-///    to prevent excessive CPU usage during rapid scrolling.
-///
-/// 4. **Selective Rebuilds**: Only widgets affected by state changes are rebuilt,
+/// 3. **Selective Rebuilds**: Only widgets affected by state changes are rebuilt,
 ///    not the entire timeline. This is achieved through ValueNotifiers and
 ///    ValueListenableBuilder.
 ///
-/// 5. **Conditional Calculations**: Calculations are skipped when values haven't
+/// 4. **Conditional Calculations**: Calculations are skipped when values haven't
 ///    changed significantly, reducing unnecessary work.
 ///
 /// ## Configuration Tips
@@ -137,7 +134,6 @@ class MyApp extends StatelessWidget {
                 // the data size. With the current implementation:
                 // - Only visible days are rendered (plus a 5-day buffer)
                 // - Data formatting is cached
-                // - Scroll events are throttled to ~60 FPS
                 // - Widget rebuilds are minimized through selective updates
                 return Align(
                     alignment: Alignment.topLeft,

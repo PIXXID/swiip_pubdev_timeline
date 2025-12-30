@@ -8,7 +8,7 @@
   },
   "then": {
     "type": "askAgent",
-    "prompt": "Execute a git merge from the current branch to the main branch. \nFirst, check the current branch name, then switch to main, pull the latest changes, merge the original branch into main.\nAbandon the merger in case of conflicts. Provide clear feedback on the status of the merger."
+    "prompt": "Execute a git merge from the current branch to the main branch. \nFirst, check the current branch name, then switch to main, pull the latest changes, merge the original branch into main.\nAbandon the merger in case of conflicts. Provide clear feedback on the status of the merger.\nIf there are no conflicts, switch to the main branch and delete the previous branch."
   },
   "workspaceFolderName": "swiip_pubdev_timeline",
   "shortName": "manual-git-merge"

@@ -48,7 +48,7 @@ This implementation plan breaks down the removal of scroll throttling into discr
   - Remove 'scrollThrottleMs' entry from the `all` map
   - _Requirements: 2.6_
 
-- [ ] 4. Update Timeline widget documentation
+- [x] 4. Update Timeline widget documentation
   - Remove "Scroll Throttling" from features list
   - Remove "Throttled Updates" from scroll architecture description
   - Remove throttle timer from state management comments
@@ -56,16 +56,16 @@ This implementation plan breaks down the removal of scroll throttling into discr
   - Update dispose() comments to remove throttle timer references
   - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5_
 
-- [ ] 5. Update run.dart documentation
+- [x] 5. Update run.dart documentation
   - Remove "Scroll Throttling" from performance features list
   - Remove throttling from performance comments
   - _Requirements: 4.2_
 
-- [ ] 6. Update TimelineConfiguration documentation
+- [x] 6. Update TimelineConfiguration documentation
   - Remove scrollThrottleDuration field documentation
   - _Requirements: 4.1_
 
-- [ ] 7. Checkpoint - Verify code compiles and basic functionality works
+- [x] 7. Checkpoint - Verify code compiles and basic functionality works
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 8. Update configuration tests
