@@ -105,12 +105,9 @@ class Timeline extends StatefulWidget {
   final dynamic capacities;
   final dynamic stages;
   final String? defaultDate;
-  final Function(String, double?, List<String>?, List<dynamic>?, dynamic)?
-      openDayDetail;
-  final Function(String?, String?, String?, String?, String?, double?, String?)?
-      openEditStage;
-  final Function(String?, String?, String?, String?, String?, double?, String?)?
-      openEditElement;
+  final Function(String, double?, List<String>?, List<dynamic>?, dynamic)? openDayDetail;
+  final Function(String?, String?, String?, String?, String?, double?, String?)? openEditStage;
+  final Function(String?, String?, String?, String?, String?, double?, String?)? openEditElement;
   final Function(String?)? updateCurrentDate;
 
   @override
@@ -316,10 +313,7 @@ class _Timeline extends State<Timeline> {
         startDate: startDate,
         endDate: endDate,
         elements: widget.elements ?? [],
-        elementsDone:
-            (widget.elementsDone == null || widget.elementsDone.isEmpty)
-                ? List.empty()
-                : widget.elementsDone,
+        elementsDone: (widget.elementsDone == null || widget.elementsDone.isEmpty) ? List.empty() : widget.elementsDone,
         capacities: widget.capacities ?? [],
         stages: widget.stages ?? [],
         maxCapacity: widget.infos['lmax'] ?? 0,
@@ -351,8 +345,7 @@ class _Timeline extends State<Timeline> {
 
     // Calcule l'index de la date positionnée par défaut
     if (widget.defaultDate != null) {
-      defaultDateIndex =
-          DateTime.parse(widget.defaultDate!).difference(startDate).inDays + 1;
+      defaultDateIndex = DateTime.parse(widget.defaultDate!).difference(startDate).inDays + 1;
     }
 
     // Horizontal scroll listener for calculating scroll state and triggering updates
@@ -406,16 +399,12 @@ class _Timeline extends State<Timeline> {
           // This determines which items should be rendered by the lazy viewports
           final visibleDays = (_viewportWidth / (dayWidth - dayMargin)).ceil();
           final buffer = _config.bufferDays;
-          final newVisibleStart = (newCenterIndex - (visibleDays ~/ 2) - buffer)
-              .clamp(0, days.length);
-          final newVisibleEnd = (newCenterIndex + (visibleDays ~/ 2) + buffer)
-              .clamp(0, days.length);
+          final newVisibleStart = (newCenterIndex - (visibleDays ~/ 2) - buffer).clamp(0, days.length);
+          final newVisibleEnd = (newCenterIndex + (visibleDays ~/ 2) + buffer).clamp(0, days.length);
 
           // 3. Update state only when values change (check before setState)
           // This optimization prevents unnecessary rebuilds when scrolling within the same range
-          if (newCenterIndex != _centerItemIndex ||
-              newVisibleStart != _visibleStart ||
-              newVisibleEnd != _visibleEnd) {
+          if (newCenterIndex != _centerItemIndex || newVisibleStart != _visibleStart || newVisibleEnd != _visibleEnd) {
             setState(() {
               _centerItemIndex = newCenterIndex;
               _visibleStart = newVisibleStart;
@@ -437,8 +426,7 @@ class _Timeline extends State<Timeline> {
               );
 
               // Auto-scroll only if the change is significant (at least 2 days)
-              final centerIndexDifference =
-                  (newCenterIndex - _previousCenterIndex).abs();
+              final centerIndexDifference = (newCenterIndex - _previousCenterIndex).abs();
               const minCenterIndexChange = 2;
 
               if (centerIndexDifference >= minCenterIndexChange) {
@@ -505,8 +493,7 @@ class _Timeline extends State<Timeline> {
       _performanceMonitor.logMetrics();
 
       // On scroll sur la date du jour par défaut
-      scrollTo(widget.defaultDate != null ? defaultDateIndex : nowIndex,
-          animated: true);
+      scrollTo(widget.defaultDate != null ? defaultDateIndex : nowIndex, animated: true);
     });
   } // End of _initializeTimeline()
 
@@ -535,8 +522,7 @@ class _Timeline extends State<Timeline> {
     }
 
     // Clamp the index to valid range
-    final safeIndex =
-        TimelineErrorHandler.clampIndex(dateIndex, 0, days.length - 1);
+    final safeIndex = TimelineErrorHandler.clampIndex(dateIndex, 0, days.length - 1);
 
     if (safeIndex >= 0) {
       // Calculate the scroll offset to center the specified date
@@ -685,9 +671,7 @@ class _Timeline extends State<Timeline> {
     // Détermine l'offset final en vérifiant l'espace restant
     // Si l'espace restant est suffisant (> viewportHeight / 2), on scroll vers le target
     // Sinon, on scroll vers le maximum pour éviter l'effet rebond
-    final finalOffset = (totalRowsHeight - targetOffset > viewportHeight / 2)
-        ? targetOffset
-        : maxExtent;
+    final finalOffset = (totalRowsHeight - targetOffset > viewportHeight / 2) ? targetOffset : maxExtent;
 
     // Vérification 4: La différence doit être significative pour éviter les petits sauts
     // Seuil: au moins la largeur d'un jour (dayWidth)
@@ -808,16 +792,13 @@ class _Timeline extends State<Timeline> {
                   left: screenCenter,
                   top: 45,
                   child: Container(
-                    height: availableHeight -
-                        datesHeight -
-                        200, // Adjust for dates and bottom controls
+                    height: availableHeight - datesHeight - 200, // Adjust for dates and bottom controls
                     width: 1,
                     decoration: BoxDecoration(color: widget.colors['error']),
                   ),
                 ),
                 Positioned.fill(
-                  child:
-                      Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                  child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
                     // CONTENEUR UNIQUE AVEC SCROLL HORIZONTAL
                     Expanded(
                       child: Container(
@@ -838,20 +819,16 @@ class _Timeline extends State<Timeline> {
                                   if (event is PointerScrollEvent) {
                                     // Scroll horizontal avec Shift+molette ou trackpad horizontal
                                     final delta = event.scrollDelta;
-                                    final scrollDelta =
-                                        delta.dx != 0 ? delta.dx : delta.dy;
+                                    final scrollDelta = delta.dx != 0 ? delta.dx : delta.dy;
 
                                     // Calcule la nouvelle position
-                                    final newOffset =
-                                        _controllerTimeline.position.pixels +
-                                            scrollDelta;
+                                    final newOffset = _controllerTimeline.position.pixels + scrollDelta;
 
                                     // Applique le scroll
                                     _controllerTimeline.jumpTo(
                                       newOffset.clamp(
                                         0.0,
-                                        _controllerTimeline
-                                            .position.maxScrollExtent,
+                                        _controllerTimeline.position.maxScrollExtent,
                                       ),
                                     );
                                   }
@@ -859,25 +836,19 @@ class _Timeline extends State<Timeline> {
                                 child: SingleChildScrollView(
                                   controller: _controllerTimeline,
                                   scrollDirection: Axis.horizontal,
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: _firstElementMargin),
+                                  padding: EdgeInsets.symmetric(horizontal: _firstElementMargin),
                                   child: SizedBox(
-                                    height:
-                                        availableHeight, // Use available height
+                                    height: availableHeight, // Use available height
                                     child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisSize: MainAxisSize
-                                          .min, // Prevent Column from expanding infinitely
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.min, // Prevent Column from expanding infinitely
                                       children: [
                                         // DATES
                                         Container(
                                           decoration: BoxDecoration(
                                             border: Border(
-                                              bottom: BorderSide(
-                                                  color: widget.colors[
-                                                      'secondaryBackground']!,
-                                                  width: 1.5),
+                                              bottom:
+                                                  BorderSide(color: widget.colors['secondaryBackground']!, width: 1.5),
                                             ),
                                           ),
                                           child: SizedBox(
@@ -890,19 +861,16 @@ class _Timeline extends State<Timeline> {
                                                     visibleStart: _visibleStart,
                                                     visibleEnd: _visibleEnd,
                                                     // Pass center index for highlighting
-                                                    centerItemIndex:
-                                                        _centerItemIndex,
+                                                    centerItemIndex: _centerItemIndex,
                                                     items: days,
                                                     itemWidth: dayWidth,
                                                     itemMargin: dayMargin,
-                                                    itemBuilder:
-                                                        (context, index) {
+                                                    itemBuilder: (context, index) {
                                                       return TimelineDayDate(
                                                         lang: lang,
                                                         colors: widget.colors,
                                                         index: index,
-                                                        centerItemIndex:
-                                                            _centerItemIndex,
+                                                        centerItemIndex: _centerItemIndex,
                                                         days: days,
                                                         dayWidth: dayWidth,
                                                         dayMargin: dayMargin,
@@ -910,8 +878,7 @@ class _Timeline extends State<Timeline> {
                                                       );
                                                     },
                                                   )
-                                                : const SizedBox
-                                                    .shrink(), // Handle empty days
+                                                : const SizedBox.shrink(), // Handle empty days
                                           ),
                                         ),
                                         // STAGES/ELEMENTS DYNAMIQUES - Use Expanded to take remaining space
@@ -920,79 +887,54 @@ class _Timeline extends State<Timeline> {
                                               child: stagesRows.isNotEmpty
                                                   ? Listener(
                                                       onPointerSignal: (event) {
-                                                        if (event
-                                                            is PointerScrollEvent) {
+                                                        if (event is PointerScrollEvent) {
                                                           // Marque que c'est un scroll manuel
                                                           if (!_isAutoScrolling) {
                                                             userScrollOffset =
-                                                                _controllerVerticalStages
-                                                                    .position
-                                                                    .pixels;
+                                                                _controllerVerticalStages.position.pixels;
                                                           }
 
                                                           // Calcule la nouvelle position
-                                                          final newOffset =
-                                                              _controllerVerticalStages
-                                                                      .position
-                                                                      .pixels +
-                                                                  event
-                                                                      .scrollDelta
-                                                                      .dy;
+                                                          final newOffset = _controllerVerticalStages.position.pixels +
+                                                              event.scrollDelta.dy;
 
                                                           // Applique le scroll
-                                                          _controllerVerticalStages
-                                                              .jumpTo(
+                                                          _controllerVerticalStages.jumpTo(
                                                             newOffset.clamp(
                                                               0.0,
-                                                              _controllerVerticalStages
-                                                                  .position
-                                                                  .maxScrollExtent,
+                                                              _controllerVerticalStages.position.maxScrollExtent,
                                                             ),
                                                           );
                                                         }
                                                       },
-                                                      child:
-                                                          SingleChildScrollView(
-                                                        controller:
-                                                            _controllerVerticalStages,
-                                                        scrollDirection:
-                                                            Axis.vertical,
+                                                      child: SingleChildScrollView(
+                                                        controller: _controllerVerticalStages,
+                                                        scrollDirection: Axis.vertical,
                                                         physics:
                                                             const ClampingScrollPhysics(), // Permet un scroll fluide
-                                                        child:
-                                                            LazyStageRowsViewport(
+                                                        child: LazyStageRowsViewport(
                                                           // Pass calculated visible range directly as parameters
                                                           // This eliminates the need for a controller with ValueNotifiers
-                                                          visibleStart:
-                                                              _visibleStart,
-                                                          visibleEnd:
-                                                              _visibleEnd,
-                                                          stagesRows:
-                                                              stagesRows,
+                                                          visibleStart: _visibleStart,
+                                                          visibleEnd: _visibleEnd,
+                                                          stagesRows: stagesRows,
                                                           rowHeight: rowHeight,
                                                           rowMargin: rowMargin,
                                                           dayWidth: dayWidth,
                                                           dayMargin: dayMargin,
-                                                          totalDays:
-                                                              days.length,
+                                                          totalDays: days.length,
                                                           colors: widget.colors,
-                                                          isUniqueProject:
-                                                              isUniqueProject,
-                                                          verticalScrollController:
-                                                              _controllerVerticalStages,
-                                                          viewportHeight:
-                                                              availableHeight -
-                                                                  datesHeight -
-                                                                  140, // Subtract dates and timeline heights
-                                                          openEditStage: widget
-                                                              .openEditStage,
-                                                          openEditElement: widget
-                                                              .openEditElement,
+                                                          isUniqueProject: isUniqueProject,
+                                                          verticalScrollController: _controllerVerticalStages,
+                                                          viewportHeight: availableHeight -
+                                                              datesHeight -
+                                                              140, // Subtract dates and timeline heights
+                                                          openEditStage: widget.openEditStage,
+                                                          openEditElement: widget.openEditElement,
                                                         ),
                                                       ),
                                                     )
-                                                  : const SizedBox
-                                                      .shrink()), // Handle empty stages
+                                                  : const SizedBox.shrink()), // Handle empty stages
                                         ),
                                         // TIMELINE DYNAMIQUE
                                         SizedBox(
@@ -1002,31 +944,26 @@ class _Timeline extends State<Timeline> {
                                               ? LazyTimelineViewport(
                                                   visibleStart: _visibleStart,
                                                   visibleEnd: _visibleEnd,
-                                                  centerItemIndex:
-                                                      _centerItemIndex,
+                                                  centerItemIndex: _centerItemIndex,
                                                   items: days,
                                                   itemWidth: dayWidth,
                                                   itemMargin: dayMargin,
-                                                  itemBuilder:
-                                                      (context, index) {
+                                                  itemBuilder: (context, index) {
                                                     return OptimizedTimelineItem(
                                                       colors: widget.colors,
                                                       index: index,
-                                                      centerItemIndexNotifier:
-                                                          _centerItemIndexNotifier,
+                                                      centerItemIndexNotifier: _centerItemIndexNotifier,
                                                       nowIndex: nowIndex,
                                                       day: days[index],
                                                       elements: widget.elements,
                                                       dayWidth: dayWidth,
                                                       dayMargin: dayMargin,
                                                       height: 120,
-                                                      openDayDetail:
-                                                          widget.openDayDetail,
+                                                      openDayDetail: widget.openDayDetail,
                                                     );
                                                   },
                                                 )
-                                              : const SizedBox
-                                                  .shrink(), // Handle empty days
+                                              : const SizedBox.shrink(), // Handle empty days
                                         ),
                                       ],
                                     ),
@@ -1049,8 +986,7 @@ class _Timeline extends State<Timeline> {
                       child: Center(
                           child: Text(
                         'Aucune activité ne vous a été attribuée. Vous pouvez consulter le détail des projets et configurer vos équipes.',
-                        style: TextStyle(
-                            color: widget.colors['primaryText'], fontSize: 15),
+                        style: TextStyle(color: widget.colors['primaryText'], fontSize: 15),
                       )),
                     ),
                   )
