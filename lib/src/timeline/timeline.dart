@@ -844,99 +844,62 @@ class _Timeline extends State<Timeline> {
                                       mainAxisSize: MainAxisSize.min, // Prevent Column from expanding infinitely
                                       children: [
                                         // DATES
-                                        Container(
-                                          decoration: BoxDecoration(
-                                            border: Border(
-                                              bottom:
-                                                  BorderSide(color: widget.colors['secondaryBackground']!, width: 1.5),
-                                            ),
-                                          ),
-                                          child: SizedBox(
-                                            width: days.length * (dayWidth),
-                                            height: datesHeight,
-                                            child: days.isNotEmpty
-                                                ? LazyTimelineViewport(
-                                                    // Pass calculated visible range directly as parameters
-                                                    // instead of using a controller with ValueNotifiers
-                                                    visibleStart: _visibleStart,
-                                                    visibleEnd: _visibleEnd,
-                                                    // Pass center index for highlighting
-                                                    centerItemIndex: _centerItemIndex,
-                                                    items: days,
-                                                    itemWidth: dayWidth,
-                                                    itemMargin: dayMargin,
-                                                    itemBuilder: (context, index) {
-                                                      return TimelineDayDate(
-                                                        lang: lang,
-                                                        colors: widget.colors,
-                                                        index: index,
-                                                        centerItemIndex: _centerItemIndex,
-                                                        days: days,
-                                                        dayWidth: dayWidth,
-                                                        dayMargin: dayMargin,
-                                                        height: datesHeight,
-                                                      );
-                                                    },
-                                                  )
-                                                : const SizedBox.shrink(), // Handle empty days
-                                          ),
+                                        SizedBox(
+                                          width: days.length * (dayWidth),
+                                          height: datesHeight,
+                                          child: days.isNotEmpty
+                                              ? LazyTimelineViewport(
+                                                  // Pass calculated visible range directly as parameters
+                                                  // instead of using a controller with ValueNotifiers
+                                                  visibleStart: _visibleStart,
+                                                  visibleEnd: _visibleEnd,
+                                                  // Pass center index for highlighting
+                                                  centerItemIndex: _centerItemIndex,
+                                                  items: days,
+                                                  itemWidth: dayWidth,
+                                                  itemMargin: dayMargin,
+                                                  itemBuilder: (context, index) {
+                                                    return TimelineDayDate(
+                                                      lang: lang,
+                                                      colors: widget.colors,
+                                                      index: index,
+                                                      centerItemIndex: _centerItemIndex,
+                                                      days: days,
+                                                      dayWidth: dayWidth,
+                                                      dayMargin: dayMargin,
+                                                      height: datesHeight,
+                                                    );
+                                                  },
+                                                )
+                                              : const SizedBox.shrink(), // Handle empty days
                                         ),
                                         // STAGES/ELEMENTS DYNAMIQUES - Use Expanded to take remaining space
                                         Expanded(
                                           child: SizedBox(
                                               child: stagesRows.isNotEmpty
-                                                  ? Listener(
-                                                      onPointerSignal: (event) {
-                                                        if (event is PointerScrollEvent) {
-                                                          // Marque que c'est un scroll manuel
-                                                          if (!_isAutoScrolling) {
-                                                            userScrollOffset =
-                                                                _controllerVerticalStages.position.pixels;
-                                                          }
-
-                                                          // Calcule la nouvelle position
-                                                          final newOffset = _controllerVerticalStages.position.pixels +
-                                                              event.scrollDelta.dy;
-
-                                                          // Applique le scroll
-                                                          _controllerVerticalStages.jumpTo(
-                                                            newOffset.clamp(
-                                                              0.0,
-                                                              _controllerVerticalStages.position.maxScrollExtent,
-                                                            ),
-                                                          );
-                                                        }
-                                                      },
-                                                      child: SingleChildScrollView(
-                                                        controller: _controllerVerticalStages,
-                                                        scrollDirection: Axis.vertical,
-                                                        physics:
-                                                            const ClampingScrollPhysics(), // Permet un scroll fluide
-                                                        child: LazyStageRowsViewport(
-                                                          // Pass calculated visible range directly as parameters
-                                                          // This eliminates the need for a controller with ValueNotifiers
-                                                          visibleStart: _visibleStart,
-                                                          visibleEnd: _visibleEnd,
-                                                          stagesRows: stagesRows,
-                                                          rowHeight: rowHeight,
-                                                          rowMargin: rowMargin,
-                                                          dayWidth: dayWidth,
-                                                          dayMargin: dayMargin,
-                                                          totalDays: days.length,
-                                                          colors: widget.colors,
-                                                          isUniqueProject: isUniqueProject,
-                                                          verticalScrollController: _controllerVerticalStages,
-                                                          viewportHeight: availableHeight -
-                                                              datesHeight -
-                                                              140, // Subtract dates and timeline heights
-                                                          openEditStage: widget.openEditStage,
-                                                          openEditElement: widget.openEditElement,
-                                                        ),
-                                                      ),
+                                                  ? LazyStageRowsViewport(
+                                                      // Pass calculated visible range directly as parameters
+                                                      // This eliminates the need for a controller with ValueNotifiers
+                                                      visibleStart: _visibleStart,
+                                                      visibleEnd: _visibleEnd,
+                                                      stagesRows: stagesRows,
+                                                      rowHeight: rowHeight,
+                                                      rowMargin: rowMargin,
+                                                      dayWidth: dayWidth,
+                                                      dayMargin: dayMargin,
+                                                      totalDays: days.length,
+                                                      colors: widget.colors,
+                                                      isUniqueProject: isUniqueProject,
+                                                      verticalScrollController: _controllerVerticalStages,
+                                                      viewportHeight: availableHeight -
+                                                          datesHeight -
+                                                          140, // Subtract dates and timeline heights
+                                                      openEditStage: widget.openEditStage,
+                                                      openEditElement: widget.openEditElement,
                                                     )
                                                   : const SizedBox.shrink()), // Handle empty stages
                                         ),
-                                        // TIMELINE DYNAMIQUE
+                                        // CHARGE DYNAMIQUE
                                         SizedBox(
                                           width: days.length * (dayWidth),
                                           height: 140,
