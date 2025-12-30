@@ -3,7 +3,8 @@
 A high-performance Flutter timeline/Gantt chart widget for displaying project schedules, milestones, and activities. Optimized for large datasets with:
 
 - **Lazy Rendering**: Only renders visible items plus a configurable buffer
-- **Granular State Management**: Uses ValueNotifiers for localized updates
+- **Native Scroll Management**: Uses Flutter's native ScrollController for all scroll operations
+- **Direct Calculations**: Calculates scroll state using pure functions without abstraction layers
 - **Data Caching**: Caches formatted data to avoid redundant calculations
 - **Scroll Throttling**: Limits scroll calculations to ~60 FPS
 - **Conditional Rebuilds**: Rebuilds only affected widgets on state changes
@@ -77,7 +78,17 @@ The timeline widget includes several performance optimizations that work automat
 
 #### 1. Scroll Architecture
 
-The timeline uses a **calculation-based scroll architecture** that separates concerns:
+The timeline uses a **native-only scroll architecture** that relies entirely on Flutter's built-in ScrollController:
+
+**Native ScrollControllers**:
+- `_controllerTimeline`: Manages horizontal scroll through timeline days
+- `_controllerVerticalStages`: Manages vertical scroll through stage rows
+- Direct access to scroll position via `controller.offset`
+
+**Direct State Management**:
+- Local state variables track scroll state (`_centerItemIndex`, `_visibleStart`, `_visibleEnd`)
+- No custom controller abstraction layer
+- Values passed explicitly to child widgets
 
 **Pure Calculation Functions** (`scroll_calculations.dart`):
 - `calculateCenterDateIndex()`: Calculates which day is at the viewport center
@@ -89,37 +100,18 @@ These functions are **pure** (same inputs = same outputs) with no side effects, 
 - Predictable and maintainable
 - Optimizable by the compiler
 
-**Action Functions** (in `timeline.dart`):
-- `_calculateScrollState()`: Orchestrates all calculations and returns a `ScrollState` object
-- `_applyAutoScroll()`: Applies the calculated scroll changes to the ScrollController
+**Throttled Updates**:
+- Timer-based throttling limits scroll calculations to ~60 FPS
+- State updates only occur when values actually change
+- Prevents excessive rebuilds during rapid scrolling
 
-This separation ensures:
-- Clear responsibility boundaries
-- Better testability
-- No circular dependencies between calculation and action
-- Native Flutter scrolling for all user gestures
+This architecture is simpler than using a custom controller class because:
+- Fewer abstraction layers to understand
+- Direct use of native Flutter APIs
+- Transparent calculation logic
+- Easier to debug and maintain
 
-#### 2. TimelineController
-
-The `TimelineController` manages scroll state with throttling:
-
-```dart
-// Controller is created internally by the Timeline widget
-// It automatically throttles scroll updates to ~60 FPS
-// and manages the visible range for lazy rendering
-```
-
-#### 3. TimelineController
-
-The `TimelineController` manages scroll state with throttling:
-
-```dart
-// Controller is created internally by the Timeline widget
-// It automatically throttles scroll updates to ~60 FPS
-// and manages the visible range for lazy rendering
-```
-
-#### 4. TimelineDataManager
+#### 2. TimelineDataManager
 
 Data formatting is cached automatically:
 
@@ -129,17 +121,7 @@ Data formatting is cached automatically:
 // This significantly improves performance for large datasets
 ```
 
-#### 5. TimelineDataManager
-
-Data formatting is cached automatically:
-
-```dart
-// The Timeline widget uses TimelineDataManager internally
-// Formatted data is cached and only recomputed when input changes
-// This significantly improves performance for large datasets
-```
-
-#### 6. Lazy Rendering
+#### 3. Lazy Rendering
 
 Only visible items are rendered:
 
@@ -149,17 +131,7 @@ Only visible items are rendered:
 // This keeps memory usage low even with hundreds of days
 ```
 
-#### 7. Lazy Rendering
-
-Only visible items are rendered:
-
-```dart
-// The Timeline automatically calculates which items are visible
-// and renders only those items plus a configurable buffer
-// This keeps memory usage low even with hundreds of days
-```
-
-#### 8. Standard Scrolling
+#### 4. Standard Scrolling
 
 The timeline uses native Flutter scrolling mechanisms:
 

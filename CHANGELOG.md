@@ -1,3 +1,27 @@
+## 1.4.0 - 30/12/2024
+
+### Refactoring
+
+* **Native Scroll Architecture**: Major internal refactoring to use only native Flutter ScrollControllers without custom abstraction layers.
+  
+  **Changes**:
+  - Removed `TimelineController` class (~150 lines of code)
+  - Removed `VisibleRange` data class
+  - Scroll state now managed with local variables in Timeline widget
+  - Direct calculation of center index and visible range using pure functions
+  - Lazy viewports now accept visible range as parameters instead of controller
+  - Timer-based throttling implemented directly in scroll listener
+  
+  **Benefits**:
+  - Simpler architecture with fewer abstraction layers
+  - More transparent scroll logic (calculations visible in Timeline widget)
+  - Easier to understand and maintain
+  - Direct use of native Flutter APIs
+  - Same performance characteristics as before
+  - All existing functionality preserved
+  
+  **Migration**: No breaking changes. This is an internal refactoring that maintains all existing functionality and API compatibility. The public API remains unchanged.
+
 ## 1.3.0 - 29/12/2024
 
 ### Refactoring

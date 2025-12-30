@@ -28,17 +28,35 @@ import 'package:swiip_pubdev_timeline/src/platform/platform_language.dart';
 /// A high-performance Flutter timeline/Gantt chart widget for displaying project schedules.
 ///
 /// The Timeline widget provides a scrollable view of project stages, milestones, and activities
-/// across a date range. It uses lazy rendering and granular state management to efficiently
+/// across a date range. It uses lazy rendering and direct scroll calculations to efficiently
 /// handle large datasets (500+ days with 100+ stages).
 ///
 /// ## Features
 ///
-/// - **Standard Scrolling**: Native Flutter scrolling with mouse wheel, trackpad, and touch gestures
+/// - **Native Scrolling**: Uses Flutter's native ScrollController for all scroll management
+/// - **Direct Calculations**: Calculates scroll state directly using pure functions
 /// - **Lazy Rendering**: Only renders visible items plus a configurable buffer
 /// - **Data Caching**: Caches formatted data to avoid redundant calculations
 /// - **Scroll Throttling**: Limits scroll updates to ~60 FPS for smooth performance
 /// - **Auto-Scroll**: Vertical scrolling automatically follows horizontal position
 /// - **External Configuration**: Performance tuning via JSON configuration file
+///
+/// ## Scroll Architecture
+///
+/// The Timeline uses a simplified scroll architecture that relies entirely on native Flutter
+/// ScrollControllers without custom abstraction layers:
+///
+/// 1. **Native Controllers**: Uses `_controllerTimeline` and `_controllerVerticalStages`
+///    for horizontal and vertical scrolling respectively
+/// 2. **Direct State Management**: Maintains scroll state in local variables
+///    (`_centerItemIndex`, `_visibleStart`, `_visibleEnd`)
+/// 3. **Pure Calculation Functions**: Calls pure functions from `scroll_calculations.dart`
+///    to calculate center index and visible range
+/// 4. **Throttled Updates**: Uses a Timer to throttle scroll calculations to ~60 FPS
+/// 5. **Explicit Parameter Passing**: Passes calculated values directly to lazy viewports
+///
+/// This architecture is simpler and more transparent than using a custom controller class,
+/// making the scroll logic easier to understand and maintain.
 ///
 /// ## Scrolling Behavior
 ///
@@ -63,6 +81,8 @@ import 'package:swiip_pubdev_timeline/src/platform/platform_language.dart';
 ///
 /// See also:
 /// - [TimelineConfiguration] for performance tuning options
+/// - [calculateCenterDateIndex] for center item calculation
+/// - [calculateTargetVerticalOffset] for auto-scroll calculation
 class Timeline extends StatefulWidget {
   const Timeline(
       {super.key,
@@ -139,7 +159,9 @@ class _Timeline extends State<Timeline> {
   int defaultDateIndex = -1;
   bool timelineIsEmpty = false;
 
-  // Controllers des scroll
+  // Controllers for native Flutter scrolling
+  // _controllerTimeline: Manages horizontal scroll through timeline days
+  // _controllerVerticalStages: Manages vertical scroll through stage rows
   final ScrollController _controllerTimeline = ScrollController();
   final ScrollController _controllerVerticalStages = ScrollController();
 
@@ -158,7 +180,19 @@ class _Timeline extends State<Timeline> {
   // First element margin for centering calculations
   double _firstElementMargin = 0.0;
 
-  // New state variables for native scroll management
+  // Native scroll state management (replaces TimelineController)
+  // These local variables track the current scroll state:
+  // - _centerItemIndex: The day item currently at the center of the viewport
+  // - _visibleStart: Start index of the visible range (including buffer)
+  // - _visibleEnd: End index of the visible range (including buffer)
+  // - _viewportWidth: Current viewport width for calculations
+  // - _scrollThrottleTimer: Timer for throttling scroll calculations to ~60 FPS
+  //
+  // This approach is simpler than using a custom controller class because:
+  // 1. State is managed directly in the widget (no extra abstraction)
+  // 2. Calculations are performed using pure functions from scroll_calculations.dart
+  // 3. Values are passed explicitly to child widgets (no reactive listeners)
+  // 4. Easier to understand and maintain
   int _centerItemIndex = 0;
   int _visibleStart = 0;
   int _visibleEnd = 0;
@@ -321,21 +355,32 @@ class _Timeline extends State<Timeline> {
           DateTime.parse(widget.defaultDate!).difference(startDate).inDays + 1;
     }
 
-    // Écoute du scroll horizontal pour :
-    // - calculer quel élément est au centre (calcul pur)
-    // - calculer la plage visible (calcul pur)
-    // - déclencher l'auto-scroll vertical si nécessaire (action séparée)
+    // Horizontal scroll listener for calculating scroll state and triggering updates
     //
-    // Architecture de scroll refactorisée :
-    // 1. CALCUL: Fonctions pures qui calculent les valeurs sans modifier l'état
-    // 2. ACTION: Mise à jour de l'état et déclenchement des callbacks
+    // This listener implements the native-only scroll architecture:
+    // 1. Uses Timer-based throttling to limit calculations to ~60 FPS (16ms intervals)
+    // 2. Calculates center index directly using pure function (calculateCenterDateIndex)
+    // 3. Calculates visible range inline using formula: visibleDays = ceil(viewportWidth / (dayWidth - dayMargin))
+    // 4. Updates local state variables (_centerItemIndex, _visibleStart, _visibleEnd)
+    // 5. Only calls setState when values actually change to minimize rebuilds
+    // 6. Triggers callbacks and auto-scroll when center item changes
     //
-    // Cette séparation calcul/action améliore la testabilité et la maintenabilité.
+    // Architecture benefits:
+    // - No custom controller abstraction layer
+    // - Direct use of native ScrollController.offset
+    // - Transparent calculation logic
+    // - Easy to test and maintain
+    //
+    // Performance optimizations:
+    // - Throttling prevents excessive calculations during rapid scrolling
+    // - State change detection prevents unnecessary rebuilds
+    // - Pure functions enable compiler optimizations
     _controllerTimeline.addListener(() {
       // Cancel existing throttle timer
       _scrollThrottleTimer?.cancel();
 
-      // Throttle scroll calculations (~60 FPS = 16ms interval)
+      // Throttle scroll calculations to ~60 FPS (16ms interval)
+      // This prevents excessive calculations during rapid scrolling while maintaining smooth updates
       _scrollThrottleTimer = Timer(const Duration(milliseconds: 16), () {
         if (!mounted) return;
 
@@ -345,7 +390,8 @@ class _Timeline extends State<Timeline> {
         final maxScrollExtent = _controllerTimeline.position.maxScrollExtent;
 
         if (currentOffset >= 0 && currentOffset < maxScrollExtent) {
-          // 1. Calculate center index directly using pure function
+          // 1. Calculate center index directly using pure function from scroll_calculations.dart
+          // This determines which day item is currently at the center of the viewport
           final newCenterIndex = calculateCenterDateIndex(
             scrollOffset: currentOffset,
             viewportWidth: _viewportWidth,
@@ -355,6 +401,9 @@ class _Timeline extends State<Timeline> {
           );
 
           // 2. Calculate visible range inline using formula
+          // visibleDays = number of days that fit in the viewport
+          // buffer = extra days rendered on each side for smooth scrolling
+          // This determines which items should be rendered by the lazy viewports
           final visibleDays = (_viewportWidth / (dayWidth - dayMargin)).ceil();
           final buffer = _config.bufferDays;
           final newVisibleStart = (newCenterIndex - (visibleDays ~/ 2) - buffer)
@@ -363,6 +412,7 @@ class _Timeline extends State<Timeline> {
               .clamp(0, days.length);
 
           // 3. Update state only when values change (check before setState)
+          // This optimization prevents unnecessary rebuilds when scrolling within the same range
           if (newCenterIndex != _centerItemIndex ||
               newVisibleStart != _visibleStart ||
               newVisibleEnd != _visibleEnd) {
@@ -463,7 +513,9 @@ class _Timeline extends State<Timeline> {
   // Destruction du widget
   @override
   void dispose() {
-    // Cancel timers
+    // Cancel timers to prevent memory leaks
+    // _scrollThrottleTimer: Throttles scroll calculations
+    // _verticalScrollDebounceTimer: Debounces vertical auto-scroll
     _scrollThrottleTimer?.cancel();
     _verticalScrollDebounceTimer?.cancel();
     // Dispose ValueNotifiers
@@ -736,6 +788,11 @@ class _Timeline extends State<Timeline> {
             final double screenCenter = (screenWidth / 2);
 
             // Capture viewport width for scroll calculations
+            // This value is used by the scroll listener to calculate:
+            // - Center item index (which day is at the center)
+            // - Visible range (which days should be rendered)
+            // The width is captured here because LayoutBuilder provides the actual
+            // available space, which may differ from MediaQuery.of(context).size.width
             _viewportWidth = screenWidth;
 
             // Calculate firstElementMargin once and store it for use in scroll calculations
@@ -828,8 +885,11 @@ class _Timeline extends State<Timeline> {
                                             height: datesHeight,
                                             child: days.isNotEmpty
                                                 ? LazyTimelineViewport(
+                                                    // Pass calculated visible range directly as parameters
+                                                    // instead of using a controller with ValueNotifiers
                                                     visibleStart: _visibleStart,
                                                     visibleEnd: _visibleEnd,
+                                                    // Pass center index for highlighting
                                                     centerItemIndex:
                                                         _centerItemIndex,
                                                     items: days,
@@ -901,6 +961,8 @@ class _Timeline extends State<Timeline> {
                                                             const ClampingScrollPhysics(), // Permet un scroll fluide
                                                         child:
                                                             LazyStageRowsViewport(
+                                                          // Pass calculated visible range directly as parameters
+                                                          // This eliminates the need for a controller with ValueNotifiers
                                                           visibleStart:
                                                               _visibleStart,
                                                           visibleEnd:
