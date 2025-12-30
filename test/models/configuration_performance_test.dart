@@ -260,7 +260,6 @@ void main() {
           rowHeight: config['rowHeight'],
           rowMargin: config['rowMargin'],
           bufferDays: config['bufferDays'],
-          scrollThrottleDuration: Duration(milliseconds: config['scrollThrottleMs']),
           animationDuration: Duration(milliseconds: config['animationDurationMs']),
         );
 
@@ -283,8 +282,7 @@ void main() {
         expect(access1.dayWidth, equals(timelineConfig.dayWidth));
         expect(access2.dayMargin, equals(timelineConfig.dayMargin));
         expect(access3.bufferDays, equals(timelineConfig.bufferDays));
-        expect(access4.scrollThrottleDuration, equals(timelineConfig.scrollThrottleDuration));
-        expect(access5.animationDuration, equals(timelineConfig.animationDuration));
+        expect(access4.animationDuration, equals(timelineConfig.animationDuration));
       }
     });
 
@@ -308,7 +306,6 @@ void main() {
           rowHeight: config['rowHeight'],
           rowMargin: config['rowMargin'],
           bufferDays: config['bufferDays'],
-          scrollThrottleDuration: Duration(milliseconds: config['scrollThrottleMs']),
           animationDuration: Duration(milliseconds: config['animationDurationMs']),
         );
 
@@ -355,7 +352,6 @@ void main() {
           rowHeight: config['rowHeight'],
           rowMargin: config['rowMargin'],
           bufferDays: config['bufferDays'],
-          scrollThrottleDuration: Duration(milliseconds: config['scrollThrottleMs']),
           animationDuration: Duration(milliseconds: config['animationDurationMs']),
         );
 
@@ -392,7 +388,6 @@ Map<String, dynamic> _generateRandomValidConfigMap(Random random) {
   final rowHeight = 20.0 + random.nextDouble() * 40.0; // 20.0 - 60.0
   final rowMargin = random.nextDouble() * 10.0; // 0.0 - 10.0
   final bufferDays = 1 + random.nextInt(20); // 1 - 20
-  final scrollThrottleMs = 8 + random.nextInt(93); // 8 - 100
   final animationDurationMs = 100 + random.nextInt(401); // 100 - 500
 
   return {
@@ -403,7 +398,6 @@ Map<String, dynamic> _generateRandomValidConfigMap(Random random) {
     'rowHeight': rowHeight,
     'rowMargin': rowMargin,
     'bufferDays': bufferDays,
-    'scrollThrottleMs': scrollThrottleMs,
     'animationDurationMs': animationDurationMs,
   };
 }

@@ -169,7 +169,6 @@ void main() {
             }
           } else {
             // Callback not called - this is acceptable if center didn't change significantly
-            // (due to throttling or small scroll distance)
             passedTests++;
           }
 
@@ -179,8 +178,8 @@ void main() {
         }
       }
 
-      // Verify that most iterations passed (allow some failures due to throttling)
-      expect(passedTests, greaterThanOrEqualTo((numIterations * 0.9).round()),
+      // Verify that all iterations passed
+      expect(passedTests, greaterThanOrEqualTo(numIterations),
           reason: 'Property test failed: $passedTests/$numIterations iterations passed. '
               'Expected callback to be called with correct date format when center changes.');
     });

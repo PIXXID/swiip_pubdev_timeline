@@ -29,7 +29,6 @@ void main() {
           'rowHeight': 35.0,
           'rowMargin': 4.0,
           'bufferDays': 7,
-          'scrollThrottleMs': 20,
           'animationDurationMs': 250,
         };
 
@@ -48,7 +47,6 @@ void main() {
         expect(config.rowHeight, equals(35.0));
         expect(config.rowMargin, equals(4.0));
         expect(config.bufferDays, equals(7));
-        expect(config.scrollThrottleDuration, equals(const Duration(milliseconds: 20)));
         expect(config.animationDuration, equals(const Duration(milliseconds: 250)));
       });
 
@@ -100,7 +98,6 @@ void main() {
         expect(config.rowHeight, equals(30.0));
         expect(config.rowMargin, equals(3.0));
         expect(config.bufferDays, equals(5));
-        expect(config.scrollThrottleDuration, equals(const Duration(milliseconds: 16)));
         expect(config.animationDuration, equals(const Duration(milliseconds: 220)));
       });
 
@@ -164,7 +161,6 @@ void main() {
           'dayWidth': 50.0,
           'dayMargin': 5.0,
           'bufferDays': 3,
-          'scrollThrottleMs': 16,
           'animationDurationMs': 200,
         };
 
@@ -186,7 +182,6 @@ void main() {
           'dayWidth': 45.0,
           'dayMargin': 5.0,
           'bufferDays': 5,
-          'scrollThrottleMs': 16,
           'animationDurationMs': 220,
         };
 
@@ -208,7 +203,6 @@ void main() {
           'dayWidth': 40.0,
           'dayMargin': 4.0,
           'bufferDays': 8,
-          'scrollThrottleMs': 20,
           'animationDurationMs': 250,
         };
 
@@ -219,7 +213,6 @@ void main() {
         // Verify large preset values
         expect(config.dayWidth, equals(40.0));
         expect(config.bufferDays, equals(8));
-        expect(config.scrollThrottleDuration, equals(const Duration(milliseconds: 20)));
         expect(config.animationDuration, equals(const Duration(milliseconds: 250)));
       });
     });
@@ -262,7 +255,6 @@ void main() {
         final invalidConfig = {
           'dayWidth': 150.0, // Out of range (max 100)
           'bufferDays': 50, // Out of range (max 20)
-          'scrollThrottleMs': 200, // Out of range (max 100)
         };
 
         TimelineConfigurationManager.initialize(fileConfig: invalidConfig);
@@ -272,7 +264,6 @@ void main() {
         // Verify defaults are used for invalid values
         expect(config.dayWidth, equals(45.0)); // Default
         expect(config.bufferDays, equals(5)); // Default
-        expect(config.scrollThrottleDuration, equals(const Duration(milliseconds: 16))); // Default
       });
 
       testWidgets('Timeline handles empty timeline data with configuration', (WidgetTester tester) async {

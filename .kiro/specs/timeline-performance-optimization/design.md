@@ -4,6 +4,8 @@
 
 Ce document décrit la conception technique pour optimiser les performances du package Flutter `swiip_pubdev_timeline`. L'approche se concentre sur l'optimisation du rendu des widgets, la réduction des reconstructions inutiles, l'amélioration de la gestion de la mémoire, et l'optimisation des calculs. Les solutions proposées suivent les meilleures pratiques Flutter et utilisent des patterns éprouvés pour les applications performantes.
 
+> **⚠️ NOTE ON SCROLL THROTTLING**: This design document originally included scroll throttling as a performance optimization technique (Requirement 7.1). However, scroll throttling has since been completely removed from the codebase via the `remove-scroll-throttle` spec. The throttling mechanism was causing scroll management issues and has been replaced with immediate scroll event processing. All references to throttling in this document (including the TimelineController implementation and Property 6) are now deprecated and should be considered historical context only. The system now relies on Flutter's native scroll handling and other performance optimizations (lazy rendering, data caching, granular state management) to maintain smooth performance.
+
 ## Architecture
 
 ### Current Architecture Analysis
@@ -50,6 +52,8 @@ Timeline (StatefulWidget)
 
 ### 1. TimelineController
 
+> **⚠️ DEPRECATED**: The throttling implementation shown in this TimelineController has been removed. The `_scrollThrottleTimer` and `_scrollThrottleDuration` are no longer used. Scroll calculations now execute immediately without Timer-based throttling.
+
 Gère l'état global de la timeline avec des notifications granulaires.
 
 ```dart
@@ -64,7 +68,7 @@ class TimelineController extends ChangeNotifier {
   final double dayMargin;
   final int totalDays;
   
-  // Throttling pour les calculs
+  // Throttling pour les calculs [REMOVED]
   Timer? _scrollThrottleTimer;
   static const _scrollThrottleDuration = Duration(milliseconds: 16); // ~60 FPS
   
@@ -791,6 +795,8 @@ class VisibleRange {
 
 ### TimelineConfiguration Model
 
+> **⚠️ NOTE**: The `scrollThrottleDuration` field shown below has been removed from the actual implementation. This is historical documentation only.
+
 ```dart
 class TimelineConfiguration {
   final double dayWidth;
@@ -800,7 +806,7 @@ class TimelineConfiguration {
   final double rowHeight;
   final double rowMargin;
   final int bufferDays;
-  final Duration scrollThrottleDuration;
+  final Duration scrollThrottleDuration; // [REMOVED]
   final Duration animationDuration;
   
   const TimelineConfiguration({
@@ -811,7 +817,7 @@ class TimelineConfiguration {
     this.rowHeight = 30.0,
     this.rowMargin = 3.0,
     this.bufferDays = 5,
-    this.scrollThrottleDuration = const Duration(milliseconds: 16),
+    this.scrollThrottleDuration = const Duration(milliseconds: 16), // [REMOVED]
     this.animationDuration = const Duration(milliseconds: 220),
   });
   
@@ -823,7 +829,7 @@ class TimelineConfiguration {
     double? rowHeight,
     double? rowMargin,
     int? bufferDays,
-    Duration? scrollThrottleDuration,
+    Duration? scrollThrottleDuration, // [REMOVED]
     Duration? animationDuration,
   }) {
     return TimelineConfiguration(
@@ -834,7 +840,7 @@ class TimelineConfiguration {
       rowHeight: rowHeight ?? this.rowHeight,
       rowMargin: rowMargin ?? this.rowMargin,
       bufferDays: bufferDays ?? this.bufferDays,
-      scrollThrottleDuration: scrollThrottleDuration ?? this.scrollThrottleDuration,
+      scrollThrottleDuration: scrollThrottleDuration ?? this.scrollThrottleDuration, // [REMOVED]
       animationDuration: animationDuration ?? this.animationDuration,
     );
   }
@@ -897,9 +903,13 @@ class PerformanceMetrics {
 *For any* timeline initialization with unchanged input data, the formatElements and formatStagesRows functions should return cached results without recomputation, and position calculations should occur only once.
 **Validates: Requirements 4.1, 4.5**
 
-### Property 6: Scroll Throttling
-*For any* scroll operation, listener callbacks should be invoked at most 60 times per second (approximately every 16ms), preventing excessive calculations.
-**Validates: Requirements 5.1, 7.1**
+### Property 6: Scroll Throttling [DEPRECATED]
+
+> **⚠️ DEPRECATED**: This property is no longer valid as scroll throttling has been completely removed from the codebase.
+
+~~*For any* scroll operation, listener callbacks should be invoked at most 60 times per second (approximately every 16ms), preventing excessive calculations.~~
+
+**Validates: Requirements 5.1, 7.1** [DEPRECATED]
 
 ### Property 7: Conditional Calculations
 *For any* state update where the relevant value hasn't changed (centerItemIndex, scroll offset below threshold), the system should skip associated calculations and not trigger rebuilds.

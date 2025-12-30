@@ -4,9 +4,11 @@
 
 This design describes the removal of the custom `TimelineController` class and the transition to using only native Flutter `ScrollController` instances for managing timeline scroll state. This refactoring eliminates an unnecessary abstraction layer, reducing code complexity by approximately 150 lines while maintaining all existing functionality.
 
+> **⚠️ NOTE ON SCROLL THROTTLING**: This design document originally included scroll throttling as a maintained feature (Requirement 6). However, scroll throttling has since been completely removed from the codebase via the `remove-scroll-throttle` spec. The throttling mechanism was causing scroll management issues and has been replaced with immediate scroll event processing. All references to throttling in this document are now deprecated and should be considered historical context only.
+
 The key insight is that Flutter's `ScrollController` already provides all the necessary capabilities for scroll management. The `TimelineController` was adding an extra layer that:
 1. Duplicated scroll offset tracking (already available via `ScrollController.offset`)
-2. Added throttling that can be implemented directly with a Timer
+2. Added throttling that can be implemented directly with a Timer (now removed entirely)
 3. Wrapped calculations that can be called directly from pure functions
 4. Used ValueNotifiers that can be replaced with local state variables
 
@@ -36,12 +38,14 @@ LazyViewports listen to ValueNotifiers
 
 ### New Architecture (After Refactoring)
 
+> **⚠️ UPDATE**: The throttling shown below has been removed. Scroll calculations now execute immediately without Timer-based throttling.
+
 ```
 User Interaction
     ↓
 ScrollController
     ↓
-Scroll Listener [throttled with Timer]
+Scroll Listener [throttled with Timer] ← REMOVED
     ↓
 calculateCenterDateIndex() [pure function]
     ↓
@@ -57,7 +61,7 @@ The new architecture is simpler because:
 2. Direct use of pure calculation functions
 3. Local state instead of ValueNotifiers
 4. Explicit parameter passing instead of reactive updates
-5. Throttling implemented directly with Timer
+5. ~~Throttling implemented directly with Timer~~ (REMOVED - now processes immediately)
 
 ## Components and Interfaces
 

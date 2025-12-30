@@ -14,7 +14,6 @@ void main() {
         expect(config.rowHeight, equals(30.0));
         expect(config.rowMargin, equals(3.0));
         expect(config.bufferDays, equals(5));
-        expect(config.scrollThrottleDuration, equals(const Duration(milliseconds: 16)));
         expect(config.animationDuration, equals(const Duration(milliseconds: 220)));
       });
 
@@ -27,7 +26,6 @@ void main() {
           rowHeight: 35.0,
           rowMargin: 5.0,
           bufferDays: 10,
-          scrollThrottleDuration: Duration(milliseconds: 32),
           animationDuration: Duration(milliseconds: 300),
         );
         expect(config.dayWidth, equals(50.0));
@@ -37,7 +35,6 @@ void main() {
         expect(config.rowHeight, equals(35.0));
         expect(config.rowMargin, equals(5.0));
         expect(config.bufferDays, equals(10));
-        expect(config.scrollThrottleDuration, equals(const Duration(milliseconds: 32)));
         expect(config.animationDuration, equals(const Duration(milliseconds: 300)));
       });
 
@@ -114,15 +111,6 @@ void main() {
         expect(updated.dayWidth, equals(original.dayWidth));
       });
 
-      test('returns new instance with updated scrollThrottleDuration', () {
-        const original = TimelineConfiguration();
-        final updated = original.copyWith(
-          scrollThrottleDuration: const Duration(milliseconds: 50),
-        );
-        expect(updated.scrollThrottleDuration, equals(const Duration(milliseconds: 50)));
-        expect(updated.dayWidth, equals(original.dayWidth));
-      });
-
       test('returns new instance with updated animationDuration', () {
         const original = TimelineConfiguration();
         final updated = original.copyWith(
@@ -158,7 +146,6 @@ void main() {
         expect(updated.rowHeight, equals(original.rowHeight));
         expect(updated.rowMargin, equals(original.rowMargin));
         expect(updated.bufferDays, equals(original.bufferDays));
-        expect(updated.scrollThrottleDuration, equals(original.scrollThrottleDuration));
         expect(updated.animationDuration, equals(original.animationDuration));
       });
 
@@ -209,16 +196,6 @@ void main() {
         expect(config1, isNot(equals(config2)));
       });
 
-      test('returns false for different scrollThrottleDuration', () {
-        const config1 = TimelineConfiguration(
-          scrollThrottleDuration: Duration(milliseconds: 16),
-        );
-        const config2 = TimelineConfiguration(
-          scrollThrottleDuration: Duration(milliseconds: 32),
-        );
-        expect(config1, isNot(equals(config2)));
-      });
-
       test('returns true for same instance', () {
         const config = TimelineConfiguration();
         expect(config, equals(config));
@@ -263,7 +240,6 @@ void main() {
         expect(str, contains('rowHeight: 30.0'));
         expect(str, contains('rowMargin: 3.0'));
         expect(str, contains('bufferDays: 5'));
-        expect(str, contains('scrollThrottleDuration: 0:00:00.016000'));
         expect(str, contains('animationDuration: 0:00:00.220000'));
       });
 
@@ -288,7 +264,6 @@ void main() {
           'rowHeight': 35.0,
           'rowMargin': 5.0,
           'bufferDays': 10,
-          'scrollThrottleMs': 32,
           'animationDurationMs': 300,
         };
 
@@ -301,7 +276,6 @@ void main() {
         expect(config.rowHeight, equals(35.0));
         expect(config.rowMargin, equals(5.0));
         expect(config.bufferDays, equals(10));
-        expect(config.scrollThrottleDuration, equals(const Duration(milliseconds: 32)));
         expect(config.animationDuration, equals(const Duration(milliseconds: 300)));
       });
 
@@ -333,7 +307,6 @@ void main() {
           dayWidth: 50.0,
           dayMargin: 10.0,
           bufferDays: 10,
-          scrollThrottleDuration: Duration(milliseconds: 32),
           animationDuration: Duration(milliseconds: 300),
         );
 
@@ -342,7 +315,6 @@ void main() {
         expect(map['dayWidth'], equals(50.0));
         expect(map['dayMargin'], equals(10.0));
         expect(map['bufferDays'], equals(10));
-        expect(map['scrollThrottleMs'], equals(32));
         expect(map['animationDurationMs'], equals(300));
       });
 
@@ -363,7 +335,6 @@ void main() {
             rowHeight: 20.0 + random.nextDouble() * 40.0, // 20.0 - 60.0
             rowMargin: random.nextDouble() * 10.0, // 0.0 - 10.0
             bufferDays: 1 + random.nextInt(20), // 1 - 20
-            scrollThrottleDuration: Duration(milliseconds: 8 + random.nextInt(93)), // 8 - 100
             animationDuration: Duration(milliseconds: 100 + random.nextInt(401)), // 100 - 500
           );
 
@@ -386,8 +357,6 @@ void main() {
               reason: 'rowMargin should be preserved in round-trip (iteration $i)');
           expect(roundTrippedConfig.bufferDays, equals(originalConfig.bufferDays),
               reason: 'bufferDays should be preserved in round-trip (iteration $i)');
-          expect(roundTrippedConfig.scrollThrottleDuration, equals(originalConfig.scrollThrottleDuration),
-              reason: 'scrollThrottleDuration should be preserved in round-trip (iteration $i)');
           expect(roundTrippedConfig.animationDuration, equals(originalConfig.animationDuration),
               reason: 'animationDuration should be preserved in round-trip (iteration $i)');
 

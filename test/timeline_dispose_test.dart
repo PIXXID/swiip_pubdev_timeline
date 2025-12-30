@@ -8,75 +8,11 @@ import 'package:swiip_pubdev_timeline/src/timeline/timeline.dart';
 /// **Validates: Requirements 6.5**
 ///
 /// This test verifies that:
-/// - Scroll throttle timer is properly cancelled in dispose()
 /// - Vertical scroll debounce timer is properly cancelled in dispose()
 /// - No memory leaks occur from timers
 /// - ValueNotifiers are properly disposed
 void main() {
   group('Timeline Disposal', () {
-    testWidgets('should properly dispose scroll throttle timer', (WidgetTester tester) async {
-      // Feature: native-scroll-only, Requirement 6.5
-
-      // Create a Timeline widget with minimal configuration
-      final timeline = Timeline(
-        colors: {
-          'primaryBackground': Colors.white,
-          'secondaryBackground': Colors.grey[200]!,
-          'primaryText': Colors.black,
-          'secondaryText': Colors.grey,
-          'accent1': Colors.blue,
-          'primary': Colors.blue,
-          'error': Colors.red,
-          'warning': Colors.orange,
-          'info': Colors.green,
-        },
-        infos: {
-          'startDate': '2024-01-01',
-          'endDate': '2024-01-31',
-          'lmax': 100,
-        },
-        elements: [
-          {
-            'id': '1',
-            'date': '2024-01-15',
-            'eff': 50,
-          }
-        ],
-        elementsDone: [],
-        capacities: [],
-        stages: [
-          {
-            'id': 'stage1',
-            'name': 'Stage 1',
-            'prj_id': 'project1',
-          }
-        ],
-        openDayDetail: (date, progress, preIds, elements, indicators) {},
-      );
-
-      // Build the widget
-      await tester.pumpWidget(MaterialApp(home: timeline));
-
-      // Wait for initialization
-      await tester.pumpAndSettle();
-
-      // Trigger a scroll event to create the throttle timer
-      final scrollable = find.byType(SingleChildScrollView).first;
-      await tester.drag(scrollable, const Offset(-100, 0));
-
-      // Pump a frame to trigger the scroll listener
-      await tester.pump();
-
-      // Dispose the widget by removing it from the tree
-      await tester.pumpWidget(const SizedBox());
-
-      // Wait to ensure no timer callbacks execute after disposal
-      await tester.pump(const Duration(milliseconds: 50));
-
-      // If we get here without errors, the timer was properly cancelled
-      // No assertion needed - the test passes if no exceptions are thrown
-    });
-
     testWidgets('should properly dispose vertical scroll debounce timer', (WidgetTester tester) async {
       // Feature: native-scroll-only, Requirement 6.5
 
@@ -203,24 +139,24 @@ void main() {
       // This simulates the behavior in Timeline's dispose() method
 
       bool callbackExecuted = false;
-      Timer? scrollThrottleTimer;
+      Timer? debounceTimer;
 
-      // Create a timer (simulating scroll throttle timer)
-      scrollThrottleTimer = Timer(const Duration(milliseconds: 16), () {
+      // Create a timer (simulating vertical scroll debounce timer)
+      debounceTimer = Timer(const Duration(milliseconds: 100), () {
         callbackExecuted = true;
       });
 
       // Verify timer is active
-      expect(scrollThrottleTimer.isActive, isTrue);
+      expect(debounceTimer.isActive, isTrue);
 
       // Cancel the timer (simulating dispose)
-      scrollThrottleTimer.cancel();
+      debounceTimer.cancel();
 
       // Verify timer is no longer active
-      expect(scrollThrottleTimer.isActive, isFalse);
+      expect(debounceTimer.isActive, isFalse);
 
       // Wait longer than the timer duration
-      await Future.delayed(const Duration(milliseconds: 50));
+      await Future.delayed(const Duration(milliseconds: 150));
 
       // Verify callback was not executed after cancellation
       expect(callbackExecuted, isFalse, reason: 'Timer callback should not execute after cancellation');
@@ -232,18 +168,18 @@ void main() {
       // This test verifies that calling cancel() multiple times is safe
       // This is important because dispose() might be called multiple times
 
-      Timer? scrollThrottleTimer;
+      Timer? debounceTimer;
 
       // Create a timer
-      scrollThrottleTimer = Timer(const Duration(milliseconds: 16), () {});
+      debounceTimer = Timer(const Duration(milliseconds: 100), () {});
 
       // Cancel multiple times (should not throw)
-      scrollThrottleTimer.cancel();
-      scrollThrottleTimer.cancel();
-      scrollThrottleTimer.cancel();
+      debounceTimer.cancel();
+      debounceTimer.cancel();
+      debounceTimer.cancel();
 
       // If we get here without errors, multiple cancellations are safe
-      expect(scrollThrottleTimer.isActive, isFalse);
+      expect(debounceTimer.isActive, isFalse);
     });
 
     test('should verify null timer cancellation is safe', () {
@@ -252,13 +188,13 @@ void main() {
       // This test verifies that cancelling a null timer is safe
       // This is important because the timer might not be created yet
 
-      Timer? scrollThrottleTimer;
+      Timer? debounceTimer;
 
       // Cancel null timer (should not throw)
-      scrollThrottleTimer?.cancel();
+      debounceTimer?.cancel();
 
       // If we get here without errors, null cancellation is safe
-      expect(scrollThrottleTimer, isNull);
+      expect(debounceTimer, isNull);
     });
   });
 }

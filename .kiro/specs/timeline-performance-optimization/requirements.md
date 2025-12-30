@@ -89,13 +89,15 @@ Ce document définit les exigences pour l'optimisation et l'amélioration des pe
 4. THE System SHALL implement proper error handling for edge cases
 5. THE System SHALL follow Flutter best practices for widget composition
 
-### Requirement 7: Optimisation des Listeners
+### Requirement 7: Optimisation des Listeners [PARTIALLY DEPRECATED]
+
+> **⚠️ PARTIAL DEPRECATION**: Acceptance criterion 7.1 regarding scroll throttling has been deprecated. Scroll throttling has been completely removed from the codebase via the `remove-scroll-throttle` spec as it was causing scroll management issues. The Timeline now processes scroll events immediately without throttling. Other listener optimizations in this requirement remain valid.
 
 **User Story:** En tant que développeur, je veux que les listeners soient optimisés, afin de réduire les calculs inutiles lors du scroll.
 
 #### Acceptance Criteria
 
-1. THE System SHALL throttle scroll listener callbacks to maximum 60 times per second
+1. ~~THE System SHALL throttle scroll listener callbacks to maximum 60 times per second~~ [DEPRECATED - Throttling removed]
 2. WHEN scroll offset hasn't changed significantly, THE System SHALL skip calculations
 3. THE System SHALL remove all listeners in dispose method
 4. THE System SHALL use separate listeners for horizontal and vertical scroll

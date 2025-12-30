@@ -79,17 +79,19 @@ This specification defines the requirements for further simplifying the Timeline
 4. THE LazyStageRowsViewport SHALL remove dependency on TimelineController
 5. THE Timeline SHALL pass calculated visible range to lazy viewports
 
-### Requirement 6: Maintain Scroll Throttling
+### Requirement 6: Maintain Scroll Throttling [DEPRECATED]
+
+> **⚠️ DEPRECATED**: This requirement has been superseded by the scroll throttle removal implemented in the `remove-scroll-throttle` spec. Scroll throttling has been completely removed from the codebase as it was causing scroll management issues. The Timeline now processes scroll events immediately without artificial delays.
 
 **User Story:** As a developer, I want scroll updates to be throttled, so that performance remains smooth during rapid scrolling.
 
 #### Acceptance Criteria
 
-1. THE Timeline SHALL use a Timer to throttle scroll calculations
-2. THE Timeline SHALL limit scroll calculations to approximately 60 FPS (16ms intervals)
-3. WHEN a scroll event occurs during an active throttle timer, THE Timeline SHALL skip the calculation
-4. WHEN the throttle timer expires, THE Timeline SHALL perform the scroll calculations
-5. THE Timeline SHALL cancel the throttle timer in the dispose() method
+1. ~~THE Timeline SHALL use a Timer to throttle scroll calculations~~
+2. ~~THE Timeline SHALL limit scroll calculations to approximately 60 FPS (16ms intervals)~~
+3. ~~WHEN a scroll event occurs during an active throttle timer, THE Timeline SHALL skip the calculation~~
+4. ~~WHEN the throttle timer expires, THE Timeline SHALL perform the scroll calculations~~
+5. ~~THE Timeline SHALL cancel the throttle timer in the dispose() method~~
 
 ### Requirement 7: Preserve Auto-Scroll Behavior
 

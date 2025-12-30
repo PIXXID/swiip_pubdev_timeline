@@ -51,7 +51,6 @@ void main() {
         expect(access1.dayWidth, equals(config.dayWidth));
         expect(access1.dayMargin, equals(config.dayMargin));
         expect(access1.bufferDays, equals(config.bufferDays));
-        expect(access1.scrollThrottleDuration, equals(config.scrollThrottleDuration));
         expect(access1.animationDuration, equals(config.animationDuration));
         expect(access1.rowHeight, equals(config.rowHeight));
         expect(access1.rowMargin, equals(config.rowMargin));
@@ -95,8 +94,6 @@ void main() {
             reason: 'dayMargin should match programmatic config');
         expect(resultConfig.bufferDays, equals(programmaticConfig.bufferDays),
             reason: 'bufferDays should match programmatic config');
-        expect(resultConfig.scrollThrottleDuration, equals(programmaticConfig.scrollThrottleDuration),
-            reason: 'scrollThrottleDuration should match programmatic config');
         expect(resultConfig.animationDuration, equals(programmaticConfig.animationDuration),
             reason: 'animationDuration should match programmatic config');
         expect(resultConfig.rowHeight, equals(programmaticConfig.rowHeight),
@@ -179,7 +176,6 @@ TimelineConfiguration _generateRandomValidConfig(Random random) {
   final rowHeight = 20.0 + random.nextDouble() * 40.0; // 20.0 - 60.0
   final rowMargin = random.nextDouble() * 10.0; // 0.0 - 10.0
   final bufferDays = 1 + random.nextInt(20); // 1 - 20
-  final scrollThrottleMs = 8 + random.nextInt(93); // 8 - 100
   final animationDurationMs = 100 + random.nextInt(401); // 100 - 500
 
   return TimelineConfiguration(
@@ -190,7 +186,6 @@ TimelineConfiguration _generateRandomValidConfig(Random random) {
     rowHeight: rowHeight,
     rowMargin: rowMargin,
     bufferDays: bufferDays,
-    scrollThrottleDuration: Duration(milliseconds: scrollThrottleMs),
     animationDuration: Duration(milliseconds: animationDurationMs),
   );
 }

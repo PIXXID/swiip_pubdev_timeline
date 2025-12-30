@@ -36,8 +36,6 @@ void main() {
         expect(config.rowHeight, equals(30.0), reason: 'Default rowHeight should be 30.0');
         expect(config.rowMargin, equals(3.0), reason: 'Default rowMargin should be 3.0');
         expect(config.bufferDays, equals(5), reason: 'Default bufferDays should be 5');
-        expect(config.scrollThrottleDuration, equals(const Duration(milliseconds: 16)),
-            reason: 'Default scrollThrottleDuration should be 16ms');
         expect(config.animationDuration, equals(const Duration(milliseconds: 220)),
             reason: 'Default animationDuration should be 220ms');
 
@@ -66,7 +64,6 @@ void main() {
           rowHeight: 25.0 + random.nextDouble() * 25, // 25-50
           rowMargin: random.nextDouble() * 8, // 0-8
           bufferDays: 1 + random.nextInt(15), // 1-15
-          scrollThrottleDuration: Duration(milliseconds: 10 + random.nextInt(80)), // 10-90ms
           animationDuration: Duration(milliseconds: 150 + random.nextInt(300)), // 150-450ms
         );
 
@@ -91,8 +88,6 @@ void main() {
         expect(config.rowMargin, equals(customConfig.rowMargin), reason: 'rowMargin should match programmatic config');
         expect(config.bufferDays, equals(customConfig.bufferDays),
             reason: 'bufferDays should match programmatic config');
-        expect(config.scrollThrottleDuration, equals(customConfig.scrollThrottleDuration),
-            reason: 'scrollThrottleDuration should match programmatic config');
         expect(config.animationDuration, equals(customConfig.animationDuration),
             reason: 'animationDuration should match programmatic config');
 

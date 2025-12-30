@@ -68,8 +68,8 @@ This implementation plan breaks down the removal of scroll throttling into discr
 - [x] 7. Checkpoint - Verify code compiles and basic functionality works
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 8. Update configuration tests
-  - [ ] 8.1 Update timeline_configuration_test.dart
+- [x] 8. Update configuration tests
+  - [x] 8.1 Update timeline_configuration_test.dart
     - Remove scrollThrottleDuration parameter tests
     - Update fromMap() tests to not expect scrollThrottleMs
     - Update toMap() tests to not include scrollThrottleMs
@@ -77,29 +77,29 @@ This implementation plan breaks down the removal of scroll throttling into discr
     - Update equality tests to not compare scrollThrottleDuration
     - _Requirements: 5.1_
 
-  - [ ] 8.2 Update edge_case_handling_test.dart
+  - [x] 8.2 Update edge_case_handling_test.dart
     - Remove scrollThrottleMs validation tests (lines 26, 63, 95, 213-216)
     - Update default configuration expectations
     - _Requirements: 5.2_
 
-- [ ] 9. Update property tests
+- [x] 9. Update property tests
   - Update current_date_callback_property_test.dart
   - Remove throttling tolerance logic (lines 172-173)
   - Update pass rate expectation from 90% to 100% (line 184)
   - _Requirements: 5.4_
 
-- [ ] 10. Update specification documents
-  - [ ] 10.1 Update native-scroll-only spec
+- [x] 10. Update specification documents
+  - [x] 10.1 Update native-scroll-only spec
     - Mark Requirement 6 as deprecated in requirements.md
     - Add note about throttling removal in design.md
     - _Requirements: 6.1_
 
-  - [ ] 10.2 Update timeline-performance-optimization spec
+  - [x] 10.2 Update timeline-performance-optimization spec
     - Mark throttling requirement as deprecated in requirements.md
     - Add note about throttling removal in design.md
     - _Requirements: 6.2, 6.3_
 
-- [ ] 11. Final checkpoint - Run full test suite
+- [x] 11. Final checkpoint - Run full test suite
   - Ensure all tests pass, ask the user if questions arise.
   - Verify scroll performance manually
   - Check for any remaining throttle references

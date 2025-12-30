@@ -23,7 +23,6 @@ void main() {
         expect(result.validatedConfig['rowHeight'], equals(defaults['rowHeight']));
         expect(result.validatedConfig['rowMargin'], equals(defaults['rowMargin']));
         expect(result.validatedConfig['bufferDays'], equals(defaults['bufferDays']));
-        expect(result.validatedConfig['scrollThrottleMs'], equals(defaults['scrollThrottleMs']));
         expect(result.validatedConfig['animationDurationMs'], equals(defaults['animationDurationMs']));
 
         // No errors should be generated for empty config
@@ -60,7 +59,6 @@ void main() {
         // Others should use defaults
         expect(result.validatedConfig['dayMargin'], equals(defaults['dayMargin']));
         expect(result.validatedConfig['bufferDays'], equals(defaults['bufferDays']));
-        expect(result.validatedConfig['scrollThrottleMs'], equals(defaults['scrollThrottleMs']));
       });
 
       test('configuration with only bufferDays preserves it and uses defaults for others', () {
@@ -83,7 +81,6 @@ void main() {
         final partialConfig = {
           'dayWidth': 50.0,
           'bufferDays': 8,
-          'scrollThrottleMs': 20,
         };
 
         final result = ConfigurationValidator.validate(partialConfig);
@@ -92,7 +89,6 @@ void main() {
         // Provided parameters should be preserved
         expect(result.validatedConfig['dayWidth'], equals(50.0));
         expect(result.validatedConfig['bufferDays'], equals(8));
-        expect(result.validatedConfig['scrollThrottleMs'], equals(20));
 
         // Others should use defaults
         expect(result.validatedConfig['dayMargin'], equals(defaults['dayMargin']));
@@ -209,22 +205,6 @@ void main() {
         expect(result.errors, isEmpty);
       });
 
-      test('scrollThrottleMs at minimum boundary (8) is accepted', () {
-        final config = {'scrollThrottleMs': 8};
-        final result = ConfigurationValidator.validate(config);
-
-        expect(result.validatedConfig['scrollThrottleMs'], equals(8));
-        expect(result.errors, isEmpty);
-      });
-
-      test('scrollThrottleMs at maximum boundary (100) is accepted', () {
-        final config = {'scrollThrottleMs': 100};
-        final result = ConfigurationValidator.validate(config);
-
-        expect(result.validatedConfig['scrollThrottleMs'], equals(100));
-        expect(result.errors, isEmpty);
-      });
-
       test('animationDurationMs at minimum boundary (100) is accepted', () {
         final config = {'animationDurationMs': 100};
         final result = ConfigurationValidator.validate(config);
@@ -314,7 +294,6 @@ void main() {
           'rowHeight': 20.0,
           'rowMargin': 0.0,
           'bufferDays': 1,
-          'scrollThrottleMs': 8,
           'animationDurationMs': 100,
         };
 
@@ -327,7 +306,6 @@ void main() {
         expect(result.validatedConfig['rowHeight'], equals(20.0));
         expect(result.validatedConfig['rowMargin'], equals(0.0));
         expect(result.validatedConfig['bufferDays'], equals(1));
-        expect(result.validatedConfig['scrollThrottleMs'], equals(8));
         expect(result.validatedConfig['animationDurationMs'], equals(100));
         expect(result.errors, isEmpty);
       });
@@ -341,7 +319,6 @@ void main() {
           'rowHeight': 60.0,
           'rowMargin': 10.0,
           'bufferDays': 20,
-          'scrollThrottleMs': 100,
           'animationDurationMs': 500,
         };
 
@@ -354,7 +331,6 @@ void main() {
         expect(result.validatedConfig['rowHeight'], equals(60.0));
         expect(result.validatedConfig['rowMargin'], equals(10.0));
         expect(result.validatedConfig['bufferDays'], equals(20));
-        expect(result.validatedConfig['scrollThrottleMs'], equals(100));
         expect(result.validatedConfig['animationDurationMs'], equals(500));
         expect(result.errors, isEmpty);
       });
@@ -363,7 +339,6 @@ void main() {
         final config = {
           'dayWidth': 19.9,
           'bufferDays': 0,
-          'scrollThrottleMs': 7,
         };
 
         final result = ConfigurationValidator.validate(config);
@@ -371,15 +346,13 @@ void main() {
 
         expect(result.validatedConfig['dayWidth'], equals(defaults['dayWidth']));
         expect(result.validatedConfig['bufferDays'], equals(defaults['bufferDays']));
-        expect(result.validatedConfig['scrollThrottleMs'], equals(defaults['scrollThrottleMs']));
-        expect(result.errors.length, equals(3));
+        expect(result.errors.length, equals(2));
       });
 
       test('values just above maximum boundary use defaults', () {
         final config = {
           'dayWidth': 100.1,
           'bufferDays': 21,
-          'scrollThrottleMs': 101,
         };
 
         final result = ConfigurationValidator.validate(config);
@@ -387,8 +360,7 @@ void main() {
 
         expect(result.validatedConfig['dayWidth'], equals(defaults['dayWidth']));
         expect(result.validatedConfig['bufferDays'], equals(defaults['bufferDays']));
-        expect(result.validatedConfig['scrollThrottleMs'], equals(defaults['scrollThrottleMs']));
-        expect(result.errors.length, equals(3));
+        expect(result.errors.length, equals(2));
       });
     });
 
@@ -547,7 +519,6 @@ void main() {
       test('configuration with decimal values for integer parameters', () {
         final config = {
           'bufferDays': 5.5,
-          'scrollThrottleMs': 16.7,
         };
 
         final result = ConfigurationValidator.validate(config);
@@ -556,15 +527,11 @@ void main() {
         // This is a design decision - the validator is lenient with numeric types
         // The values should be within valid range
         final bufferDaysResult = result.validatedConfig['bufferDays'];
-        final scrollThrottleResult = result.validatedConfig['scrollThrottleMs'];
 
         // Values should be numeric and within valid range
         expect(bufferDaysResult, isA<num>());
-        expect(scrollThrottleResult, isA<num>());
         expect(bufferDaysResult, greaterThanOrEqualTo(1));
         expect(bufferDaysResult, lessThanOrEqualTo(20));
-        expect(scrollThrottleResult, greaterThanOrEqualTo(8));
-        expect(scrollThrottleResult, lessThanOrEqualTo(100));
 
         // No errors should be generated for valid numeric values
         expect(result.errors, isEmpty);
@@ -579,7 +546,6 @@ void main() {
           'bufferDays': 100, // invalid (out of range)
           'unknownParam': 'ignored', // unknown
           'dayMargin': 'invalid', // invalid (wrong type)
-          'scrollThrottleMs': 20, // valid
         };
 
         final result = ConfigurationValidator.validate(config);
@@ -587,7 +553,6 @@ void main() {
 
         // Valid parameters should be preserved
         expect(result.validatedConfig['dayWidth'], equals(50.0));
-        expect(result.validatedConfig['scrollThrottleMs'], equals(20));
 
         // Invalid parameters should use defaults
         expect(result.validatedConfig['bufferDays'], equals(defaults['bufferDays']));
