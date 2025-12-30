@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "name": "Kiro Spec Branch Creator",
+  "description": "Automatically creates a new git branch when a tasks.md file is created in the .kiro directory structure. The branch name will be based on the Kiro spec name.",
+  "version": "1",
+  "when": {
+    "type": "fileCreated",
+    "patterns": [
+      ".kiro/**/tasks.md"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A new Kiro spec tasks.md file has been created. Please:\n1. Extract the spec name from the file path\n2. Create a new git branch with the format: kiro/[spec-name]\n3. Switch to that new branch\n4. Confirm the branch creation\n\nUse git commands to accomplish this."
+  }
+}
