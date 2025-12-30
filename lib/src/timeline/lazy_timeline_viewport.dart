@@ -52,6 +52,11 @@ class LazyTimelineViewport extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Handle empty items list
+    if (items.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     // Calculate total width for proper positioning
     final totalWidth = items.length * itemWidth;
 
@@ -59,11 +64,11 @@ class LazyTimelineViewport extends StatelessWidget {
     final visibleWidgets = <Widget>[];
 
     // Ensure range is within bounds
-    final safeStart = visibleStart.clamp(0, items.length - 1);
-    final safeEnd = visibleEnd.clamp(0, items.length - 1);
+    final safeStart = visibleStart.clamp(0, items.length);
+    final safeEnd = visibleEnd.clamp(0, items.length);
 
     // Iterate through visible range and create positioned widgets
-    for (var i = safeStart; i <= safeEnd && i < items.length; i++) {
+    for (var i = safeStart; i < safeEnd && i < items.length; i++) {
       visibleWidgets.add(
         Positioned(
           left: i * (itemWidth - itemMargin),

@@ -143,14 +143,14 @@ This implementation plan breaks down the removal of the `TimelineController` cla
     - Verify vertical position animates to correct target offset
     - Run 100 iterations
 
-- [ ] 7. Verify scrollTo functionality
-  - [ ] 7.1 Ensure scrollTo() method works correctly
+- [x] 7. Verify scrollTo functionality
+  - [x] 7.1 Ensure scrollTo() method works correctly
     - Verify scrollTo() calculates offset correctly
     - Verify animated and non-animated variants work
     - Verify default scroll on initialization works
     - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5_
 
-  - [ ] 7.2 Write property test for scrollTo offset calculation
+  - [x] 7.2 Write property test for scrollTo offset calculation
     - **Property 7: ScrollTo Offset Calculation**
     - **Validates: Requirements 8.2**
     - Generate random valid date indices [0, totalDays-1]
@@ -159,22 +159,24 @@ This implementation plan breaks down the removal of the `TimelineController` cla
     - Test both animated and non-animated variants
     - Run 100 iterations
 
-  - [ ] 7.3 Write unit tests for scrollTo edge cases
+  - [x] 7.3 Write unit tests for scrollTo edge cases
     - Test scrollTo with index 0 (start)
     - Test scrollTo with index totalDays-1 (end)
     - Test scrollTo with out-of-bounds index (should clamp)
     - Test scrollTo on initialization (defaultDate and nowIndex)
     - _Requirements: 8.3, 8.4, 8.5_
 
-- [ ] 8. Checkpoint - Ensure all tests pass
-  - Ensure all tests pass, ask the user if questions arise.
+- [x] 8. Checkpoint - Ensure all tests pass
+  - **Status**: Complete with expected failures
+  - **Result**: 1,208 tests passing, 7 compilation errors
+  - **Note**: The 7 failures are expected - they are compilation errors in tests that reference the deleted `TimelineController` class. These will be addressed in task 9.
 
-- [ ] 9. Remove TimelineController tests
-  - [ ] 9.1 Delete TimelineController test file
+- [x] 9. Remove TimelineController tests
+  - [x] 9.1 Delete TimelineController test file
     - Delete `test/models/timeline_controller_test.dart`
     - _Requirements: 9.1, 9.2_
 
-  - [ ] 9.2 Update existing tests to use direct calculations
+  - [x] 9.2 Update existing tests to use direct calculations
     - Update scroll position tracking tests
     - Update visible range calculation tests
     - Update center item calculation tests

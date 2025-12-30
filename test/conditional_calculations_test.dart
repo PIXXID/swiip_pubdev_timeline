@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:swiip_pubdev_timeline/src/timeline/models/timeline_data_manager.dart';
-import 'package:swiip_pubdev_timeline/src/timeline/models/timeline_controller.dart';
 
 /// Property 7: Conditional Calculations
 ///
@@ -127,97 +126,6 @@ void main() {
       final day20Index = 19; // January 20th is index 19 (0-based)
       expect(result2[day20Index]['preIds'].length,
           greaterThan(result1[day20Index]['preIds'].length));
-    });
-
-    test('should skip centerItemIndex update when value hasn\'t changed', () {
-      // Feature: timeline-performance-optimization, Property 7: Conditional Calculations
-
-      final controller = TimelineController(
-        dayWidth: 45.0,
-        dayMargin: 5.0,
-        totalDays: 100,
-        viewportWidth: 800.0,
-      );
-
-      // Set initial scroll offset
-      controller.updateScrollOffset(200.0);
-
-      // Wait for throttle
-      Future.delayed(const Duration(milliseconds: 20), () {
-        final initialCenterIndex = controller.centerItemIndex.value;
-
-        // Update with same scroll offset (should skip calculation)
-        controller.updateScrollOffset(200.0);
-
-        Future.delayed(const Duration(milliseconds: 20), () {
-          final newCenterIndex = controller.centerItemIndex.value;
-
-          expect(newCenterIndex, equals(initialCenterIndex),
-              reason:
-                  'CenterItemIndex should not change when scroll offset is the same');
-        });
-      });
-    });
-
-    test('should skip calculations when scroll offset changes insignificantly',
-        () {
-      // Feature: timeline-performance-optimization, Property 7: Conditional Calculations
-
-      final controller = TimelineController(
-        dayWidth: 45.0,
-        dayMargin: 5.0,
-        totalDays: 100,
-        viewportWidth: 800.0,
-      );
-
-      // Set initial scroll offset
-      controller.updateScrollOffset(200.0);
-
-      Future.delayed(const Duration(milliseconds: 20), () {
-        final initialCenterIndex = controller.centerItemIndex.value;
-
-        // Update with slightly different offset (less than one day width)
-        // This should result in the same centerItemIndex
-        controller.updateScrollOffset(202.0);
-
-        Future.delayed(const Duration(milliseconds: 20), () {
-          final newCenterIndex = controller.centerItemIndex.value;
-
-          expect(newCenterIndex, equals(initialCenterIndex),
-              reason:
-                  'CenterItemIndex should not change for insignificant scroll changes');
-        });
-      });
-    });
-
-    test('should update calculations when scroll offset changes significantly',
-        () {
-      // Feature: timeline-performance-optimization, Property 7: Conditional Calculations
-
-      final controller = TimelineController(
-        dayWidth: 45.0,
-        dayMargin: 5.0,
-        totalDays: 100,
-        viewportWidth: 800.0,
-      );
-
-      // Set initial scroll offset
-      controller.updateScrollOffset(200.0);
-
-      Future.delayed(const Duration(milliseconds: 20), () {
-        final initialCenterIndex = controller.centerItemIndex.value;
-
-        // Update with significantly different offset (more than one day width)
-        controller.updateScrollOffset(250.0);
-
-        Future.delayed(const Duration(milliseconds: 20), () {
-          final newCenterIndex = controller.centerItemIndex.value;
-
-          expect(newCenterIndex, isNot(equals(initialCenterIndex)),
-              reason:
-                  'CenterItemIndex should change for significant scroll changes');
-        });
-      });
     });
 
     test('should cache stage rows independently of days', () {

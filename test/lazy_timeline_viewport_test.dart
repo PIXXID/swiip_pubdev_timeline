@@ -78,8 +78,6 @@ void main() {
         await tester.pumpAndSettle();
 
         // Calculate expected visible items
-        final visibleDays = (viewportWidth / (dayWidth - dayMargin)).ceil();
-        const buffer = 5; // Buffer from TimelineController
         final expectedMaxRendered = visibleDays + (buffer * 2);
 
         // Verify that rendered items are significantly less than total
@@ -517,13 +515,14 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      // Find the SizedBox that contains the Stack
-      final sizedBox = tester.widget<SizedBox>(
-        find.descendant(
-          of: find.byType(LazyTimelineViewport),
-          matching: find.byType(SizedBox),
-        ),
+      // Find the outer SizedBox that contains the Stack (the first one)
+      final sizedBoxFinder = find.descendant(
+        of: find.byType(LazyTimelineViewport),
+        matching: find.byType(SizedBox),
       );
+
+      // Get the first SizedBox which is the container
+      final sizedBox = tester.widgetList<SizedBox>(sizedBoxFinder).first;
 
       final expectedWidth = totalDays * dayWidth;
       expect(sizedBox.width, equals(expectedWidth));

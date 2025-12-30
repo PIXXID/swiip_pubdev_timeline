@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:swiip_pubdev_timeline/src/timeline/models/timeline_error_handler.dart';
 import 'package:swiip_pubdev_timeline/src/timeline/models/timeline_data_manager.dart';
-import 'package:swiip_pubdev_timeline/src/timeline/models/timeline_controller.dart';
 
 /// Unit tests for TimelineErrorHandler edge cases
 ///
@@ -340,108 +339,6 @@ void main() {
 
       expect(result.length, equals(1));
       expect(result[0]['date'], equals(date));
-    });
-  });
-
-  group('TimelineController Edge Cases', () {
-    test('should handle negative scroll offset', () async {
-      final controller = TimelineController(
-        dayWidth: 45.0,
-        dayMargin: 5.0,
-        totalDays: 100,
-        viewportWidth: 800.0,
-      );
-
-      controller.updateScrollOffset(-100.0);
-
-      // Wait for throttle
-      await Future.delayed(const Duration(milliseconds: 20));
-
-      // Center index should be clamped to 0
-      expect(controller.centerItemIndex.value, greaterThanOrEqualTo(0));
-
-      controller.dispose();
-    });
-
-    test('should handle scroll beyond max', () async {
-      final controller = TimelineController(
-        dayWidth: 45.0,
-        dayMargin: 5.0,
-        totalDays: 100,
-        viewportWidth: 800.0,
-      );
-
-      controller.updateScrollOffset(100000.0);
-
-      // Wait for throttle
-      await Future.delayed(const Duration(milliseconds: 20));
-
-      // Center index should be clamped to max
-      expect(controller.centerItemIndex.value, lessThan(100));
-
-      controller.dispose();
-    });
-
-    test('should handle zero total days', () {
-      final controller = TimelineController(
-        dayWidth: 45.0,
-        dayMargin: 5.0,
-        totalDays: 0,
-        viewportWidth: 800.0,
-      );
-
-      // Should not crash
-      expect(controller.centerItemIndex.value, equals(0));
-
-      controller.dispose();
-    });
-
-    test('should handle single day timeline', () async {
-      final controller = TimelineController(
-        dayWidth: 45.0,
-        dayMargin: 5.0,
-        totalDays: 1,
-        viewportWidth: 800.0,
-      );
-
-      controller.updateScrollOffset(100.0);
-
-      // Wait for throttle
-      await Future.delayed(const Duration(milliseconds: 20));
-
-      // Center index should be clamped to 0 (only one day)
-      expect(controller.centerItemIndex.value, equals(0));
-
-      controller.dispose();
-    });
-
-    test('should handle disposal without initialization', () {
-      final controller = TimelineController(
-        dayWidth: 45.0,
-        dayMargin: 5.0,
-        totalDays: 100,
-        viewportWidth: 800.0,
-      );
-
-      // Should not crash when disposing immediately
-      expect(() => controller.dispose(), returnsNormally);
-    });
-
-    test('should handle updates after disposal', () async {
-      final controller = TimelineController(
-        dayWidth: 45.0,
-        dayMargin: 5.0,
-        totalDays: 100,
-        viewportWidth: 800.0,
-      );
-
-      controller.dispose();
-
-      // Should not crash when updating after disposal
-      expect(() => controller.updateScrollOffset(100.0), returnsNormally);
-
-      // Wait for throttle
-      await Future.delayed(const Duration(milliseconds: 20));
     });
   });
 }
