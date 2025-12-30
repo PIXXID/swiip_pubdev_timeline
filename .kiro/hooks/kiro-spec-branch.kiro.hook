@@ -11,6 +11,8 @@
   },
   "then": {
     "type": "askAgent",
-    "prompt": "A new Kiro spec tasks.md file has been created. Please:\n1. Extract the spec name from the file path\n2. Create a new git branch with the format: kiro/[spec-name]\n3. Switch to that new branch\n4. Confirm the branch creation\n\nUse git commands to accomplish this."
-  }
+    "prompt": "A new Kiro spec tasks.md file has been created. Please:\n1. Extract the spec name from the file path\n2. Create a new git branch with the format: [spec-name]\n3. Switch to that new branch\n4. Confirm the branch creation\n\nUse git commands to accomplish this."
+  },
+  "workspaceFolderName": "swiip_pubdev_timeline",
+  "shortName": "kiro-spec-branch"
 }
