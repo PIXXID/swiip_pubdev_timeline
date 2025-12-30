@@ -28,8 +28,7 @@ void main() {
       TimelineConfigurationManager.reset();
     });
 
-    testWidgets(
-        'For any scroll position that changes center item, callback should be called with correct date',
+    testWidgets('For any scroll position that changes center item, callback should be called with correct date',
         (WidgetTester tester) async {
       // Feature: native-scroll-only, Property 4: Current Date Callback Invocation
       // Validates: Requirements 3.5
@@ -45,13 +44,11 @@ void main() {
         return {
           'id': 'elem_$index',
           'name': 'Test Element $index',
-          'date':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'date': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'pre_id': 'pre_$index',
           'nat': 'activity',
           'status': 'pending',
-          'sdate':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'sdate': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'edate':
               '${date.add(const Duration(days: 1)).year}-${date.add(const Duration(days: 1)).month.toString().padLeft(2, '0')}-${date.add(const Duration(days: 1)).day.toString().padLeft(2, '0')}',
           'stage_id': 'stage1',
@@ -159,12 +156,10 @@ void main() {
           if (callbackWasCalled) {
             // Verify date format is correct (YYYY-MM-DD)
             final dateRegex = RegExp(r'^\d{4}-\d{2}-\d{2}$');
-            final hasCorrectFormat = lastCallbackDate != null &&
-                dateRegex.hasMatch(lastCallbackDate!);
+            final hasCorrectFormat = lastCallbackDate != null && dateRegex.hasMatch(lastCallbackDate!);
 
             // Verify date is different from previous (if there was a previous date)
-            final isDifferent =
-                previousDate == null || lastCallbackDate != previousDate;
+            final isDifferent = previousDate == null || lastCallbackDate != previousDate;
 
             if (hasCorrectFormat && isDifferent) {
               passedTests++;
@@ -180,21 +175,17 @@ void main() {
 
           previousDateIndex = targetDateIndex;
         } catch (e) {
-          debugPrint(
-              'Iteration $i failed with targetDateIndex=$targetDateIndex: $e');
+          debugPrint('Iteration $i failed with targetDateIndex=$targetDateIndex: $e');
         }
       }
 
       // Verify that most iterations passed (allow some failures due to throttling)
       expect(passedTests, greaterThanOrEqualTo((numIterations * 0.9).round()),
-          reason:
-              'Property test failed: $passedTests/$numIterations iterations passed. '
+          reason: 'Property test failed: $passedTests/$numIterations iterations passed. '
               'Expected callback to be called with correct date format when center changes.');
     });
 
-    testWidgets(
-        'Callback should not be called when center item remains unchanged',
-        (WidgetTester tester) async {
+    testWidgets('Callback should not be called when center item remains unchanged', (WidgetTester tester) async {
       // Feature: native-scroll-only, Property 4: Current Date Callback Invocation
       // Validates: Requirements 3.5
 
@@ -208,13 +199,11 @@ void main() {
         return {
           'id': 'elem_$index',
           'name': 'Test Element $index',
-          'date':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'date': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'pre_id': 'pre_$index',
           'nat': 'activity',
           'status': 'pending',
-          'sdate':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'sdate': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'edate':
               '${date.add(const Duration(days: 1)).year}-${date.add(const Duration(days: 1)).month.toString().padLeft(2, '0')}-${date.add(const Duration(days: 1)).day.toString().padLeft(2, '0')}',
           'stage_id': 'stage1',
@@ -303,12 +292,10 @@ void main() {
       // Verify callback was not called again (or called same number of times)
       // The callback should only be called when the center actually changes
       expect(afterSecondScrollCount, equals(afterFirstScrollCount),
-          reason:
-              'Callback should not be called when scrolling to the same position');
+          reason: 'Callback should not be called when scrolling to the same position');
     });
 
-    testWidgets('Callback date format is always YYYY-MM-DD',
-        (WidgetTester tester) async {
+    testWidgets('Callback date format is always YYYY-MM-DD', (WidgetTester tester) async {
       // Feature: native-scroll-only, Property 4: Current Date Callback Invocation
       // Validates: Requirements 3.5
 
@@ -323,13 +310,11 @@ void main() {
         return {
           'id': 'elem_$index',
           'name': 'Test Element $index',
-          'date':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'date': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'pre_id': 'pre_$index',
           'nat': 'activity',
           'status': 'pending',
-          'sdate':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'sdate': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'edate':
               '${date.add(const Duration(days: 1)).year}-${date.add(const Duration(days: 1)).month.toString().padLeft(2, '0')}-${date.add(const Duration(days: 1)).day.toString().padLeft(2, '0')}',
           'stage_id': 'stage1',
@@ -413,8 +398,7 @@ void main() {
 
       // Verify all callback dates have correct format
       final dateRegex = RegExp(r'^\d{4}-\d{2}-\d{2}$');
-      final allDatesValid =
-          callbackDates.every((date) => dateRegex.hasMatch(date));
+      final allDatesValid = callbackDates.every((date) => dateRegex.hasMatch(date));
 
       expect(allDatesValid, isTrue,
           reason:

@@ -14,8 +14,7 @@ void main() {
       TimelineConfigurationManager.reset();
     });
 
-    testWidgets('Viewport width is correctly captured from LayoutBuilder',
-        (WidgetTester tester) async {
+    testWidgets('Viewport width is correctly captured from LayoutBuilder', (WidgetTester tester) async {
       // Validates: Requirements 4.2
 
       const numDays = 30;
@@ -28,13 +27,11 @@ void main() {
         return {
           'id': 'elem_$index',
           'name': 'Test Element $index',
-          'date':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'date': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'pre_id': 'pre_$index',
           'nat': 'activity',
           'status': 'pending',
-          'sdate':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'sdate': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'edate':
               '${date.add(const Duration(days: 1)).year}-${date.add(const Duration(days: 1)).month.toString().padLeft(2, '0')}-${date.add(const Duration(days: 1)).day.toString().padLeft(2, '0')}',
           'stage_id': 'stage1',
@@ -117,8 +114,7 @@ void main() {
       expect(find.byType(Timeline), findsOneWidget);
     });
 
-    testWidgets('Viewport width updates when constraints change',
-        (WidgetTester tester) async {
+    testWidgets('Viewport width updates when constraints change', (WidgetTester tester) async {
       // Validates: Requirements 4.2
 
       const numDays = 30;
@@ -131,13 +127,11 @@ void main() {
         return {
           'id': 'elem_$index',
           'name': 'Test Element $index',
-          'date':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'date': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'pre_id': 'pre_$index',
           'nat': 'activity',
           'status': 'pending',
-          'sdate':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'sdate': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'edate':
               '${date.add(const Duration(days: 1)).year}-${date.add(const Duration(days: 1)).month.toString().padLeft(2, '0')}-${date.add(const Duration(days: 1)).day.toString().padLeft(2, '0')}',
           'stage_id': 'stage1',

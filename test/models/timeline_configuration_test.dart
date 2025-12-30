@@ -14,10 +14,8 @@ void main() {
         expect(config.rowHeight, equals(30.0));
         expect(config.rowMargin, equals(3.0));
         expect(config.bufferDays, equals(5));
-        expect(config.scrollThrottleDuration,
-            equals(const Duration(milliseconds: 16)));
-        expect(config.animationDuration,
-            equals(const Duration(milliseconds: 220)));
+        expect(config.scrollThrottleDuration, equals(const Duration(milliseconds: 16)));
+        expect(config.animationDuration, equals(const Duration(milliseconds: 220)));
       });
 
       test('creates instance with custom values', () {
@@ -39,10 +37,8 @@ void main() {
         expect(config.rowHeight, equals(35.0));
         expect(config.rowMargin, equals(5.0));
         expect(config.bufferDays, equals(10));
-        expect(config.scrollThrottleDuration,
-            equals(const Duration(milliseconds: 32)));
-        expect(config.animationDuration,
-            equals(const Duration(milliseconds: 300)));
+        expect(config.scrollThrottleDuration, equals(const Duration(milliseconds: 32)));
+        expect(config.animationDuration, equals(const Duration(milliseconds: 300)));
       });
 
       test('allows zero values', () {
@@ -123,8 +119,7 @@ void main() {
         final updated = original.copyWith(
           scrollThrottleDuration: const Duration(milliseconds: 50),
         );
-        expect(updated.scrollThrottleDuration,
-            equals(const Duration(milliseconds: 50)));
+        expect(updated.scrollThrottleDuration, equals(const Duration(milliseconds: 50)));
         expect(updated.dayWidth, equals(original.dayWidth));
       });
 
@@ -133,8 +128,7 @@ void main() {
         final updated = original.copyWith(
           animationDuration: const Duration(milliseconds: 400),
         );
-        expect(updated.animationDuration,
-            equals(const Duration(milliseconds: 400)));
+        expect(updated.animationDuration, equals(const Duration(milliseconds: 400)));
         expect(updated.dayWidth, equals(original.dayWidth));
       });
 
@@ -149,8 +143,7 @@ void main() {
         expect(updated.dayWidth, equals(55.0));
         expect(updated.dayMargin, equals(7.0));
         expect(updated.bufferDays, equals(8));
-        expect(updated.animationDuration,
-            equals(const Duration(milliseconds: 250)));
+        expect(updated.animationDuration, equals(const Duration(milliseconds: 250)));
         expect(updated.datesHeight, equals(original.datesHeight));
         expect(updated.timelineHeight, equals(original.timelineHeight));
       });
@@ -165,8 +158,7 @@ void main() {
         expect(updated.rowHeight, equals(original.rowHeight));
         expect(updated.rowMargin, equals(original.rowMargin));
         expect(updated.bufferDays, equals(original.bufferDays));
-        expect(updated.scrollThrottleDuration,
-            equals(original.scrollThrottleDuration));
+        expect(updated.scrollThrottleDuration, equals(original.scrollThrottleDuration));
         expect(updated.animationDuration, equals(original.animationDuration));
       });
 
@@ -240,8 +232,7 @@ void main() {
         expect(config1.hashCode, equals(config2.hashCode));
       });
 
-      test('returns same hashCode for configurations with same custom values',
-          () {
+      test('returns same hashCode for configurations with same custom values', () {
         const config1 = TimelineConfiguration(
           dayWidth: 50.0,
           bufferDays: 8,
@@ -310,10 +301,8 @@ void main() {
         expect(config.rowHeight, equals(35.0));
         expect(config.rowMargin, equals(5.0));
         expect(config.bufferDays, equals(10));
-        expect(config.scrollThrottleDuration,
-            equals(const Duration(milliseconds: 32)));
-        expect(config.animationDuration,
-            equals(const Duration(milliseconds: 300)));
+        expect(config.scrollThrottleDuration, equals(const Duration(milliseconds: 32)));
+        expect(config.animationDuration, equals(const Duration(milliseconds: 300)));
       });
 
       test('creates configuration from map with missing parameters', () {
@@ -370,15 +359,12 @@ void main() {
             dayWidth: 20.0 + random.nextDouble() * 80.0, // 20.0 - 100.0
             dayMargin: random.nextDouble() * 20.0, // 0.0 - 20.0
             datesHeight: 40.0 + random.nextDouble() * 60.0, // 40.0 - 100.0
-            timelineHeight:
-                100.0 + random.nextDouble() * 900.0, // 100.0 - 1000.0
+            timelineHeight: 100.0 + random.nextDouble() * 900.0, // 100.0 - 1000.0
             rowHeight: 20.0 + random.nextDouble() * 40.0, // 20.0 - 60.0
             rowMargin: random.nextDouble() * 10.0, // 0.0 - 10.0
             bufferDays: 1 + random.nextInt(20), // 1 - 20
-            scrollThrottleDuration:
-                Duration(milliseconds: 8 + random.nextInt(93)), // 8 - 100
-            animationDuration:
-                Duration(milliseconds: 100 + random.nextInt(401)), // 100 - 500
+            scrollThrottleDuration: Duration(milliseconds: 8 + random.nextInt(93)), // 8 - 100
+            animationDuration: Duration(milliseconds: 100 + random.nextInt(401)), // 100 - 500
           );
 
           // Convert to map and back
@@ -387,42 +373,27 @@ void main() {
 
           // Verify all fields are preserved
           expect(roundTrippedConfig.dayWidth, equals(originalConfig.dayWidth),
-              reason:
-                  'dayWidth should be preserved in round-trip (iteration $i)');
+              reason: 'dayWidth should be preserved in round-trip (iteration $i)');
           expect(roundTrippedConfig.dayMargin, equals(originalConfig.dayMargin),
-              reason:
-                  'dayMargin should be preserved in round-trip (iteration $i)');
-          expect(roundTrippedConfig.datesHeight,
-              equals(originalConfig.datesHeight),
-              reason:
-                  'datesHeight should be preserved in round-trip (iteration $i)');
-          expect(roundTrippedConfig.timelineHeight,
-              equals(originalConfig.timelineHeight),
-              reason:
-                  'timelineHeight should be preserved in round-trip (iteration $i)');
+              reason: 'dayMargin should be preserved in round-trip (iteration $i)');
+          expect(roundTrippedConfig.datesHeight, equals(originalConfig.datesHeight),
+              reason: 'datesHeight should be preserved in round-trip (iteration $i)');
+          expect(roundTrippedConfig.timelineHeight, equals(originalConfig.timelineHeight),
+              reason: 'timelineHeight should be preserved in round-trip (iteration $i)');
           expect(roundTrippedConfig.rowHeight, equals(originalConfig.rowHeight),
-              reason:
-                  'rowHeight should be preserved in round-trip (iteration $i)');
+              reason: 'rowHeight should be preserved in round-trip (iteration $i)');
           expect(roundTrippedConfig.rowMargin, equals(originalConfig.rowMargin),
-              reason:
-                  'rowMargin should be preserved in round-trip (iteration $i)');
-          expect(
-              roundTrippedConfig.bufferDays, equals(originalConfig.bufferDays),
-              reason:
-                  'bufferDays should be preserved in round-trip (iteration $i)');
-          expect(roundTrippedConfig.scrollThrottleDuration,
-              equals(originalConfig.scrollThrottleDuration),
-              reason:
-                  'scrollThrottleDuration should be preserved in round-trip (iteration $i)');
-          expect(roundTrippedConfig.animationDuration,
-              equals(originalConfig.animationDuration),
-              reason:
-                  'animationDuration should be preserved in round-trip (iteration $i)');
+              reason: 'rowMargin should be preserved in round-trip (iteration $i)');
+          expect(roundTrippedConfig.bufferDays, equals(originalConfig.bufferDays),
+              reason: 'bufferDays should be preserved in round-trip (iteration $i)');
+          expect(roundTrippedConfig.scrollThrottleDuration, equals(originalConfig.scrollThrottleDuration),
+              reason: 'scrollThrottleDuration should be preserved in round-trip (iteration $i)');
+          expect(roundTrippedConfig.animationDuration, equals(originalConfig.animationDuration),
+              reason: 'animationDuration should be preserved in round-trip (iteration $i)');
 
           // Also verify using equality operator
           expect(roundTrippedConfig, equals(originalConfig),
-              reason:
-                  'Round-tripped configuration should equal original (iteration $i)');
+              reason: 'Round-tripped configuration should equal original (iteration $i)');
         }
       });
     });

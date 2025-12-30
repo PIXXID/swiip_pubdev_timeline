@@ -23,8 +23,7 @@ void main() {
     }) {
       return ScrollState(
         centerDateIndex: random.nextInt(100),
-        targetVerticalOffset: targetVerticalOffset ??
-            (random.nextBool() ? random.nextDouble() * 1000 : null),
+        targetVerticalOffset: targetVerticalOffset ?? (random.nextBool() ? random.nextDouble() * 1000 : null),
         enableAutoScroll: enableAutoScroll ?? random.nextBool(),
         scrollingLeft: random.nextBool(),
       );
@@ -39,8 +38,7 @@ void main() {
       return true;
     }
 
-    test('enableAutoScroll=false ne déclenche jamais de scroll - 3 itérations',
-        () {
+    test('enableAutoScroll=false ne déclenche jamais de scroll - 3 itérations', () {
       // Run 3 iterations with random ScrollState where enableAutoScroll=false
       for (int iteration = 0; iteration < 3; iteration++) {
         // Generate random ScrollState with enableAutoScroll=false
@@ -52,15 +50,12 @@ void main() {
         expect(
           shouldScroll,
           isFalse,
-          reason:
-              'Iteration $iteration: No scroll should be triggered when enableAutoScroll=false',
+          reason: 'Iteration $iteration: No scroll should be triggered when enableAutoScroll=false',
         );
       }
     });
 
-    test(
-        'enableAutoScroll=true avec targetVerticalOffset déclenche le scroll - 3 itérations',
-        () {
+    test('enableAutoScroll=true avec targetVerticalOffset déclenche le scroll - 3 itérations', () {
       // Run 3 iterations with random ScrollState where enableAutoScroll=true
       for (int iteration = 0; iteration < 3; iteration++) {
         // Generate random ScrollState with enableAutoScroll=true and valid targetVerticalOffset
@@ -82,9 +77,7 @@ void main() {
       }
     });
 
-    test(
-        'enableAutoScroll=true avec targetVerticalOffset=null ne déclenche pas de scroll - 3 itérations',
-        () {
+    test('enableAutoScroll=true avec targetVerticalOffset=null ne déclenche pas de scroll - 3 itérations', () {
       // Run 3 iterations with random ScrollState where targetVerticalOffset=null
       for (int iteration = 0; iteration < 3; iteration++) {
         // Generate random ScrollState with enableAutoScroll=true but targetVerticalOffset=null
@@ -101,15 +94,12 @@ void main() {
         expect(
           shouldScroll,
           isFalse,
-          reason:
-              'Iteration $iteration: No scroll should be triggered when targetVerticalOffset=null',
+          reason: 'Iteration $iteration: No scroll should be triggered when targetVerticalOffset=null',
         );
       }
     });
 
-    test(
-        'ScrollState détermine l\'action indépendamment des calculs - 3 itérations',
-        () {
+    test('ScrollState détermine l\'action indépendamment des calculs - 3 itérations', () {
       // This test verifies that the action is determined solely by the ScrollState
       // parameter, not by any calculation logic
 
@@ -121,16 +111,14 @@ void main() {
 
         final scrollState1 = ScrollState(
           centerDateIndex: random.nextInt(100),
-          targetVerticalOffset:
-              hasTargetOffset1 ? random.nextDouble() * 1000 : null,
+          targetVerticalOffset: hasTargetOffset1 ? random.nextDouble() * 1000 : null,
           enableAutoScroll: enableAutoScroll,
           scrollingLeft: random.nextBool(),
         );
 
         final scrollState2 = ScrollState(
           centerDateIndex: random.nextInt(100),
-          targetVerticalOffset:
-              hasTargetOffset2 ? random.nextDouble() * 1000 : null,
+          targetVerticalOffset: hasTargetOffset2 ? random.nextDouble() * 1000 : null,
           enableAutoScroll: enableAutoScroll,
           scrollingLeft: random.nextBool(),
         );
@@ -151,11 +139,9 @@ void main() {
         } else {
           // If enableAutoScroll is false, no scroll should be triggered
           expect(shouldScroll1, isFalse,
-              reason:
-                  'Iteration $iteration: ScrollState1 should not trigger scroll when enableAutoScroll=false');
+              reason: 'Iteration $iteration: ScrollState1 should not trigger scroll when enableAutoScroll=false');
           expect(shouldScroll2, isFalse,
-              reason:
-                  'Iteration $iteration: ScrollState2 should not trigger scroll when enableAutoScroll=false');
+              reason: 'Iteration $iteration: ScrollState2 should not trigger scroll when enableAutoScroll=false');
         }
       }
     });
@@ -183,16 +169,13 @@ void main() {
 
         // Verify values haven't changed
         expect(scrollState.centerDateIndex, equals(originalCenterDateIndex));
-        expect(scrollState.targetVerticalOffset,
-            equals(originalTargetVerticalOffset));
+        expect(scrollState.targetVerticalOffset, equals(originalTargetVerticalOffset));
         expect(scrollState.enableAutoScroll, equals(originalEnableAutoScroll));
         expect(scrollState.scrollingLeft, equals(originalScrollingLeft));
       }
     });
 
-    test(
-        'La décision de scroll est déterministe pour les mêmes paramètres - 3 itérations',
-        () {
+    test('La décision de scroll est déterministe pour les mêmes paramètres - 3 itérations', () {
       // Verify that the same ScrollState always produces the same decision
       for (int iteration = 0; iteration < 3; iteration++) {
         final scrollState = generateRandomScrollState();
@@ -204,11 +187,9 @@ void main() {
 
         // Verify all decisions are identical
         expect(decision1, equals(decision2),
-            reason:
-                'Iteration $iteration: Same ScrollState should produce same decision');
+            reason: 'Iteration $iteration: Same ScrollState should produce same decision');
         expect(decision2, equals(decision3),
-            reason:
-                'Iteration $iteration: Same ScrollState should produce same decision');
+            reason: 'Iteration $iteration: Same ScrollState should produce same decision');
       }
     });
   });

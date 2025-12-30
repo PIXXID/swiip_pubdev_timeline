@@ -12,8 +12,7 @@ void main() {
     // Feature: external-configuration-system, Property 6: Configuration Immutability
     // For any initialized configuration, multiple accesses should return same values
     // Validates: Requirements 5.2
-    test('configuration immutability - multiple accesses return same values',
-        () {
+    test('configuration immutability - multiple accesses return same values', () {
       final random = Random(42);
 
       // Run 100 iterations with random configurations
@@ -37,14 +36,10 @@ void main() {
         final access5 = TimelineConfigurationManager.configuration;
 
         // Assert: all accesses should return the same instance
-        expect(identical(access1, access2), isTrue,
-            reason: 'Multiple accesses should return the same instance');
-        expect(identical(access2, access3), isTrue,
-            reason: 'Multiple accesses should return the same instance');
-        expect(identical(access3, access4), isTrue,
-            reason: 'Multiple accesses should return the same instance');
-        expect(identical(access4, access5), isTrue,
-            reason: 'Multiple accesses should return the same instance');
+        expect(identical(access1, access2), isTrue, reason: 'Multiple accesses should return the same instance');
+        expect(identical(access2, access3), isTrue, reason: 'Multiple accesses should return the same instance');
+        expect(identical(access3, access4), isTrue, reason: 'Multiple accesses should return the same instance');
+        expect(identical(access4, access5), isTrue, reason: 'Multiple accesses should return the same instance');
 
         // Assert: all accesses should have the same values
         expect(access1, equals(access2));
@@ -56,8 +51,7 @@ void main() {
         expect(access1.dayWidth, equals(config.dayWidth));
         expect(access1.dayMargin, equals(config.dayMargin));
         expect(access1.bufferDays, equals(config.bufferDays));
-        expect(access1.scrollThrottleDuration,
-            equals(config.scrollThrottleDuration));
+        expect(access1.scrollThrottleDuration, equals(config.scrollThrottleDuration));
         expect(access1.animationDuration, equals(config.animationDuration));
         expect(access1.rowHeight, equals(config.rowHeight));
         expect(access1.rowMargin, equals(config.rowMargin));
@@ -69,9 +63,7 @@ void main() {
     // Feature: external-configuration-system, Property 7: Programmatic Override Precedence
     // For any conflicting file and programmatic configs, programmatic should win
     // Validates: Requirements 8.4
-    test(
-        'programmatic override precedence - programmatic config takes precedence',
-        () {
+    test('programmatic override precedence - programmatic config takes precedence', () {
       final random = Random(42);
 
       // Run 100 iterations with conflicting configurations
@@ -103,11 +95,9 @@ void main() {
             reason: 'dayMargin should match programmatic config');
         expect(resultConfig.bufferDays, equals(programmaticConfig.bufferDays),
             reason: 'bufferDays should match programmatic config');
-        expect(resultConfig.scrollThrottleDuration,
-            equals(programmaticConfig.scrollThrottleDuration),
+        expect(resultConfig.scrollThrottleDuration, equals(programmaticConfig.scrollThrottleDuration),
             reason: 'scrollThrottleDuration should match programmatic config');
-        expect(resultConfig.animationDuration,
-            equals(programmaticConfig.animationDuration),
+        expect(resultConfig.animationDuration, equals(programmaticConfig.animationDuration),
             reason: 'animationDuration should match programmatic config');
         expect(resultConfig.rowHeight, equals(programmaticConfig.rowHeight),
             reason: 'rowHeight should match programmatic config');
@@ -115,8 +105,7 @@ void main() {
             reason: 'rowMargin should match programmatic config');
         expect(resultConfig.datesHeight, equals(programmaticConfig.datesHeight),
             reason: 'datesHeight should match programmatic config');
-        expect(resultConfig.timelineHeight,
-            equals(programmaticConfig.timelineHeight),
+        expect(resultConfig.timelineHeight, equals(programmaticConfig.timelineHeight),
             reason: 'timelineHeight should match programmatic config');
 
         // Assert: values should NOT match file config
@@ -155,14 +144,10 @@ void main() {
         final access5 = TimelineConfigurationManager.configuration;
 
         // Assert: all accesses should return the exact same instance (cached)
-        expect(identical(access1, access2), isTrue,
-            reason: 'Multiple accesses should return the same cached instance');
-        expect(identical(access2, access3), isTrue,
-            reason: 'Multiple accesses should return the same cached instance');
-        expect(identical(access3, access4), isTrue,
-            reason: 'Multiple accesses should return the same cached instance');
-        expect(identical(access4, access5), isTrue,
-            reason: 'Multiple accesses should return the same cached instance');
+        expect(identical(access1, access2), isTrue, reason: 'Multiple accesses should return the same cached instance');
+        expect(identical(access2, access3), isTrue, reason: 'Multiple accesses should return the same cached instance');
+        expect(identical(access3, access4), isTrue, reason: 'Multiple accesses should return the same cached instance');
+        expect(identical(access4, access5), isTrue, reason: 'Multiple accesses should return the same cached instance');
 
         // Assert: values should remain consistent across all accesses
         expect(access1.dayWidth, equals(access2.dayWidth));

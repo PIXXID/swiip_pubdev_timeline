@@ -16,8 +16,7 @@ void main() {
       TimelineConfigurationManager.reset();
     });
 
-    testWidgets('Mouse wheel horizontal scrolling updates scroll position',
-        (WidgetTester tester) async {
+    testWidgets('Mouse wheel horizontal scrolling updates scroll position', (WidgetTester tester) async {
       // Requirements: 2.2
 
       const numDays = 100;
@@ -30,13 +29,11 @@ void main() {
         return {
           'id': 'elem_$index',
           'name': 'Test Element $index',
-          'date':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'date': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'pre_id': 'pre_$index',
           'nat': 'activity',
           'status': 'pending',
-          'sdate':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'sdate': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'edate':
               '${date.add(const Duration(days: 1)).year}-${date.add(const Duration(days: 1)).month.toString().padLeft(2, '0')}-${date.add(const Duration(days: 1)).day.toString().padLeft(2, '0')}',
           'stage_id': 'stage1',
@@ -113,13 +110,10 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
 
       // Verify scrollTo works without throwing exceptions
-      expect(timelineFinder, findsOneWidget,
-          reason:
-              'Mouse wheel horizontal scrolling should update scroll position');
+      expect(timelineFinder, findsOneWidget, reason: 'Mouse wheel horizontal scrolling should update scroll position');
     });
 
-    testWidgets('Trackpad horizontal gesture scrolling updates scroll position',
-        (WidgetTester tester) async {
+    testWidgets('Trackpad horizontal gesture scrolling updates scroll position', (WidgetTester tester) async {
       // Requirements: 2.3
 
       const numDays = 100;
@@ -132,13 +126,11 @@ void main() {
         return {
           'id': 'elem_$index',
           'name': 'Test Element $index',
-          'date':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'date': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'pre_id': 'pre_$index',
           'nat': 'activity',
           'status': 'pending',
-          'sdate':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'sdate': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'edate':
               '${date.add(const Duration(days: 1)).year}-${date.add(const Duration(days: 1)).month.toString().padLeft(2, '0')}-${date.add(const Duration(days: 1)).day.toString().padLeft(2, '0')}',
           'stage_id': 'stage1',
@@ -211,12 +203,10 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
 
       // Verify timeline still exists (drag worked without errors)
-      expect(timelineFinder, findsOneWidget,
-          reason: 'Trackpad horizontal gesture should update scroll position');
+      expect(timelineFinder, findsOneWidget, reason: 'Trackpad horizontal gesture should update scroll position');
     });
 
-    testWidgets('Touch drag horizontal scrolling updates scroll position',
-        (WidgetTester tester) async {
+    testWidgets('Touch drag horizontal scrolling updates scroll position', (WidgetTester tester) async {
       // Requirements: 2.4
 
       const numDays = 100;
@@ -229,13 +219,11 @@ void main() {
         return {
           'id': 'elem_$index',
           'name': 'Test Element $index',
-          'date':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'date': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'pre_id': 'pre_$index',
           'nat': 'activity',
           'status': 'pending',
-          'sdate':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'sdate': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'edate':
               '${date.add(const Duration(days: 1)).year}-${date.add(const Duration(days: 1)).month.toString().padLeft(2, '0')}-${date.add(const Duration(days: 1)).day.toString().padLeft(2, '0')}',
           'stage_id': 'stage1',
@@ -312,13 +300,10 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
 
       // Verify timeline still exists (touch drag worked without errors)
-      expect(timelineFinder, findsOneWidget,
-          reason:
-              'Touch drag horizontal scrolling should update scroll position');
+      expect(timelineFinder, findsOneWidget, reason: 'Touch drag horizontal scrolling should update scroll position');
     });
 
-    testWidgets('Horizontal scrolling correctly updates scroll position',
-        (WidgetTester tester) async {
+    testWidgets('Horizontal scrolling correctly updates scroll position', (WidgetTester tester) async {
       // Requirements: 2.2, 2.3, 2.4
 
       const numDays = 100;
@@ -331,13 +316,11 @@ void main() {
         return {
           'id': 'elem_$index',
           'name': 'Test Element $index',
-          'date':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'date': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'pre_id': 'pre_$index',
           'nat': 'activity',
           'status': 'pending',
-          'sdate':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'sdate': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'edate':
               '${date.add(const Duration(days: 1)).year}-${date.add(const Duration(days: 1)).month.toString().padLeft(2, '0')}-${date.add(const Duration(days: 1)).day.toString().padLeft(2, '0')}',
           'stage_id': 'stage1',
@@ -427,8 +410,7 @@ void main() {
 
       // Verify timeline still exists (all scrolls worked without errors)
       expect(timelineFinder, findsOneWidget,
-          reason:
-              'Scroll position should update correctly for all scroll operations');
+          reason: 'Scroll position should update correctly for all scroll operations');
     });
   });
 }

@@ -29,19 +29,17 @@ void main() {
         final sizeInBytes = utf8.encode(jsonString).length;
 
         // Ensure it's a typical small file
-        expect(sizeInBytes, lessThan(1024),
-            reason: 'Test config should be under 1KB');
+        expect(sizeInBytes, lessThan(1024), reason: 'Test config should be under 1KB');
 
         // Mock the asset loading
-        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-            .setMockMessageHandler('flutter/assets', (message) async {
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMessageHandler('flutter/assets',
+            (message) async {
           return utf8.encoder.convert(jsonString).buffer.asByteData();
         });
 
         // Measure loading time
         final stopwatch = Stopwatch()..start();
-        final loadedConfig = await ConfigurationLoader.loadConfiguration(
-            configPath: 'test.json');
+        final loadedConfig = await ConfigurationLoader.loadConfiguration(configPath: 'test.json');
         stopwatch.stop();
 
         loadingTimes.add(stopwatch.elapsed);
@@ -51,28 +49,22 @@ void main() {
         expect(loadedConfig, isA<Map<String, dynamic>>());
 
         // Clean up mock
-        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-            .setMockMessageHandler('flutter/assets', null);
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMessageHandler('flutter/assets', null);
       }
 
       // Calculate statistics
-      final averageTime = loadingTimes.fold<Duration>(
-              Duration.zero, (sum, time) => sum + time) ~/
-          iterations;
+      final averageTime = loadingTimes.fold<Duration>(Duration.zero, (sum, time) => sum + time) ~/ iterations;
       final maxTime = loadingTimes.reduce((a, b) => a > b ? a : b);
 
       // Assert: average loading time should be well under 100ms
       expect(averageTime.inMilliseconds, lessThan(100),
-          reason:
-              'Average loading time should be under 100ms (was ${averageTime.inMilliseconds}ms)');
+          reason: 'Average loading time should be under 100ms (was ${averageTime.inMilliseconds}ms)');
 
       // Assert: max loading time should be under 100ms
       expect(maxTime.inMilliseconds, lessThan(100),
-          reason:
-              'Max loading time should be under 100ms (was ${maxTime.inMilliseconds}ms)');
+          reason: 'Max loading time should be under 100ms (was ${maxTime.inMilliseconds}ms)');
 
-      debugPrint(
-          'Loading performance: avg=${averageTime.inMilliseconds}ms, max=${maxTime.inMilliseconds}ms');
+      debugPrint('Loading performance: avg=${averageTime.inMilliseconds}ms, max=${maxTime.inMilliseconds}ms');
     });
 
     test('loading time - medium config files load within 100ms', () async {
@@ -87,21 +79,18 @@ void main() {
         final sizeInBytes = utf8.encode(jsonString).length;
 
         // Ensure it's a medium-sized file
-        expect(sizeInBytes, greaterThan(1024),
-            reason: 'Test config should be over 1KB');
-        expect(sizeInBytes, lessThan(5120),
-            reason: 'Test config should be under 5KB');
+        expect(sizeInBytes, greaterThan(1024), reason: 'Test config should be over 1KB');
+        expect(sizeInBytes, lessThan(5120), reason: 'Test config should be under 5KB');
 
         // Mock the asset loading
-        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-            .setMockMessageHandler('flutter/assets', (message) async {
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMessageHandler('flutter/assets',
+            (message) async {
           return utf8.encoder.convert(jsonString).buffer.asByteData();
         });
 
         // Measure loading time
         final stopwatch = Stopwatch()..start();
-        final loadedConfig = await ConfigurationLoader.loadConfiguration(
-            configPath: 'test.json');
+        final loadedConfig = await ConfigurationLoader.loadConfiguration(configPath: 'test.json');
         stopwatch.stop();
 
         loadingTimes.add(stopwatch.elapsed);
@@ -110,27 +99,21 @@ void main() {
         expect(loadedConfig, isNotNull);
 
         // Clean up mock
-        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-            .setMockMessageHandler('flutter/assets', null);
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMessageHandler('flutter/assets', null);
       }
 
       // Calculate statistics
-      final averageTime = loadingTimes.fold<Duration>(
-              Duration.zero, (sum, time) => sum + time) ~/
-          iterations;
+      final averageTime = loadingTimes.fold<Duration>(Duration.zero, (sum, time) => sum + time) ~/ iterations;
       final maxTime = loadingTimes.reduce((a, b) => a > b ? a : b);
 
       // Assert: average loading time should be under 100ms
       expect(averageTime.inMilliseconds, lessThan(100),
-          reason:
-              'Average loading time should be under 100ms (was ${averageTime.inMilliseconds}ms)');
+          reason: 'Average loading time should be under 100ms (was ${averageTime.inMilliseconds}ms)');
 
-      debugPrint(
-          'Medium file loading: avg=${averageTime.inMilliseconds}ms, max=${maxTime.inMilliseconds}ms');
+      debugPrint('Medium file loading: avg=${averageTime.inMilliseconds}ms, max=${maxTime.inMilliseconds}ms');
     });
 
-    test('loading time - large config files (near 10KB) load within 100ms',
-        () async {
+    test('loading time - large config files (near 10KB) load within 100ms', () async {
       final random = Random(42);
       const iterations = 20;
       final loadingTimes = <Duration>[];
@@ -142,21 +125,18 @@ void main() {
         final sizeInBytes = utf8.encode(jsonString).length;
 
         // Ensure it's a large file
-        expect(sizeInBytes, greaterThan(8192),
-            reason: 'Test config should be over 8KB');
-        expect(sizeInBytes, lessThan(10240),
-            reason: 'Test config should be under 10KB');
+        expect(sizeInBytes, greaterThan(8192), reason: 'Test config should be over 8KB');
+        expect(sizeInBytes, lessThan(10240), reason: 'Test config should be under 10KB');
 
         // Mock the asset loading
-        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-            .setMockMessageHandler('flutter/assets', (message) async {
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMessageHandler('flutter/assets',
+            (message) async {
           return utf8.encoder.convert(jsonString).buffer.asByteData();
         });
 
         // Measure loading time
         final stopwatch = Stopwatch()..start();
-        final loadedConfig = await ConfigurationLoader.loadConfiguration(
-            configPath: 'test.json');
+        final loadedConfig = await ConfigurationLoader.loadConfiguration(configPath: 'test.json');
         stopwatch.stop();
 
         loadingTimes.add(stopwatch.elapsed);
@@ -165,31 +145,25 @@ void main() {
         expect(loadedConfig, isNotNull);
 
         // Clean up mock
-        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-            .setMockMessageHandler('flutter/assets', null);
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMessageHandler('flutter/assets', null);
       }
 
       // Calculate statistics
-      final averageTime = loadingTimes.fold<Duration>(
-              Duration.zero, (sum, time) => sum + time) ~/
-          iterations;
+      final averageTime = loadingTimes.fold<Duration>(Duration.zero, (sum, time) => sum + time) ~/ iterations;
       final maxTime = loadingTimes.reduce((a, b) => a > b ? a : b);
 
       // Assert: average loading time should be under 100ms
       expect(averageTime.inMilliseconds, lessThan(100),
-          reason:
-              'Average loading time should be under 100ms (was ${averageTime.inMilliseconds}ms)');
+          reason: 'Average loading time should be under 100ms (was ${averageTime.inMilliseconds}ms)');
 
-      debugPrint(
-          'Large file loading: avg=${averageTime.inMilliseconds}ms, max=${maxTime.inMilliseconds}ms');
+      debugPrint('Large file loading: avg=${averageTime.inMilliseconds}ms, max=${maxTime.inMilliseconds}ms');
     });
   });
 
   group('Network Activity Validation', () {
     // Task 13.2: Verify no network calls during loading
     // Validates: Requirements 10.4
-    test('no network calls - configuration loading is local file system only',
-        () async {
+    test('no network calls - configuration loading is local file system only', () async {
       final random = Random(42);
       const iterations = 50;
 
@@ -199,8 +173,8 @@ void main() {
         final jsonString = jsonEncode(config);
 
         // Mock the asset loading (simulates local file system)
-        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-            .setMockMessageHandler('flutter/assets', (message) async {
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMessageHandler('flutter/assets',
+            (message) async {
           // This simulates local file system access
           // If network calls were made, they would be visible through
           // different channels (http, dio, etc.)
@@ -208,30 +182,25 @@ void main() {
         });
 
         // Load configuration
-        final loadedConfig = await ConfigurationLoader.loadConfiguration(
-            configPath: 'test.json');
+        final loadedConfig = await ConfigurationLoader.loadConfiguration(configPath: 'test.json');
 
         // Verify config was loaded successfully
-        expect(loadedConfig, isNotNull,
-            reason: 'Configuration should load from local assets');
+        expect(loadedConfig, isNotNull, reason: 'Configuration should load from local assets');
 
         // The fact that we can mock the asset loading and it works
         // proves that no network calls are being made
         // Network calls would bypass the asset loading mechanism
 
         // Clean up mock
-        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-            .setMockMessageHandler('flutter/assets', null);
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMessageHandler('flutter/assets', null);
       }
 
       // If we got here, all iterations completed successfully
       // using only local asset loading (no network calls)
-      expect(true, isTrue,
-          reason: 'All configurations loaded without network calls');
+      expect(true, isTrue, reason: 'All configurations loaded without network calls');
     });
 
-    test('no network calls - initialization uses only local operations',
-        () async {
+    test('no network calls - initialization uses only local operations', () async {
       final random = Random(42);
       const iterations = 50;
 
@@ -244,14 +213,13 @@ void main() {
         final jsonString = jsonEncode(config);
 
         // Mock the asset loading
-        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-            .setMockMessageHandler('flutter/assets', (message) async {
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMessageHandler('flutter/assets',
+            (message) async {
           return utf8.encoder.convert(jsonString).buffer.asByteData();
         });
 
         // Load and initialize
-        final loadedConfig = await ConfigurationLoader.loadConfiguration(
-            configPath: 'test.json');
+        final loadedConfig = await ConfigurationLoader.loadConfiguration(configPath: 'test.json');
         TimelineConfigurationManager.initialize(fileConfig: loadedConfig);
 
         // Verify initialization succeeded
@@ -262,8 +230,7 @@ void main() {
         expect(runtimeConfig, isNotNull);
 
         // Clean up mock
-        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-            .setMockMessageHandler('flutter/assets', null);
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMessageHandler('flutter/assets', null);
       }
     });
   });
@@ -273,9 +240,7 @@ void main() {
     // Feature: external-configuration-system, Property 13: Configuration Caching
     // For any initialized config, multiple accesses should not re-read file
     // Validates: Requirements 10.3
-    test(
-        'caching - configuration manager returns same instance on multiple accesses',
-        () async {
+    test('caching - configuration manager returns same instance on multiple accesses', () async {
       final random = Random(42);
       const iterations = 100;
 
@@ -295,14 +260,11 @@ void main() {
           rowHeight: config['rowHeight'],
           rowMargin: config['rowMargin'],
           bufferDays: config['bufferDays'],
-          scrollThrottleDuration:
-              Duration(milliseconds: config['scrollThrottleMs']),
-          animationDuration:
-              Duration(milliseconds: config['animationDurationMs']),
+          scrollThrottleDuration: Duration(milliseconds: config['scrollThrottleMs']),
+          animationDuration: Duration(milliseconds: config['animationDurationMs']),
         );
 
-        TimelineConfigurationManager.initialize(
-            programmaticConfig: timelineConfig);
+        TimelineConfigurationManager.initialize(programmaticConfig: timelineConfig);
 
         // Access configuration multiple times
         final access1 = TimelineConfigurationManager.configuration;
@@ -312,28 +274,21 @@ void main() {
         final access5 = TimelineConfigurationManager.configuration;
 
         // Assert: all accesses return the exact same instance (proving caching)
-        expect(identical(access1, access2), isTrue,
-            reason: 'Multiple accesses should return the same cached instance');
-        expect(identical(access2, access3), isTrue,
-            reason: 'Multiple accesses should return the same cached instance');
-        expect(identical(access3, access4), isTrue,
-            reason: 'Multiple accesses should return the same cached instance');
-        expect(identical(access4, access5), isTrue,
-            reason: 'Multiple accesses should return the same cached instance');
+        expect(identical(access1, access2), isTrue, reason: 'Multiple accesses should return the same cached instance');
+        expect(identical(access2, access3), isTrue, reason: 'Multiple accesses should return the same cached instance');
+        expect(identical(access3, access4), isTrue, reason: 'Multiple accesses should return the same cached instance');
+        expect(identical(access4, access5), isTrue, reason: 'Multiple accesses should return the same cached instance');
 
         // Assert: values remain consistent (no re-parsing)
         expect(access1.dayWidth, equals(timelineConfig.dayWidth));
         expect(access2.dayMargin, equals(timelineConfig.dayMargin));
         expect(access3.bufferDays, equals(timelineConfig.bufferDays));
-        expect(access4.scrollThrottleDuration,
-            equals(timelineConfig.scrollThrottleDuration));
-        expect(access5.animationDuration,
-            equals(timelineConfig.animationDuration));
+        expect(access4.scrollThrottleDuration, equals(timelineConfig.scrollThrottleDuration));
+        expect(access5.animationDuration, equals(timelineConfig.animationDuration));
       }
     });
 
-    test('caching - configuration remains cached across multiple accesses',
-        () async {
+    test('caching - configuration remains cached across multiple accesses', () async {
       final random = Random(42);
       const iterations = 50;
 
@@ -353,14 +308,11 @@ void main() {
           rowHeight: config['rowHeight'],
           rowMargin: config['rowMargin'],
           bufferDays: config['bufferDays'],
-          scrollThrottleDuration:
-              Duration(milliseconds: config['scrollThrottleMs']),
-          animationDuration:
-              Duration(milliseconds: config['animationDurationMs']),
+          scrollThrottleDuration: Duration(milliseconds: config['scrollThrottleMs']),
+          animationDuration: Duration(milliseconds: config['animationDurationMs']),
         );
 
-        TimelineConfigurationManager.initialize(
-            programmaticConfig: timelineConfig);
+        TimelineConfigurationManager.initialize(programmaticConfig: timelineConfig);
 
         // Access configuration many times
         final accesses = <TimelineConfiguration>[];
@@ -371,8 +323,7 @@ void main() {
         // Assert: all accesses should return the exact same instance
         for (int j = 1; j < accesses.length; j++) {
           expect(identical(accesses[0], accesses[j]), isTrue,
-              reason:
-                  'All accesses should return the same cached instance (access $j)');
+              reason: 'All accesses should return the same cached instance (access $j)');
         }
 
         // Assert: values should remain consistent
@@ -384,8 +335,7 @@ void main() {
       }
     });
 
-    test('caching - toMap() returns consistent values without re-parsing',
-        () async {
+    test('caching - toMap() returns consistent values without re-parsing', () async {
       final random = Random(42);
       const iterations = 50;
 
@@ -405,14 +355,11 @@ void main() {
           rowHeight: config['rowHeight'],
           rowMargin: config['rowMargin'],
           bufferDays: config['bufferDays'],
-          scrollThrottleDuration:
-              Duration(milliseconds: config['scrollThrottleMs']),
-          animationDuration:
-              Duration(milliseconds: config['animationDurationMs']),
+          scrollThrottleDuration: Duration(milliseconds: config['scrollThrottleMs']),
+          animationDuration: Duration(milliseconds: config['animationDurationMs']),
         );
 
-        TimelineConfigurationManager.initialize(
-            programmaticConfig: timelineConfig);
+        TimelineConfigurationManager.initialize(programmaticConfig: timelineConfig);
 
         // Call toMap() multiple times
         final map1 = TimelineConfigurationManager.toMap();
@@ -462,8 +409,7 @@ Map<String, dynamic> _generateRandomValidConfigMap(Random random) {
 }
 
 /// Generates a larger configuration map with additional data to reach target size.
-Map<String, dynamic> _generateLargerConfigMap(Random random,
-    {required int targetSize}) {
+Map<String, dynamic> _generateLargerConfigMap(Random random, {required int targetSize}) {
   final config = _generateRandomValidConfigMap(random);
 
   // Add extra data to reach target size
@@ -487,8 +433,6 @@ Map<String, dynamic> _generateLargerConfigMap(Random random,
 
 /// Generates a random string of specified length.
 String _generateRandomString(Random random, int length) {
-  const chars =
-      'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  return List.generate(length, (_) => chars[random.nextInt(chars.length)])
-      .join();
+  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  return List.generate(length, (_) => chars[random.nextInt(chars.length)]).join();
 }

@@ -32,13 +32,11 @@ void main() {
         return {
           'id': 'elem_$index',
           'name': 'Test Element $index',
-          'date':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'date': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'pre_id': 'pre_$index',
           'nat': 'activity',
           'status': 'pending',
-          'sdate':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'sdate': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'edate':
               '${date.add(const Duration(days: 1)).year}-${date.add(const Duration(days: 1)).month.toString().padLeft(2, '0')}-${date.add(const Duration(days: 1)).day.toString().padLeft(2, '0')}',
           'stage_id': 'stage1',
@@ -127,8 +125,7 @@ void main() {
 
       // Verify that all iterations passed
       expect(passedTests, equals(numIterations),
-          reason:
-              'Property test failed: $passedTests/$numIterations iterations passed. '
+          reason: 'Property test failed: $passedTests/$numIterations iterations passed. '
               'Expected scroll position to update correctly for random offsets.');
     });
 
@@ -149,13 +146,11 @@ void main() {
         return {
           'id': 'elem_$index',
           'name': 'Test Element $index',
-          'date':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'date': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'pre_id': 'pre_$index',
           'nat': 'activity',
           'status': 'pending',
-          'sdate':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'sdate': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'edate':
               '${date.add(const Duration(days: 1)).year}-${date.add(const Duration(days: 1)).month.toString().padLeft(2, '0')}-${date.add(const Duration(days: 1)).day.toString().padLeft(2, '0')}',
           'stage_id': 'stage1',
@@ -250,12 +245,9 @@ void main() {
           await tester.pump(const Duration(milliseconds: 100));
 
           // Verify that if callback was called, the date is reasonable
-          if (lastCenterDate != null &&
-              lastCenterDate != previousDate &&
-              days.isNotEmpty) {
+          if (lastCenterDate != null && lastCenterDate != previousDate && days.isNotEmpty) {
             // Find the index of the center date in days array
-            final centerDateIndex = days.indexWhere(
-                (day) => day != null && day['date'] == lastCenterDate);
+            final centerDateIndex = days.indexWhere((day) => day != null && day['date'] == lastCenterDate);
 
             if (centerDateIndex >= 0) {
               // Verify center date index is close to target (within 1 day)
@@ -275,15 +267,13 @@ void main() {
             passedTests++;
           }
         } catch (e) {
-          debugPrint(
-              'Iteration $i failed with targetDateIndex=$targetDateIndex: $e');
+          debugPrint('Iteration $i failed with targetDateIndex=$targetDateIndex: $e');
         }
       }
 
       // Verify that all iterations passed
       expect(passedTests, equals(numIterations),
-          reason:
-              'Property test failed: $passedTests/$numIterations iterations passed. '
+          reason: 'Property test failed: $passedTests/$numIterations iterations passed. '
               'Expected center item index to match viewport center (within 1 day tolerance).');
     });
   });

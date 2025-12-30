@@ -28,10 +28,8 @@ void main() {
         'rowHeight': 20 + random.nextDouble() * 40,
         'rowMargin': random.nextDouble() * 10,
         'scrollingLeft': random.nextBool(),
-        'userScrollOffset':
-            random.nextBool() ? random.nextDouble() * 1000 : null,
-        'targetVerticalOffset':
-            random.nextBool() ? random.nextDouble() * 1000 : null,
+        'userScrollOffset': random.nextBool() ? random.nextDouble() * 1000 : null,
+        'targetVerticalOffset': random.nextBool() ? random.nextDouble() * 1000 : null,
         'totalRowsHeight': 500 + random.nextDouble() * 2000,
         'viewportHeight': 200 + random.nextDouble() * 600,
       };
@@ -86,8 +84,7 @@ void main() {
         expect(
           results.toSet().length,
           equals(1),
-          reason:
-              'Iteration $iteration: calculateCenterDateIndex should return the same result for the same inputs',
+          reason: 'Iteration $iteration: calculateCenterDateIndex should return the same result for the same inputs',
         );
 
         // Verify result is within valid range
@@ -165,8 +162,7 @@ void main() {
         expect(
           results.toSet().length,
           equals(1),
-          reason:
-              'Iteration $iteration: shouldEnableAutoScroll should return the same result for the same inputs',
+          reason: 'Iteration $iteration: shouldEnableAutoScroll should return the same result for the same inputs',
         );
 
         // Verify result is a boolean
@@ -245,8 +241,7 @@ void main() {
         expect(
           centerIndices.length,
           equals(1),
-          reason:
-              'Iteration $iteration: centerDateIndex should be consistent across calls',
+          reason: 'Iteration $iteration: centerDateIndex should be consistent across calls',
         );
 
         // Note: We can't verify targetVerticalOffset and enableAutoScroll consistency
@@ -310,8 +305,7 @@ void main() {
 
         // Store original state
         final originalLength = stagesRows.length;
-        final originalFirstRowLength =
-            stagesRows.isNotEmpty ? stagesRows[0].length : 0;
+        final originalFirstRowLength = stagesRows.isNotEmpty ? stagesRows[0].length : 0;
 
         // Call the function
         calculateTargetVerticalOffset(

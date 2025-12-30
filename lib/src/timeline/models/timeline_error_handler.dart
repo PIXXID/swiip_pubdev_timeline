@@ -48,14 +48,11 @@ class TimelineErrorHandler {
   ///
   /// Filters out invalid day items that don't have required fields
   /// or have invalid data types. Returns only valid days.
-  static List<Map<String, dynamic>> validateDays(
-      List<Map<String, dynamic>>? days) {
+  static List<Map<String, dynamic>> validateDays(List<Map<String, dynamic>>? days) {
     if (days == null) return [];
 
     return days.where((day) {
-      return day.containsKey('date') &&
-          day['date'] is DateTime &&
-          day.containsKey('lmax');
+      return day.containsKey('date') && day['date'] is DateTime && day.containsKey('lmax');
     }).toList();
   }
 
@@ -75,8 +72,7 @@ class TimelineErrorHandler {
   /// Returns [end] if valid.
   static DateTime validateDateRange(DateTime start, DateTime end) {
     if (end.isBefore(start)) {
-      throw ArgumentError(
-          'End date must be after start date: start=$start, end=$end');
+      throw ArgumentError('End date must be after start date: start=$start, end=$end');
     }
     return end;
   }
@@ -109,22 +105,18 @@ class TimelineErrorHandler {
   /// Validates stage data.
   ///
   /// Filters out invalid stages that don't have required fields.
-  static List<Map<String, dynamic>> validateStages(
-      List<Map<String, dynamic>>? stages) {
+  static List<Map<String, dynamic>> validateStages(List<Map<String, dynamic>>? stages) {
     if (stages == null) return [];
 
     return stages.where((stage) {
-      return stage.containsKey('sdate') &&
-          stage.containsKey('edate') &&
-          stage.containsKey('type');
+      return stage.containsKey('sdate') && stage.containsKey('edate') && stage.containsKey('type');
     }).toList();
   }
 
   /// Validates element data.
   ///
   /// Filters out invalid elements that don't have required fields.
-  static List<Map<String, dynamic>> validateElements(
-      List<Map<String, dynamic>>? elements) {
+  static List<Map<String, dynamic>> validateElements(List<Map<String, dynamic>>? elements) {
     if (elements == null) return [];
 
     return elements.where((element) {

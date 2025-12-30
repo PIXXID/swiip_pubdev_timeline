@@ -6,8 +6,7 @@ import 'package:swiip_pubdev_timeline/src/timeline/optimized_stage_row.dart';
 
 void main() {
   group('LazyStageRowsViewport Rendering Property Tests', () {
-    testWidgets(
-        'Property 5: Lazy Viewport Rendering - renders only stage rows in visible range',
+    testWidgets('Property 5: Lazy Viewport Rendering - renders only stage rows in visible range',
         (WidgetTester tester) async {
       // Feature: native-scroll-only, Property 5: Lazy Viewport Rendering
       // Validates: Requirements 5.5
@@ -101,8 +100,7 @@ void main() {
           expect(
             builtRowCount,
             lessThan(totalRows),
-            reason:
-                'Should render fewer rows than total when total exceeds viewport (iteration $iteration)',
+            reason: 'Should render fewer rows than total when total exceeds viewport (iteration $iteration)',
           );
         }
 
@@ -117,16 +115,14 @@ void main() {
         expect(
           builtRowCount,
           lessThanOrEqualTo(expectedMaxRows + 5), // +5 for tolerance
-          reason:
-              'Should not render significantly more than viewport + buffer (iteration $iteration)',
+          reason: 'Should not render significantly more than viewport + buffer (iteration $iteration)',
         );
 
         verticalScrollController.dispose();
       }
     }, timeout: const Timeout(Duration(minutes: 3)));
 
-    testWidgets(
-        'Property 5: Lazy Viewport Rendering - updates rendered rows when vertical scroll changes',
+    testWidgets('Property 5: Lazy Viewport Rendering - updates rendered rows when vertical scroll changes',
         (WidgetTester tester) async {
       // Feature: native-scroll-only, Property 5: Lazy Viewport Rendering
       // Validates: Requirements 5.5
@@ -192,8 +188,7 @@ void main() {
 
         await tester.pumpAndSettle();
 
-        final initialRowCount =
-            find.byType(OptimizedStageRow).evaluate().length;
+        final initialRowCount = find.byType(OptimizedStageRow).evaluate().length;
 
         // Scroll down to middle of timeline
         if (verticalScrollController.hasClients) {
@@ -203,19 +198,16 @@ void main() {
             await tester.pumpAndSettle();
 
             // Verify that rows are still being rendered
-            final afterScrollRowCount =
-                find.byType(OptimizedStageRow).evaluate().length;
+            final afterScrollRowCount = find.byType(OptimizedStageRow).evaluate().length;
             expect(
               afterScrollRowCount,
               greaterThan(0),
-              reason:
-                  'Should still render rows after scrolling (iteration $iteration)',
+              reason: 'Should still render rows after scrolling (iteration $iteration)',
             );
 
             // The count might be similar due to viewport size, but verify no errors
             expect(tester.takeException(), isNull,
-                reason:
-                    'Should handle vertical scroll without errors (iteration $iteration)');
+                reason: 'Should handle vertical scroll without errors (iteration $iteration)');
           }
         }
 
@@ -223,9 +215,7 @@ void main() {
       }
     }, timeout: const Timeout(Duration(minutes: 3)));
 
-    testWidgets(
-        'Property 5: Lazy Viewport Rendering - handles edge cases for stage rows',
-        (WidgetTester tester) async {
+    testWidgets('Property 5: Lazy Viewport Rendering - handles edge cases for stage rows', (WidgetTester tester) async {
       // Feature: native-scroll-only, Property 5: Lazy Viewport Rendering
       // Validates: Requirements 5.5
 
@@ -295,16 +285,14 @@ void main() {
 
           // Verify no exceptions thrown
           expect(tester.takeException(), isNull,
-              reason:
-                  'Should handle edge case without errors: totalRows=$totalRows (iteration $iteration)');
+              reason: 'Should handle edge case without errors: totalRows=$totalRows (iteration $iteration)');
 
           verticalScrollController.dispose();
         }
       }
     }, timeout: const Timeout(Duration(minutes: 3)));
 
-    testWidgets(
-        'Property 5: Lazy Viewport Rendering - passes correct horizontal visible range to stage rows',
+    testWidgets('Property 5: Lazy Viewport Rendering - passes correct horizontal visible range to stage rows',
         (WidgetTester tester) async {
       // Feature: native-scroll-only, Property 5: Lazy Viewport Rendering
       // Validates: Requirements 5.5
@@ -361,12 +349,10 @@ void main() {
 
         // Verify widget builds without errors
         expect(tester.takeException(), isNull,
-            reason:
-                'Should pass horizontal visible range correctly (iteration $iteration)');
+            reason: 'Should pass horizontal visible range correctly (iteration $iteration)');
 
         // Verify LazyStageRowsViewport is rendered
-        expect(find.byType(LazyStageRowsViewport), findsOneWidget,
-            reason: 'LazyStageRowsViewport should be rendered');
+        expect(find.byType(LazyStageRowsViewport), findsOneWidget, reason: 'LazyStageRowsViewport should be rendered');
 
         verticalScrollController.dispose();
       }

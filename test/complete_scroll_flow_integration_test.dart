@@ -19,9 +19,7 @@ void main() {
       TimelineConfigurationManager.reset();
     });
 
-    testWidgets(
-        'Complete scroll flow: user scroll → calculation → state update → render',
-        (WidgetTester tester) async {
+    testWidgets('Complete scroll flow: user scroll → calculation → state update → render', (WidgetTester tester) async {
       // Requirements: 2.1, 2.3, 2.4, 3.5, 5.5
 
       const numDays = 100;
@@ -34,13 +32,11 @@ void main() {
         return {
           'id': 'elem_$index',
           'name': 'Test Element $index',
-          'date':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'date': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'pre_id': 'pre_$index',
           'nat': 'activity',
           'status': 'pending',
-          'sdate':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'sdate': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'edate':
               '${date.add(const Duration(days: 1)).year}-${date.add(const Duration(days: 1)).month.toString().padLeft(2, '0')}-${date.add(const Duration(days: 1)).day.toString().padLeft(2, '0')}',
           'stage_id': 'stage1',
@@ -117,10 +113,8 @@ void main() {
       await tester.pump(const Duration(milliseconds: 500));
 
       // Verify initial state
-      expect(timelineState.days, isNotEmpty,
-          reason: 'Timeline should have days initialized');
-      expect(timelineState.stagesRows, isNotEmpty,
-          reason: 'Timeline should have stage rows initialized');
+      expect(timelineState.days, isNotEmpty, reason: 'Timeline should have days initialized');
+      expect(timelineState.stagesRows, isNotEmpty, reason: 'Timeline should have stage rows initialized');
 
       // Reset callback tracking
       dateCallbacks.clear();
@@ -136,15 +130,13 @@ void main() {
 
       // Test 2: Verify current date callback fires
       // Requirements: 3.5
-      expect(dateCallbacks, isNotEmpty,
-          reason: 'Current date callback should fire when center changes');
+      expect(dateCallbacks, isNotEmpty, reason: 'Current date callback should fire when center changes');
 
       // Verify date format (YYYY-MM-DD)
       if (dateCallbacks.isNotEmpty) {
         final lastDate = dateCallbacks.last;
         final dateRegex = RegExp(r'^\d{4}-\d{2}-\d{2}$');
-        expect(dateRegex.hasMatch(lastDate), isTrue,
-            reason: 'Current date should be in YYYY-MM-DD format');
+        expect(dateRegex.hasMatch(lastDate), isTrue, reason: 'Current date should be in YYYY-MM-DD format');
       }
 
       // Test 3: Verify lazy viewports render correct items
@@ -159,8 +151,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
 
       // Verify callback fired again with different date
-      expect(dateCallbacks, isNotEmpty,
-          reason: 'Callback should fire for new scroll position');
+      expect(dateCallbacks, isNotEmpty, reason: 'Callback should fire for new scroll position');
 
       // Test 4: Verify multiple scroll operations work correctly
       // Scroll back to beginning
@@ -174,16 +165,13 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
 
       // Verify timeline still functional
-      expect(timelineFinder, findsOneWidget,
-          reason: 'Timeline should remain functional after multiple scrolls');
+      expect(timelineFinder, findsOneWidget, reason: 'Timeline should remain functional after multiple scrolls');
 
       // Verify we received multiple callback invocations
-      expect(dateCallbacks.length, greaterThan(1),
-          reason: 'Multiple scrolls should trigger multiple callbacks');
+      expect(dateCallbacks.length, greaterThan(1), reason: 'Multiple scrolls should trigger multiple callbacks');
     });
 
-    testWidgets('Scroll flow with drag gesture updates state correctly',
-        (WidgetTester tester) async {
+    testWidgets('Scroll flow with drag gesture updates state correctly', (WidgetTester tester) async {
       // Requirements: 2.1, 2.3, 2.4
 
       const numDays = 50;
@@ -195,13 +183,11 @@ void main() {
         return {
           'id': 'elem_$index',
           'name': 'Test Element $index',
-          'date':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'date': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'pre_id': 'pre_$index',
           'nat': 'activity',
           'status': 'pending',
-          'sdate':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'sdate': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'edate':
               '${date.add(const Duration(days: 1)).year}-${date.add(const Duration(days: 1)).month.toString().padLeft(2, '0')}-${date.add(const Duration(days: 1)).day.toString().padLeft(2, '0')}',
           'stage_id': 'stage1',
@@ -286,16 +272,13 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
 
       // Verify state updated from drag by checking callback was invoked
-      expect(dateCallbacks, isNotEmpty,
-          reason:
-              'Drag gesture should update center item and trigger callback');
+      expect(dateCallbacks, isNotEmpty, reason: 'Drag gesture should update center item and trigger callback');
 
       // Verify timeline still renders correctly
       expect(timelineFinder, findsOneWidget);
     });
 
-    testWidgets('Horizontal scroll updates visible range for lazy rendering',
-        (WidgetTester tester) async {
+    testWidgets('Horizontal scroll updates visible range for lazy rendering', (WidgetTester tester) async {
       // Requirements: 2.4, 5.5
 
       const numDays = 100;
@@ -307,13 +290,11 @@ void main() {
         return {
           'id': 'elem_$index',
           'name': 'Test Element $index',
-          'date':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'date': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'pre_id': 'pre_$index',
           'nat': 'activity',
           'status': 'pending',
-          'sdate':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'sdate': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'edate':
               '${date.add(const Duration(days: 1)).year}-${date.add(const Duration(days: 1)).month.toString().padLeft(2, '0')}-${date.add(const Duration(days: 1)).day.toString().padLeft(2, '0')}',
           'stage_id': 'stage1',
@@ -391,8 +372,7 @@ void main() {
         await tester.pump(const Duration(milliseconds: 50));
 
         // Verify timeline renders without errors at each position
-        expect(timelineFinder, findsOneWidget,
-            reason: 'Timeline should render correctly at position $position');
+        expect(timelineFinder, findsOneWidget, reason: 'Timeline should render correctly at position $position');
       }
 
       // Verify timeline is still functional after all scrolls

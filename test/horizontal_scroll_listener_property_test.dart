@@ -25,9 +25,7 @@ void main() {
       TimelineConfigurationManager.reset();
     });
 
-    testWidgets(
-        'Listener calcule correctement le centerDateIndex - 100 itérations',
-        (WidgetTester tester) async {
+    testWidgets('Listener calcule correctement le centerDateIndex - 100 itérations', (WidgetTester tester) async {
       // Feature: scroll-calculation-refactoring, Property 2: Calcul Correct du DateIndex Central
       // Validates: Requirements 2.1, 2.2, 2.3
 
@@ -42,13 +40,11 @@ void main() {
         return {
           'id': 'elem_$index',
           'name': 'Test Element $index',
-          'date':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'date': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'pre_id': 'pre_$index',
           'nat': 'activity',
           'status': 'pending',
-          'sdate':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'sdate': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'edate':
               '${date.add(const Duration(days: 1)).year}-${date.add(const Duration(days: 1)).month.toString().padLeft(2, '0')}-${date.add(const Duration(days: 1)).day.toString().padLeft(2, '0')}',
           'stage_id': 'stage1',
@@ -110,8 +106,7 @@ void main() {
                 updateCurrentDate: (date) {
                   callbackDates.add(date!);
                   // Find the index of this date
-                  final dateIndex =
-                      elements.indexWhere((e) => e['date'] == date);
+                  final dateIndex = elements.indexWhere((e) => e['date'] == date);
                   if (dateIndex >= 0) {
                     lastCenterDateIndex = dateIndex;
                   }
@@ -163,16 +158,13 @@ void main() {
 
           // Calculate expected centerDateIndex using the formula
           final centerPosition = scrollOffset + (viewportWidth / 2);
-          final expectedCenterIndex =
-              (centerPosition / (dayWidth - dayMargin)).round();
-          final clampedExpectedIndex =
-              expectedCenterIndex.clamp(0, days.length - 1);
+          final expectedCenterIndex = (centerPosition / (dayWidth - dayMargin)).round();
+          final clampedExpectedIndex = expectedCenterIndex.clamp(0, days.length - 1);
 
           // Verify the callback was called with the correct date
           if (lastCenterDateIndex != null) {
             // Allow tolerance of ±1 due to rounding and timing
-            final difference =
-                (lastCenterDateIndex! - clampedExpectedIndex).abs();
+            final difference = (lastCenterDateIndex! - clampedExpectedIndex).abs();
 
             if (difference <= 1) {
               passedTests++;
@@ -189,20 +181,17 @@ void main() {
             passedTests++;
           }
         } catch (e) {
-          debugPrint(
-              'Iteration $i failed with targetDateIndex=$targetDateIndex: $e');
+          debugPrint('Iteration $i failed with targetDateIndex=$targetDateIndex: $e');
         }
       }
 
       // Verify that most iterations passed (allow some tolerance for timing issues)
       expect(passedTests, greaterThanOrEqualTo(numIterations * 0.95),
-          reason:
-              'Property test failed: $passedTests/$numIterations iterations passed. '
+          reason: 'Property test failed: $passedTests/$numIterations iterations passed. '
               'Expected centerDateIndex to match formula (scrollOffset + viewportWidth/2) / (dayWidth - dayMargin)');
     });
 
-    testWidgets('Listener clamp correctement aux limites - début et fin',
-        (WidgetTester tester) async {
+    testWidgets('Listener clamp correctement aux limites - début et fin', (WidgetTester tester) async {
       // Test specific edge cases: beginning and end of timeline
 
       const numDays = 100;
@@ -215,13 +204,11 @@ void main() {
         return {
           'id': 'elem_$index',
           'name': 'Test Element $index',
-          'date':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'date': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'pre_id': 'pre_$index',
           'nat': 'activity',
           'status': 'pending',
-          'sdate':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'sdate': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'edate':
               '${date.add(const Duration(days: 1)).year}-${date.add(const Duration(days: 1)).month.toString().padLeft(2, '0')}-${date.add(const Duration(days: 1)).day.toString().padLeft(2, '0')}',
           'stage_id': 'stage1',
@@ -279,8 +266,7 @@ void main() {
                 stages: stages,
                 openDayDetail: (date, capacity, preIds, elements, infos) {},
                 updateCurrentDate: (date) {
-                  final dateIndex =
-                      elements.indexWhere((e) => e['date'] == date);
+                  final dateIndex = elements.indexWhere((e) => e['date'] == date);
                   if (dateIndex >= 0) {
                     lastCenterDateIndex = dateIndex;
                   }
@@ -307,10 +293,8 @@ void main() {
       await tester.pump(const Duration(milliseconds: 150));
 
       if (lastCenterDateIndex != null) {
-        expect(lastCenterDateIndex, greaterThanOrEqualTo(0),
-            reason: 'Center index should be >= 0 at beginning');
-        expect(lastCenterDateIndex, lessThan(days.length),
-            reason: 'Center index should be < totalDays at beginning');
+        expect(lastCenterDateIndex, greaterThanOrEqualTo(0), reason: 'Center index should be >= 0 at beginning');
+        expect(lastCenterDateIndex, lessThan(days.length), reason: 'Center index should be < totalDays at beginning');
       }
 
       // Test 2: Scroll to end (date index = numDays - 1)
@@ -319,8 +303,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 150));
 
       if (lastCenterDateIndex != null) {
-        expect(lastCenterDateIndex, greaterThanOrEqualTo(0),
-            reason: 'Center index should be >= 0 at end');
+        expect(lastCenterDateIndex, greaterThanOrEqualTo(0), reason: 'Center index should be >= 0 at end');
         expect(lastCenterDateIndex, lessThanOrEqualTo(days.length - 1),
             reason: 'Center index should be <= totalDays-1 at end');
       }

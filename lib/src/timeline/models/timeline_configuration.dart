@@ -124,8 +124,7 @@ class TimelineConfiguration {
       rowHeight: rowHeight ?? this.rowHeight,
       rowMargin: rowMargin ?? this.rowMargin,
       bufferDays: bufferDays ?? this.bufferDays,
-      scrollThrottleDuration:
-          scrollThrottleDuration ?? this.scrollThrottleDuration,
+      scrollThrottleDuration: scrollThrottleDuration ?? this.scrollThrottleDuration,
       animationDuration: animationDuration ?? this.animationDuration,
     );
   }

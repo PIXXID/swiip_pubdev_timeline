@@ -19,8 +19,7 @@ import 'package:swiip_pubdev_timeline/src/timeline/timeline.dart';
 /// the highest visible stage row in the current viewport.
 void main() {
   group('Property 6: Auto-Scroll Behavior', () {
-    testWidgets(
-        'For any horizontal scroll (≥2 day change), auto-scroll triggers when no manual vertical scroll',
+    testWidgets('For any horizontal scroll (≥2 day change), auto-scroll triggers when no manual vertical scroll',
         (WidgetTester tester) async {
       // Feature: native-scroll-only, Property 6: Auto-Scroll Behavior
       // Validates: Requirements 7.1, 7.3, 7.4
@@ -38,13 +37,11 @@ void main() {
         return {
           'id': 'elem_$index',
           'name': 'Test Element $index',
-          'date':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'date': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'pre_id': 'pre_$index',
           'nat': 'activity',
           'status': 'pending',
-          'sdate':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'sdate': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'edate':
               '${date.add(const Duration(days: 1)).year}-${date.add(const Duration(days: 1)).month.toString().padLeft(2, '0')}-${date.add(const Duration(days: 1)).day.toString().padLeft(2, '0')}',
           'stage_id': 'stage$stageIndex',
@@ -64,10 +61,7 @@ void main() {
               '${startDate.year}-${startDate.month.toString().padLeft(2, '0')}-${startDate.day.toString().padLeft(2, '0')}',
           'edate':
               '${endDate.year}-${endDate.month.toString().padLeft(2, '0')}-${endDate.day.toString().padLeft(2, '0')}',
-          'elm_filtered': elements
-              .where((e) => e['stage_id'] == 'stage$index')
-              .map((e) => e['pre_id'])
-              .toList(),
+          'elm_filtered': elements.where((e) => e['stage_id'] == 'stage$index').map((e) => e['pre_id']).toList(),
         };
       });
 
@@ -143,17 +137,13 @@ void main() {
 
       // Verify that all iterations passed
       expect(passedTests, equals(numIterations),
-          reason:
-              'Property test failed: $passedTests/$numIterations iterations passed. '
+          reason: 'Property test failed: $passedTests/$numIterations iterations passed. '
               'Expected auto-scroll to trigger correctly for horizontal scrolls with ≥2 day change.');
 
-      debugPrint(
-          '✅ Property 6: Auto-Scroll Behavior - All $numIterations iterations passed');
+      debugPrint('✅ Property 6: Auto-Scroll Behavior - All $numIterations iterations passed');
     });
 
-    testWidgets(
-        'Auto-scroll does not trigger when user has manually scrolled vertically',
-        (WidgetTester tester) async {
+    testWidgets('Auto-scroll does not trigger when user has manually scrolled vertically', (WidgetTester tester) async {
       // Feature: native-scroll-only, Property 6: Auto-Scroll Behavior
       // Validates: Requirements 7.3
 
@@ -170,13 +160,11 @@ void main() {
         return {
           'id': 'elem_$index',
           'name': 'Test Element $index',
-          'date':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'date': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'pre_id': 'pre_$index',
           'nat': 'activity',
           'status': 'pending',
-          'sdate':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'sdate': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'edate':
               '${date.add(const Duration(days: 1)).year}-${date.add(const Duration(days: 1)).month.toString().padLeft(2, '0')}-${date.add(const Duration(days: 1)).day.toString().padLeft(2, '0')}',
           'stage_id': 'stage$stageIndex',
@@ -196,10 +184,7 @@ void main() {
               '${startDate.year}-${startDate.month.toString().padLeft(2, '0')}-${startDate.day.toString().padLeft(2, '0')}',
           'edate':
               '${endDate.year}-${endDate.month.toString().padLeft(2, '0')}-${endDate.day.toString().padLeft(2, '0')}',
-          'elm_filtered': elements
-              .where((e) => e['stage_id'] == 'stage$index')
-              .map((e) => e['pre_id'])
-              .toList(),
+          'elm_filtered': elements.where((e) => e['stage_id'] == 'stage$index').map((e) => e['pre_id']).toList(),
         };
       });
 
@@ -277,17 +262,13 @@ void main() {
 
       // Verify that all iterations passed
       expect(passedTests, equals(numIterations),
-          reason:
-              'Property test failed: $passedTests/$numIterations iterations passed. '
+          reason: 'Property test failed: $passedTests/$numIterations iterations passed. '
               'Expected auto-scroll to not interfere when user has manually scrolled.');
 
-      debugPrint(
-          '✅ Property 6: Auto-Scroll Behavior (manual scroll) - All $numIterations iterations passed');
+      debugPrint('✅ Property 6: Auto-Scroll Behavior (manual scroll) - All $numIterations iterations passed');
     });
 
-    testWidgets(
-        'Vertical position calculation is consistent for same scroll state',
-        (WidgetTester tester) async {
+    testWidgets('Vertical position calculation is consistent for same scroll state', (WidgetTester tester) async {
       // Feature: native-scroll-only, Property 6: Auto-Scroll Behavior
       // Validates: Requirements 7.4
 
@@ -304,13 +285,11 @@ void main() {
         return {
           'id': 'elem_$index',
           'name': 'Test Element $index',
-          'date':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'date': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'pre_id': 'pre_$index',
           'nat': 'activity',
           'status': 'pending',
-          'sdate':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'sdate': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'edate':
               '${date.add(const Duration(days: 1)).year}-${date.add(const Duration(days: 1)).month.toString().padLeft(2, '0')}-${date.add(const Duration(days: 1)).day.toString().padLeft(2, '0')}',
           'stage_id': 'stage$stageIndex',
@@ -330,10 +309,7 @@ void main() {
               '${startDate.year}-${startDate.month.toString().padLeft(2, '0')}-${startDate.day.toString().padLeft(2, '0')}',
           'edate':
               '${endDate.year}-${endDate.month.toString().padLeft(2, '0')}-${endDate.day.toString().padLeft(2, '0')}',
-          'elm_filtered': elements
-              .where((e) => e['stage_id'] == 'stage$index')
-              .map((e) => e['pre_id'])
-              .toList(),
+          'elm_filtered': elements.where((e) => e['stage_id'] == 'stage$index').map((e) => e['pre_id']).toList(),
         };
       });
 
@@ -417,12 +393,10 @@ void main() {
 
       // Verify that all iterations passed
       expect(passedTests, equals(numIterations),
-          reason:
-              'Property test failed: $passedTests/$numIterations iterations passed. '
+          reason: 'Property test failed: $passedTests/$numIterations iterations passed. '
               'Expected consistent vertical position calculation.');
 
-      debugPrint(
-          '✅ Property 6: Auto-Scroll Behavior (consistency) - All $numIterations iterations passed');
+      debugPrint('✅ Property 6: Auto-Scroll Behavior (consistency) - All $numIterations iterations passed');
     });
   });
 }

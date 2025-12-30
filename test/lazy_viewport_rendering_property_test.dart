@@ -5,8 +5,7 @@ import 'package:swiip_pubdev_timeline/src/timeline/lazy_timeline_viewport.dart';
 
 void main() {
   group('LazyTimelineViewport Rendering Property Tests', () {
-    testWidgets(
-        'Property 5: Lazy Viewport Rendering - renders only items in visible range',
+    testWidgets('Property 5: Lazy Viewport Rendering - renders only items in visible range',
         (WidgetTester tester) async {
       // Feature: native-scroll-only, Property 5: Lazy Viewport Rendering
       // Validates: Requirements 5.5
@@ -27,8 +26,7 @@ void main() {
         final visibleEnd = (visibleStart + rangeSize).clamp(0, totalDays);
 
         // Generate random center index within visible range
-        final centerItemIndex = visibleStart +
-            random.nextInt((visibleEnd - visibleStart).clamp(1, totalDays));
+        final centerItemIndex = visibleStart + random.nextInt((visibleEnd - visibleStart).clamp(1, totalDays));
 
         // Generate test data
         final days = List.generate(
@@ -61,8 +59,7 @@ void main() {
                       key: ValueKey('day_$index'),
                       width: dayWidth - dayMargin,
                       height: 100,
-                      color:
-                          index == centerItemIndex ? Colors.red : Colors.blue,
+                      color: index == centerItemIndex ? Colors.red : Colors.blue,
                       child: Text('Day $index'),
                     );
                   },
@@ -79,8 +76,7 @@ void main() {
           expect(
             index >= visibleStart && index <= visibleEnd,
             isTrue,
-            reason:
-                'Item $index should be within visible range [$visibleStart, $visibleEnd] (iteration $iteration)',
+            reason: 'Item $index should be within visible range [$visibleStart, $visibleEnd] (iteration $iteration)',
           );
         }
 
@@ -99,8 +95,7 @@ void main() {
         }
 
         // Property 3: Number of rendered items should match visible range size
-        final expectedCount =
-            (expectedEnd - expectedStart + 1).clamp(0, totalDays);
+        final expectedCount = (expectedEnd - expectedStart + 1).clamp(0, totalDays);
         expect(
           builtIndices.length,
           equals(expectedCount),
@@ -113,15 +108,13 @@ void main() {
           expect(
             builtIndices[i] < builtIndices[i + 1],
             isTrue,
-            reason:
-                'Items should be rendered in ascending order (iteration $iteration)',
+            reason: 'Items should be rendered in ascending order (iteration $iteration)',
           );
         }
       }
     }, timeout: const Timeout(Duration(minutes: 3)));
 
-    testWidgets(
-        'Property 5: Lazy Viewport Rendering - passes correct centerItemIndex to itemBuilder',
+    testWidgets('Property 5: Lazy Viewport Rendering - passes correct centerItemIndex to itemBuilder',
         (WidgetTester tester) async {
       // Feature: native-scroll-only, Property 5: Lazy Viewport Rendering
       // Validates: Requirements 5.5
@@ -135,8 +128,7 @@ void main() {
 
         final visibleStart = random.nextInt(totalDays ~/ 2);
         final visibleEnd = visibleStart + 10 + random.nextInt(10);
-        final centerItemIndex = visibleStart +
-            random.nextInt((visibleEnd - visibleStart).clamp(1, totalDays));
+        final centerItemIndex = visibleStart + random.nextInt((visibleEnd - visibleStart).clamp(1, totalDays));
 
         final days = List.generate(
           totalDays,
@@ -176,22 +168,17 @@ void main() {
 
         // Verify centerItemIndex is accessible in itemBuilder
         // If centerItemIndex is in visible range, it should have been captured
-        if (centerItemIndex >= visibleStart &&
-            centerItemIndex <= visibleEnd &&
-            centerItemIndex < totalDays) {
+        if (centerItemIndex >= visibleStart && centerItemIndex <= visibleEnd && centerItemIndex < totalDays) {
           expect(
             receivedCenterIndex,
             equals(centerItemIndex),
-            reason:
-                'Center item index $centerItemIndex should be accessible in itemBuilder (iteration $iteration)',
+            reason: 'Center item index $centerItemIndex should be accessible in itemBuilder (iteration $iteration)',
           );
         }
       }
     }, timeout: const Timeout(Duration(minutes: 3)));
 
-    testWidgets(
-        'Property 5: Lazy Viewport Rendering - handles edge cases correctly',
-        (WidgetTester tester) async {
+    testWidgets('Property 5: Lazy Viewport Rendering - handles edge cases correctly', (WidgetTester tester) async {
       // Feature: native-scroll-only, Property 5: Lazy Viewport Rendering
       // Validates: Requirements 5.5
 
@@ -209,11 +196,7 @@ void main() {
           // Case 2: visibleEnd = totalDays (end of timeline)
           {'start': totalDays - 10, 'end': totalDays, 'center': totalDays - 5},
           // Case 3: Single item visible
-          {
-            'start': totalDays ~/ 2,
-            'end': totalDays ~/ 2 + 1,
-            'center': totalDays ~/ 2
-          },
+          {'start': totalDays ~/ 2, 'end': totalDays ~/ 2 + 1, 'center': totalDays ~/ 2},
           // Case 4: Empty range (start == end)
           {'start': 10, 'end': 10, 'center': 10},
           // Case 5: Random valid range
@@ -271,8 +254,7 @@ void main() {
             expect(
               index >= 0 && index < totalDays,
               isTrue,
-              reason:
-                  'Built item $index should be within valid range [0, $totalDays) (iteration $iteration)',
+              reason: 'Built item $index should be within valid range [0, $totalDays) (iteration $iteration)',
             );
           }
         }

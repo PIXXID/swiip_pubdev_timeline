@@ -21,8 +21,7 @@ void main() {
       TimelineConfigurationManager.reset();
     });
 
-    testWidgets('Rapid scroll events are throttled correctly',
-        (WidgetTester tester) async {
+    testWidgets('Rapid scroll events are throttled correctly', (WidgetTester tester) async {
       // Requirements: 2.5, 6.1, 6.2
 
       const numDays = 100;
@@ -70,16 +69,13 @@ void main() {
       await tester.pump(const Duration(milliseconds: 50));
 
       // Verify that the timeline handled rapid scrolls without errors
-      expect(timelineFinder, findsOneWidget,
-          reason: 'Timeline should handle rapid scrolls correctly');
+      expect(timelineFinder, findsOneWidget, reason: 'Timeline should handle rapid scrolls correctly');
 
       // Verify callbacks were invoked (throttling should still allow updates)
-      expect(dateCallbacks, isNotEmpty,
-          reason: 'Throttled updates should still fire callbacks');
+      expect(dateCallbacks, isNotEmpty, reason: 'Throttled updates should still fire callbacks');
     });
 
-    testWidgets('State updates are throttled correctly during rapid scrolling',
-        (WidgetTester tester) async {
+    testWidgets('State updates are throttled correctly during rapid scrolling', (WidgetTester tester) async {
       // Requirements: 2.5, 6.3, 6.4
 
       const numDays = 100;
@@ -90,8 +86,7 @@ void main() {
       final stages = _createTestStages(startDate, endDate, elements);
       final infos = _createTestInfos(startDate, endDate);
 
-      await tester
-          .pumpWidget(_buildTimelineWidget(infos, elements, stages, null));
+      await tester.pumpWidget(_buildTimelineWidget(infos, elements, stages, null));
 
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 200));
@@ -118,12 +113,10 @@ void main() {
       await tester.pump(const Duration(milliseconds: 50));
 
       // Verify timeline is still functional
-      expect(timelineFinder, findsOneWidget,
-          reason: 'Timeline should remain functional after rapid scrolls');
+      expect(timelineFinder, findsOneWidget, reason: 'Timeline should remain functional after rapid scrolls');
     });
 
-    testWidgets('Throttle timer is cancelled on widget disposal',
-        (WidgetTester tester) async {
+    testWidgets('Throttle timer is cancelled on widget disposal', (WidgetTester tester) async {
       // Requirements: 6.4
 
       const numDays = 50;
@@ -134,8 +127,7 @@ void main() {
       final stages = _createTestStages(startDate, endDate, elements);
       final infos = _createTestInfos(startDate, endDate);
 
-      await tester
-          .pumpWidget(_buildTimelineWidget(infos, elements, stages, null));
+      await tester.pumpWidget(_buildTimelineWidget(infos, elements, stages, null));
 
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 200));
@@ -153,17 +145,14 @@ void main() {
       await tester.pump(const Duration(milliseconds: 5));
 
       // Dispose the widget while throttle timer is active
-      await tester.pumpWidget(
-          const MaterialApp(home: Scaffold(body: Text('Disposed'))));
+      await tester.pumpWidget(const MaterialApp(home: Scaffold(body: Text('Disposed'))));
       await tester.pump();
 
       // If timer wasn't cancelled properly, this would cause errors
-      expect(find.text('Disposed'), findsOneWidget,
-          reason: 'Widget should be disposed without errors');
+      expect(find.text('Disposed'), findsOneWidget, reason: 'Widget should be disposed without errors');
     });
 
-    testWidgets('Throttling maintains correct final state after rapid scrolls',
-        (WidgetTester tester) async {
+    testWidgets('Throttling maintains correct final state after rapid scrolls', (WidgetTester tester) async {
       // Requirements: 2.5, 6.1, 6.2, 6.3
 
       const numDays = 100;
@@ -208,31 +197,26 @@ void main() {
       await tester.pump(const Duration(milliseconds: 50));
 
       // Verify final state is consistent
-      expect(timelineFinder, findsOneWidget,
-          reason: 'Timeline should remain functional after rapid scrolls');
+      expect(timelineFinder, findsOneWidget, reason: 'Timeline should remain functional after rapid scrolls');
 
       // Verify callbacks were invoked
-      expect(dateCallbacks, isNotEmpty,
-          reason: 'Callbacks should fire even with throttling');
+      expect(dateCallbacks, isNotEmpty, reason: 'Callbacks should fire even with throttling');
     });
   });
 }
 
 // Helper functions to reduce code duplication
-List<Map<String, dynamic>> _createTestElements(
-    DateTime startDate, int numDays) {
+List<Map<String, dynamic>> _createTestElements(DateTime startDate, int numDays) {
   return List.generate(numDays, (index) {
     final date = startDate.add(Duration(days: index));
     return {
       'id': 'elem_$index',
       'name': 'Test Element $index',
-      'date':
-          '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+      'date': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
       'pre_id': 'pre_$index',
       'nat': 'activity',
       'status': 'pending',
-      'sdate':
-          '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+      'sdate': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
       'edate':
           '${date.add(const Duration(days: 1)).year}-${date.add(const Duration(days: 1)).month.toString().padLeft(2, '0')}-${date.add(const Duration(days: 1)).day.toString().padLeft(2, '0')}',
       'stage_id': 'stage1',
@@ -253,8 +237,7 @@ List<Map<String, dynamic>> _createTestStages(
       'prs_id': 'prs1',
       'sdate':
           '${startDate.year}-${startDate.month.toString().padLeft(2, '0')}-${startDate.day.toString().padLeft(2, '0')}',
-      'edate':
-          '${endDate.year}-${endDate.month.toString().padLeft(2, '0')}-${endDate.day.toString().padLeft(2, '0')}',
+      'edate': '${endDate.year}-${endDate.month.toString().padLeft(2, '0')}-${endDate.day.toString().padLeft(2, '0')}',
       'elm_filtered': elements.map((e) => e['pre_id']).toList(),
     }
   ];
@@ -264,8 +247,7 @@ Map<String, String> _createTestInfos(DateTime startDate, DateTime endDate) {
   return {
     'startDate':
         '${startDate.year}-${startDate.month.toString().padLeft(2, '0')}-${startDate.day.toString().padLeft(2, '0')}',
-    'endDate':
-        '${endDate.year}-${endDate.month.toString().padLeft(2, '0')}-${endDate.day.toString().padLeft(2, '0')}',
+    'endDate': '${endDate.year}-${endDate.month.toString().padLeft(2, '0')}-${endDate.day.toString().padLeft(2, '0')}',
     'lmax': '8',
   };
 }

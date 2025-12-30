@@ -21,9 +21,7 @@ void main() {
       TimelineConfigurationManager.reset();
     });
 
-    testWidgets(
-        'Timeline initializes with correct scroll position for defaultDate',
-        (WidgetTester tester) async {
+    testWidgets('Timeline initializes with correct scroll position for defaultDate', (WidgetTester tester) async {
       // Requirements: 8.5
 
       const numDays = 100;
@@ -59,23 +57,19 @@ void main() {
       await tester.pump(const Duration(milliseconds: 500));
 
       // Verify initialization callback was fired
-      expect(lastDateCallback, isNotNull,
-          reason: 'Timeline should fire callback during initialization');
+      expect(lastDateCallback, isNotNull, reason: 'Timeline should fire callback during initialization');
 
       // Verify the date is in correct format
       if (lastDateCallback != null) {
         final dateRegex = RegExp(r'^\d{4}-\d{2}-\d{2}$');
-        expect(dateRegex.hasMatch(lastDateCallback!), isTrue,
-            reason: 'Date should be in YYYY-MM-DD format');
+        expect(dateRegex.hasMatch(lastDateCallback!), isTrue, reason: 'Date should be in YYYY-MM-DD format');
       }
 
       // Verify timeline is functional
       expect(timelineFinder, findsOneWidget);
     });
 
-    testWidgets(
-        'Timeline initializes with correct scroll position for nowIndex',
-        (WidgetTester tester) async {
+    testWidgets('Timeline initializes with correct scroll position for nowIndex', (WidgetTester tester) async {
       // Requirements: 8.5
 
       const numDays = 100;
@@ -111,15 +105,13 @@ void main() {
       await tester.pump(const Duration(milliseconds: 500));
 
       // Verify initialization callback was fired
-      expect(lastDateCallback, isNotNull,
-          reason: 'Timeline should fire callback during initialization');
+      expect(lastDateCallback, isNotNull, reason: 'Timeline should fire callback during initialization');
 
       // Verify timeline is functional
       expect(timelineFinder, findsOneWidget);
     });
 
-    testWidgets('Timeline initializes with correct visible range calculation',
-        (WidgetTester tester) async {
+    testWidgets('Timeline initializes with correct visible range calculation', (WidgetTester tester) async {
       // Requirements: 8.5
 
       const numDays = 100;
@@ -153,8 +145,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 500));
 
       // Verify timeline initialized successfully
-      expect(timelineState.days, isNotEmpty,
-          reason: 'Timeline should have days initialized');
+      expect(timelineState.days, isNotEmpty, reason: 'Timeline should have days initialized');
 
       // Verify we can scroll after initialization
       timelineState.scrollTo(20, animated: false);
@@ -162,12 +153,10 @@ void main() {
       await tester.pump(const Duration(milliseconds: 50));
 
       // Verify timeline still exists
-      expect(timelineFinder, findsOneWidget,
-          reason: 'Timeline should remain functional after initialization');
+      expect(timelineFinder, findsOneWidget, reason: 'Timeline should remain functional after initialization');
     });
 
-    testWidgets('Timeline initializes correctly with empty data',
-        (WidgetTester tester) async {
+    testWidgets('Timeline initializes correctly with empty data', (WidgetTester tester) async {
       // Requirements: 8.5
 
       final startDate = DateTime(2024, 1, 1);
@@ -197,15 +186,13 @@ void main() {
       await tester.pump(const Duration(milliseconds: 500));
 
       // Verify timeline initialized without errors
-      expect(timelineState.days, isNotEmpty,
-          reason: 'Timeline should have days even with empty elements');
+      expect(timelineState.days, isNotEmpty, reason: 'Timeline should have days even with empty elements');
 
       // Verify timeline is functional
       expect(timelineFinder, findsOneWidget);
     });
 
-    testWidgets('Timeline initialization state is consistent across rebuilds',
-        (WidgetTester tester) async {
+    testWidgets('Timeline initialization state is consistent across rebuilds', (WidgetTester tester) async {
       // Requirements: 8.5
 
       const numDays = 50;
@@ -240,27 +227,23 @@ void main() {
       await tester.pump();
 
       // Verify timeline remains functional after rebuild
-      expect(timelineFinder, findsOneWidget,
-          reason: 'Timeline should remain consistent after rebuild');
+      expect(timelineFinder, findsOneWidget, reason: 'Timeline should remain consistent after rebuild');
     });
   });
 }
 
 // Helper functions to reduce code duplication
-List<Map<String, dynamic>> _createTestElements(
-    DateTime startDate, int numDays) {
+List<Map<String, dynamic>> _createTestElements(DateTime startDate, int numDays) {
   return List.generate(numDays, (index) {
     final date = startDate.add(Duration(days: index));
     return {
       'id': 'elem_$index',
       'name': 'Test Element $index',
-      'date':
-          '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+      'date': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
       'pre_id': 'pre_$index',
       'nat': 'activity',
       'status': 'pending',
-      'sdate':
-          '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+      'sdate': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
       'edate':
           '${date.add(const Duration(days: 1)).year}-${date.add(const Duration(days: 1)).month.toString().padLeft(2, '0')}-${date.add(const Duration(days: 1)).day.toString().padLeft(2, '0')}',
       'stage_id': 'stage1',
@@ -281,8 +264,7 @@ List<Map<String, dynamic>> _createTestStages(
       'prs_id': 'prs1',
       'sdate':
           '${startDate.year}-${startDate.month.toString().padLeft(2, '0')}-${startDate.day.toString().padLeft(2, '0')}',
-      'edate':
-          '${endDate.year}-${endDate.month.toString().padLeft(2, '0')}-${endDate.day.toString().padLeft(2, '0')}',
+      'edate': '${endDate.year}-${endDate.month.toString().padLeft(2, '0')}-${endDate.day.toString().padLeft(2, '0')}',
       'elm_filtered': elements.map((e) => e['pre_id']).toList(),
     }
   ];
@@ -292,8 +274,7 @@ Map<String, String> _createTestInfos(DateTime startDate, DateTime endDate) {
   return {
     'startDate':
         '${startDate.year}-${startDate.month.toString().padLeft(2, '0')}-${startDate.day.toString().padLeft(2, '0')}',
-    'endDate':
-        '${endDate.year}-${endDate.month.toString().padLeft(2, '0')}-${endDate.day.toString().padLeft(2, '0')}',
+    'endDate': '${endDate.year}-${endDate.month.toString().padLeft(2, '0')}-${endDate.day.toString().padLeft(2, '0')}',
     'lmax': '8',
   };
 }

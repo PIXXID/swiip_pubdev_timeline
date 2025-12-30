@@ -5,8 +5,7 @@ import 'package:swiip_pubdev_timeline/src/timeline/lazy_timeline_viewport.dart';
 
 void main() {
   group('LazyTimelineViewport Property Tests', () {
-    testWidgets(
-        'Property 3: Viewport-Based Rendering - renders only visible items plus buffer',
+    testWidgets('Property 3: Viewport-Based Rendering - renders only visible items plus buffer',
         (WidgetTester tester) async {
       // Feature: timeline-performance-optimization, Property 3: Viewport-based rendering
       // Validates: Requirements 3.2, 8.2
@@ -84,8 +83,7 @@ void main() {
         expect(
           builtWidgetCount,
           lessThan(totalDays),
-          reason:
-              'Should render fewer items than total (rendered $builtWidgetCount, total $totalDays)',
+          reason: 'Should render fewer items than total (rendered $builtWidgetCount, total $totalDays)',
         );
 
         // Verify that rendered items match expected viewport + buffer
@@ -105,8 +103,7 @@ void main() {
       }
     }, timeout: const Timeout(Duration(minutes: 5)));
 
-    testWidgets(
-        'Property 3: Viewport-Based Rendering - updates rendered items when visible range changes',
+    testWidgets('Property 3: Viewport-Based Rendering - updates rendered items when visible range changes',
         (WidgetTester tester) async {
       // Verify that changing the visible range updates the rendered items
 
@@ -177,10 +174,8 @@ void main() {
         // Change the visible range by simulating scroll to middle
         final scrollOffset = (totalDays / 2) * (dayWidth - dayMargin);
         final newCenterIndex = (scrollOffset / (dayWidth - dayMargin)).round();
-        visibleStart =
-            (newCenterIndex - (visibleDays ~/ 2) - buffer).clamp(0, totalDays);
-        visibleEnd =
-            (newCenterIndex + (visibleDays ~/ 2) + buffer).clamp(0, totalDays);
+        visibleStart = (newCenterIndex - (visibleDays ~/ 2) - buffer).clamp(0, totalDays);
+        visibleEnd = (newCenterIndex + (visibleDays ~/ 2) + buffer).clamp(0, totalDays);
         centerItemIndex = newCenterIndex;
 
         // Rebuild with new visible range
@@ -223,8 +218,7 @@ void main() {
         );
 
         // Verify that different indices are now visible
-        final hasNewIndices =
-            builtIndices.any((index) => !initialIndices.contains(index));
+        final hasNewIndices = builtIndices.any((index) => !initialIndices.contains(index));
         expect(
           hasNewIndices,
           isTrue,
@@ -233,8 +227,7 @@ void main() {
       }
     }, timeout: const Timeout(Duration(minutes: 5)));
 
-    testWidgets(
-        'Property 3: Viewport-Based Rendering - handles edge cases at timeline boundaries',
+    testWidgets('Property 3: Viewport-Based Rendering - handles edge cases at timeline boundaries',
         (WidgetTester tester) async {
       // Verify correct behavior at start and end of timeline
 
@@ -309,16 +302,12 @@ void main() {
           ),
         );
         await tester.pumpAndSettle(const Duration(milliseconds: 50));
-        expect(tester.takeException(), isNull,
-            reason: 'Should handle start boundary without errors');
+        expect(tester.takeException(), isNull, reason: 'Should handle start boundary without errors');
 
         // Test at end (offset = max)
         final maxOffset = totalDays * (dayWidth - dayMargin);
-        final endCenterIndex = (maxOffset / (dayWidth - dayMargin))
-            .round()
-            .clamp(0, totalDays - 1);
-        visibleStart =
-            (endCenterIndex - (visibleDays ~/ 2) - buffer).clamp(0, totalDays);
+        final endCenterIndex = (maxOffset / (dayWidth - dayMargin)).round().clamp(0, totalDays - 1);
+        visibleStart = (endCenterIndex - (visibleDays ~/ 2) - buffer).clamp(0, totalDays);
         visibleEnd = totalDays;
         centerItemIndex = endCenterIndex;
 
@@ -344,8 +333,7 @@ void main() {
           ),
         );
         await tester.pumpAndSettle(const Duration(milliseconds: 50));
-        expect(tester.takeException(), isNull,
-            reason: 'Should handle end boundary without errors');
+        expect(tester.takeException(), isNull, reason: 'Should handle end boundary without errors');
 
         // Test beyond end (should clamp)
         visibleStart = (totalDays - visibleDays - buffer).clamp(0, totalDays);
@@ -374,15 +362,13 @@ void main() {
           ),
         );
         await tester.pumpAndSettle(const Duration(milliseconds: 50));
-        expect(tester.takeException(), isNull,
-            reason: 'Should handle beyond-end offset without errors');
+        expect(tester.takeException(), isNull, reason: 'Should handle beyond-end offset without errors');
       }
     }, timeout: const Timeout(Duration(minutes: 5)));
   });
 
   group('LazyTimelineViewport Unit Tests', () {
-    testWidgets('renders empty timeline without errors',
-        (WidgetTester tester) async {
+    testWidgets('renders empty timeline without errors', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -440,8 +426,7 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('uses Stack with Positioned for layout',
-        (WidgetTester tester) async {
+    testWidgets('uses Stack with Positioned for layout', (WidgetTester tester) async {
       final days = List.generate(
         10,
         (i) => {'date': DateTime.now().add(Duration(days: i))},
@@ -528,8 +513,7 @@ void main() {
       expect(sizedBox.width, equals(expectedWidth));
     });
 
-    testWidgets('only calls itemBuilder for visible items',
-        (WidgetTester tester) async {
+    testWidgets('only calls itemBuilder for visible items', (WidgetTester tester) async {
       final totalDays = 300;
 
       final days = List.generate(

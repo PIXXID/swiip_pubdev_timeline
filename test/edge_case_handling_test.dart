@@ -16,24 +16,15 @@ void main() {
         final defaults = ConfigurationValidator.getDefaultConfiguration();
 
         // Verify all parameters use defaults
-        expect(
-            result.validatedConfig['dayWidth'], equals(defaults['dayWidth']));
-        expect(
-            result.validatedConfig['dayMargin'], equals(defaults['dayMargin']));
-        expect(result.validatedConfig['datesHeight'],
-            equals(defaults['datesHeight']));
-        expect(result.validatedConfig['timelineHeight'],
-            equals(defaults['timelineHeight']));
-        expect(
-            result.validatedConfig['rowHeight'], equals(defaults['rowHeight']));
-        expect(
-            result.validatedConfig['rowMargin'], equals(defaults['rowMargin']));
-        expect(result.validatedConfig['bufferDays'],
-            equals(defaults['bufferDays']));
-        expect(result.validatedConfig['scrollThrottleMs'],
-            equals(defaults['scrollThrottleMs']));
-        expect(result.validatedConfig['animationDurationMs'],
-            equals(defaults['animationDurationMs']));
+        expect(result.validatedConfig['dayWidth'], equals(defaults['dayWidth']));
+        expect(result.validatedConfig['dayMargin'], equals(defaults['dayMargin']));
+        expect(result.validatedConfig['datesHeight'], equals(defaults['datesHeight']));
+        expect(result.validatedConfig['timelineHeight'], equals(defaults['timelineHeight']));
+        expect(result.validatedConfig['rowHeight'], equals(defaults['rowHeight']));
+        expect(result.validatedConfig['rowMargin'], equals(defaults['rowMargin']));
+        expect(result.validatedConfig['bufferDays'], equals(defaults['bufferDays']));
+        expect(result.validatedConfig['scrollThrottleMs'], equals(defaults['scrollThrottleMs']));
+        expect(result.validatedConfig['animationDurationMs'], equals(defaults['animationDurationMs']));
 
         // No errors should be generated for empty config
         expect(result.errors, isEmpty);
@@ -55,9 +46,7 @@ void main() {
 
     group('Partial Configuration', () {
       // Requirements: 3.4
-      test(
-          'configuration with only dayWidth preserves it and uses defaults for others',
-          () {
+      test('configuration with only dayWidth preserves it and uses defaults for others', () {
         final partialConfig = {
           'dayWidth': 60.0,
         };
@@ -69,17 +58,12 @@ void main() {
         expect(result.validatedConfig['dayWidth'], equals(60.0));
 
         // Others should use defaults
-        expect(
-            result.validatedConfig['dayMargin'], equals(defaults['dayMargin']));
-        expect(result.validatedConfig['bufferDays'],
-            equals(defaults['bufferDays']));
-        expect(result.validatedConfig['scrollThrottleMs'],
-            equals(defaults['scrollThrottleMs']));
+        expect(result.validatedConfig['dayMargin'], equals(defaults['dayMargin']));
+        expect(result.validatedConfig['bufferDays'], equals(defaults['bufferDays']));
+        expect(result.validatedConfig['scrollThrottleMs'], equals(defaults['scrollThrottleMs']));
       });
 
-      test(
-          'configuration with only bufferDays preserves it and uses defaults for others',
-          () {
+      test('configuration with only bufferDays preserves it and uses defaults for others', () {
         final partialConfig = {
           'bufferDays': 10,
         };
@@ -91,14 +75,11 @@ void main() {
         expect(result.validatedConfig['bufferDays'], equals(10));
 
         // Others should use defaults
-        expect(
-            result.validatedConfig['dayWidth'], equals(defaults['dayWidth']));
-        expect(
-            result.validatedConfig['dayMargin'], equals(defaults['dayMargin']));
+        expect(result.validatedConfig['dayWidth'], equals(defaults['dayWidth']));
+        expect(result.validatedConfig['dayMargin'], equals(defaults['dayMargin']));
       });
 
-      test('configuration with multiple parameters preserves all valid ones',
-          () {
+      test('configuration with multiple parameters preserves all valid ones', () {
         final partialConfig = {
           'dayWidth': 50.0,
           'bufferDays': 8,
@@ -114,10 +95,8 @@ void main() {
         expect(result.validatedConfig['scrollThrottleMs'], equals(20));
 
         // Others should use defaults
-        expect(
-            result.validatedConfig['dayMargin'], equals(defaults['dayMargin']));
-        expect(result.validatedConfig['datesHeight'],
-            equals(defaults['datesHeight']));
+        expect(result.validatedConfig['dayMargin'], equals(defaults['dayMargin']));
+        expect(result.validatedConfig['datesHeight'], equals(defaults['datesHeight']));
       });
     });
 
@@ -155,12 +134,9 @@ void main() {
         final defaults = ConfigurationValidator.getDefaultConfiguration();
 
         // All parameters should use defaults
-        expect(
-            result.validatedConfig['dayWidth'], equals(defaults['dayWidth']));
-        expect(
-            result.validatedConfig['dayMargin'], equals(defaults['dayMargin']));
-        expect(result.validatedConfig['bufferDays'],
-            equals(defaults['bufferDays']));
+        expect(result.validatedConfig['dayWidth'], equals(defaults['dayWidth']));
+        expect(result.validatedConfig['dayMargin'], equals(defaults['dayMargin']));
+        expect(result.validatedConfig['bufferDays'], equals(defaults['bufferDays']));
 
         // Unknown parameters should not be present
         expect(result.validatedConfig.containsKey('unknownParam1'), isFalse);
@@ -393,12 +369,9 @@ void main() {
         final result = ConfigurationValidator.validate(config);
         final defaults = ConfigurationValidator.getDefaultConfiguration();
 
-        expect(
-            result.validatedConfig['dayWidth'], equals(defaults['dayWidth']));
-        expect(result.validatedConfig['bufferDays'],
-            equals(defaults['bufferDays']));
-        expect(result.validatedConfig['scrollThrottleMs'],
-            equals(defaults['scrollThrottleMs']));
+        expect(result.validatedConfig['dayWidth'], equals(defaults['dayWidth']));
+        expect(result.validatedConfig['bufferDays'], equals(defaults['bufferDays']));
+        expect(result.validatedConfig['scrollThrottleMs'], equals(defaults['scrollThrottleMs']));
         expect(result.errors.length, equals(3));
       });
 
@@ -412,12 +385,9 @@ void main() {
         final result = ConfigurationValidator.validate(config);
         final defaults = ConfigurationValidator.getDefaultConfiguration();
 
-        expect(
-            result.validatedConfig['dayWidth'], equals(defaults['dayWidth']));
-        expect(result.validatedConfig['bufferDays'],
-            equals(defaults['bufferDays']));
-        expect(result.validatedConfig['scrollThrottleMs'],
-            equals(defaults['scrollThrottleMs']));
+        expect(result.validatedConfig['dayWidth'], equals(defaults['dayWidth']));
+        expect(result.validatedConfig['bufferDays'], equals(defaults['bufferDays']));
+        expect(result.validatedConfig['scrollThrottleMs'], equals(defaults['scrollThrottleMs']));
         expect(result.errors.length, equals(3));
       });
     });
@@ -460,8 +430,7 @@ void main() {
             dayWidth: 60.0 + i,
             bufferDays: 10 + i,
           );
-          TimelineConfigurationManager.initialize(
-              programmaticConfig: newConfig);
+          TimelineConfigurationManager.initialize(programmaticConfig: newConfig);
         }
 
         // Configuration should remain unchanged
@@ -483,8 +452,7 @@ void main() {
         expect(TimelineConfigurationManager.isInitialized, isTrue);
       });
 
-      test('isInitialized remains true after multiple initialization attempts',
-          () {
+      test('isInitialized remains true after multiple initialization attempts', () {
         TimelineConfigurationManager.reset();
 
         TimelineConfigurationManager.initialize(
@@ -509,16 +477,12 @@ void main() {
         final result = ConfigurationValidator.validate(null);
         final defaults = ConfigurationValidator.getDefaultConfiguration();
 
-        expect(
-            result.validatedConfig['dayWidth'], equals(defaults['dayWidth']));
-        expect(
-            result.validatedConfig['dayMargin'], equals(defaults['dayMargin']));
-        expect(result.validatedConfig['bufferDays'],
-            equals(defaults['bufferDays']));
+        expect(result.validatedConfig['dayWidth'], equals(defaults['dayWidth']));
+        expect(result.validatedConfig['dayMargin'], equals(defaults['dayMargin']));
+        expect(result.validatedConfig['bufferDays'], equals(defaults['bufferDays']));
       });
 
-      test('configuration with null values uses defaults for those parameters',
-          () {
+      test('configuration with null values uses defaults for those parameters', () {
         final config = {
           'dayWidth': null,
           'bufferDays': 8,
@@ -529,10 +493,8 @@ void main() {
         final defaults = ConfigurationValidator.getDefaultConfiguration();
 
         // Null values should use defaults
-        expect(
-            result.validatedConfig['dayWidth'], equals(defaults['dayWidth']));
-        expect(
-            result.validatedConfig['dayMargin'], equals(defaults['dayMargin']));
+        expect(result.validatedConfig['dayWidth'], equals(defaults['dayWidth']));
+        expect(result.validatedConfig['dayMargin'], equals(defaults['dayMargin']));
 
         // Valid value should be preserved
         expect(result.validatedConfig['bufferDays'], equals(8));
@@ -563,10 +525,8 @@ void main() {
         final result = ConfigurationValidator.validate(config);
         final defaults = ConfigurationValidator.getDefaultConfiguration();
 
-        expect(
-            result.validatedConfig['dayWidth'], equals(defaults['dayWidth']));
-        expect(result.validatedConfig['bufferDays'],
-            equals(defaults['bufferDays']));
+        expect(result.validatedConfig['dayWidth'], equals(defaults['dayWidth']));
+        expect(result.validatedConfig['bufferDays'], equals(defaults['bufferDays']));
         expect(result.errors.length, equals(2));
       });
 
@@ -579,10 +539,8 @@ void main() {
         final result = ConfigurationValidator.validate(config);
         final defaults = ConfigurationValidator.getDefaultConfiguration();
 
-        expect(
-            result.validatedConfig['dayWidth'], equals(defaults['dayWidth']));
-        expect(result.validatedConfig['bufferDays'],
-            equals(defaults['bufferDays']));
+        expect(result.validatedConfig['dayWidth'], equals(defaults['dayWidth']));
+        expect(result.validatedConfig['bufferDays'], equals(defaults['bufferDays']));
         expect(result.errors.length, equals(2));
       });
 
@@ -615,8 +573,7 @@ void main() {
 
     group('Mixed Valid and Invalid Configurations', () {
       // Requirements: 3.4
-      test('configuration with mix of valid, invalid, and unknown parameters',
-          () {
+      test('configuration with mix of valid, invalid, and unknown parameters', () {
         final config = {
           'dayWidth': 50.0, // valid
           'bufferDays': 100, // invalid (out of range)
@@ -633,10 +590,8 @@ void main() {
         expect(result.validatedConfig['scrollThrottleMs'], equals(20));
 
         // Invalid parameters should use defaults
-        expect(result.validatedConfig['bufferDays'],
-            equals(defaults['bufferDays']));
-        expect(
-            result.validatedConfig['dayMargin'], equals(defaults['dayMargin']));
+        expect(result.validatedConfig['bufferDays'], equals(defaults['bufferDays']));
+        expect(result.validatedConfig['dayMargin'], equals(defaults['dayMargin']));
 
         // Unknown parameters should not be present
         expect(result.validatedConfig.containsKey('unknownParam'), isFalse);

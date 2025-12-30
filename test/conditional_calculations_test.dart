@@ -22,12 +22,7 @@ void main() {
       final startDate = DateTime(2024, 1, 1);
       final endDate = DateTime(2024, 1, 31);
       final elements = [
-        {
-          'date': '2024-01-15',
-          'pre_id': 'elem1',
-          'nat': 'activity',
-          'status': 'pending'
-        }
+        {'date': '2024-01-15', 'pre_id': 'elem1', 'nat': 'activity', 'status': 'pending'}
       ];
       final elementsDone = <Map<String, dynamic>>[];
       final capacities = <Map<String, dynamic>>[];
@@ -57,8 +52,7 @@ void main() {
       );
 
       // Verify same instance is returned (cached)
-      expect(identical(result1, result2), isTrue,
-          reason: 'Should return cached result when data is unchanged');
+      expect(identical(result1, result2), isTrue, reason: 'Should return cached result when data is unchanged');
     });
 
     test('should recompute when input data changes', () {
@@ -68,26 +62,11 @@ void main() {
       final startDate = DateTime(2024, 1, 1);
       final endDate = DateTime(2024, 1, 31);
       final elements1 = [
-        {
-          'date': '2024-01-15',
-          'pre_id': 'elem1',
-          'nat': 'activity',
-          'status': 'pending'
-        }
+        {'date': '2024-01-15', 'pre_id': 'elem1', 'nat': 'activity', 'status': 'pending'}
       ];
       final elements2 = [
-        {
-          'date': '2024-01-15',
-          'pre_id': 'elem1',
-          'nat': 'activity',
-          'status': 'pending'
-        },
-        {
-          'date': '2024-01-20',
-          'pre_id': 'elem2',
-          'nat': 'task',
-          'status': 'finished'
-        }
+        {'date': '2024-01-15', 'pre_id': 'elem1', 'nat': 'activity', 'status': 'pending'},
+        {'date': '2024-01-20', 'pre_id': 'elem2', 'nat': 'task', 'status': 'finished'}
       ];
       final elementsDone = <Map<String, dynamic>>[];
       final capacities = <Map<String, dynamic>>[];
@@ -117,15 +96,13 @@ void main() {
       );
 
       // Verify different instance is returned (recomputed)
-      expect(identical(result1, result2), isFalse,
-          reason: 'Should recompute when data changes');
+      expect(identical(result1, result2), isFalse, reason: 'Should recompute when data changes');
 
       // Verify the results are different
       expect(result1.length, equals(result2.length));
       // The second result should have more elements processed
       final day20Index = 19; // January 20th is index 19 (0-based)
-      expect(result2[day20Index]['preIds'].length,
-          greaterThan(result1[day20Index]['preIds'].length));
+      expect(result2[day20Index]['preIds'].length, greaterThan(result1[day20Index]['preIds'].length));
     });
 
     test('should cache stage rows independently of days', () {
@@ -170,8 +147,7 @@ void main() {
       );
 
       // Verify same instance is returned (cached)
-      expect(identical(result1, result2), isTrue,
-          reason: 'Should return cached stage rows when data is unchanged');
+      expect(identical(result1, result2), isTrue, reason: 'Should return cached stage rows when data is unchanged');
     });
 
     test('should clear cache and recompute on clearCache call', () {
@@ -181,12 +157,7 @@ void main() {
       final startDate = DateTime(2024, 1, 1);
       final endDate = DateTime(2024, 1, 31);
       final elements = [
-        {
-          'date': '2024-01-15',
-          'pre_id': 'elem1',
-          'nat': 'activity',
-          'status': 'pending'
-        }
+        {'date': '2024-01-15', 'pre_id': 'elem1', 'nat': 'activity', 'status': 'pending'}
       ];
       final elementsDone = <Map<String, dynamic>>[];
       final capacities = <Map<String, dynamic>>[];
@@ -219,8 +190,7 @@ void main() {
       );
 
       // Verify different instance is returned (recomputed)
-      expect(identical(result1, result2), isFalse,
-          reason: 'Should recompute after cache is cleared');
+      expect(identical(result1, result2), isFalse, reason: 'Should recompute after cache is cleared');
 
       // But the content should be the same
       expect(result1.length, equals(result2.length));

@@ -31,8 +31,7 @@ class PerformanceMonitor {
   ///
   /// [profilingEnabled] determines whether monitoring is active.
   /// Defaults to true in debug mode, false in release mode.
-  PerformanceMonitor({bool? profilingEnabled})
-      : profilingEnabled = profilingEnabled ?? kDebugMode;
+  PerformanceMonitor({bool? profilingEnabled}) : profilingEnabled = profilingEnabled ?? kDebugMode;
 
   /// Starts tracking an operation with the given [operationName].
   ///
@@ -57,8 +56,7 @@ class PerformanceMonitor {
     final startTime = _operationStartTimes.remove(operationName);
     if (startTime == null) {
       if (kDebugMode) {
-        debugPrint(
-            '[PerformanceMonitor] Warning: endOperation called for "$operationName" without startOperation');
+        debugPrint('[PerformanceMonitor] Warning: endOperation called for "$operationName" without startOperation');
       }
       return null;
     }
@@ -67,8 +65,7 @@ class PerformanceMonitor {
     _operationDurations[operationName] = duration;
 
     if (kDebugMode) {
-      debugPrint(
-          '[PerformanceMonitor] Completed: $operationName in ${duration.inMilliseconds}ms');
+      debugPrint('[PerformanceMonitor] Completed: $operationName in ${duration.inMilliseconds}ms');
     }
 
     return duration;
@@ -130,15 +127,13 @@ class PerformanceMonitor {
   /// If no data has been collected, returns metrics with zero/default values.
   PerformanceMetrics getMetrics() {
     // Calculate average render time from all operations
-    final renderTime = _operationDurations.values.isEmpty
-        ? Duration.zero
-        : _operationDurations.values.reduce((a, b) => a + b);
+    final renderTime =
+        _operationDurations.values.isEmpty ? Duration.zero : _operationDurations.values.reduce((a, b) => a + b);
 
     // Calculate average FPS
     double averageFPS = 60.0; // Default FPS
     if (_frameTimes.isNotEmpty) {
-      final totalMicroseconds =
-          _frameTimes.map((d) => d.inMicroseconds).reduce((a, b) => a + b);
+      final totalMicroseconds = _frameTimes.map((d) => d.inMicroseconds).reduce((a, b) => a + b);
       final averageMicroseconds = totalMicroseconds / _frameTimes.length;
 
       // Avoid division by zero
@@ -148,10 +143,8 @@ class PerformanceMonitor {
     }
 
     // Calculate average memory usage
-    final averageMemory = _memoryUsageSamples.isEmpty
-        ? 0.0
-        : _memoryUsageSamples.reduce((a, b) => a + b) /
-            _memoryUsageSamples.length;
+    final averageMemory =
+        _memoryUsageSamples.isEmpty ? 0.0 : _memoryUsageSamples.reduce((a, b) => a + b) / _memoryUsageSamples.length;
 
     return PerformanceMetrics(
       renderTime: renderTime,

@@ -130,25 +130,19 @@ void main() {
 
     group('clampScrollOffset', () {
       test('should clamp negative offset to 0', () {
-        expect(
-            TimelineErrorHandler.clampScrollOffset(-10.0, 100.0), equals(0.0));
-        expect(
-            TimelineErrorHandler.clampScrollOffset(-0.1, 100.0), equals(0.0));
+        expect(TimelineErrorHandler.clampScrollOffset(-10.0, 100.0), equals(0.0));
+        expect(TimelineErrorHandler.clampScrollOffset(-0.1, 100.0), equals(0.0));
       });
 
       test('should clamp offset beyond max to max', () {
-        expect(TimelineErrorHandler.clampScrollOffset(150.0, 100.0),
-            equals(100.0));
-        expect(TimelineErrorHandler.clampScrollOffset(1000.0, 100.0),
-            equals(100.0));
+        expect(TimelineErrorHandler.clampScrollOffset(150.0, 100.0), equals(100.0));
+        expect(TimelineErrorHandler.clampScrollOffset(1000.0, 100.0), equals(100.0));
       });
 
       test('should not change valid offset', () {
-        expect(
-            TimelineErrorHandler.clampScrollOffset(50.0, 100.0), equals(50.0));
+        expect(TimelineErrorHandler.clampScrollOffset(50.0, 100.0), equals(50.0));
         expect(TimelineErrorHandler.clampScrollOffset(0.0, 100.0), equals(0.0));
-        expect(TimelineErrorHandler.clampScrollOffset(100.0, 100.0),
-            equals(100.0));
+        expect(TimelineErrorHandler.clampScrollOffset(100.0, 100.0), equals(100.0));
       });
     });
 

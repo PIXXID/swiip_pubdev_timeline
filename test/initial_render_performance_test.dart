@@ -36,8 +36,7 @@ void main() {
     };
 
     // Helper to generate test elements
-    List<Map<String, dynamic>> generateTestElements(
-        int dayCount, Random random) {
+    List<Map<String, dynamic>> generateTestElements(int dayCount, Random random) {
       final startDate = DateTime(2024, 1, 1);
       final elements = <Map<String, dynamic>>[];
 
@@ -48,17 +47,9 @@ void main() {
         final dayOffset = random.nextInt(dayCount);
         elements.add({
           'pre_id': 'elem_$i',
-          'date': startDate
-              .add(Duration(days: dayOffset))
-              .toIso8601String()
-              .split('T')[0],
+          'date': startDate.add(Duration(days: dayOffset)).toIso8601String().split('T')[0],
           'nat': ['activity', 'delivrable', 'task'][random.nextInt(3)],
-          'status': [
-            'pending',
-            'inprogress',
-            'validated',
-            'finished'
-          ][random.nextInt(4)],
+          'status': ['pending', 'inprogress', 'validated', 'finished'][random.nextInt(4)],
         });
       }
 
@@ -66,16 +57,14 @@ void main() {
     }
 
     // Helper to generate test capacities
-    List<Map<String, dynamic>> generateTestCapacities(
-        int dayCount, Random random) {
+    List<Map<String, dynamic>> generateTestCapacities(int dayCount, Random random) {
       final startDate = DateTime(2024, 1, 1);
       final capacities = <Map<String, dynamic>>[];
 
       // Generate capacity for each day
       for (var i = 0; i < dayCount; i++) {
         capacities.add({
-          'date':
-              startDate.add(Duration(days: i)).toIso8601String().split('T')[0],
+          'date': startDate.add(Duration(days: i)).toIso8601String().split('T')[0],
           'capeff': random.nextInt(9),
           'buseff': random.nextInt(9),
           'compeff': random.nextInt(9),
@@ -86,9 +75,7 @@ void main() {
       return capacities;
     }
 
-    testWidgets(
-        'Property 1: Initial Render Performance - renders 100+ days within 500ms',
-        (WidgetTester tester) async {
+    testWidgets('Property 1: Initial Render Performance - renders 100+ days within 500ms', (WidgetTester tester) async {
       // Feature: timeline-performance-optimization, Property 1: Initial Render Performance
 
       const iterations = 100;
@@ -150,8 +137,7 @@ void main() {
                 'Iteration $iteration: Render time ${renderTimeMs}ms exceeded 500ms for $dayCount days with ${elements.length} elements');
 
         // Verify the timeline rendered successfully (ignore layout exceptions)
-        expect(find.byType(Timeline), findsOneWidget,
-            reason: 'Timeline widget should be rendered');
+        expect(find.byType(Timeline), findsOneWidget, reason: 'Timeline widget should be rendered');
 
         // Clean up for next iteration
         await tester.pumpWidget(Container());
@@ -166,21 +152,17 @@ void main() {
       final max = renderTimes.last;
 
       // Print performance statistics
-      debugPrint(
-          'Initial Render Performance Statistics ($successfulRenders/$iterations successful):');
+      debugPrint('Initial Render Performance Statistics ($successfulRenders/$iterations successful):');
       debugPrint('  Average: ${average.toStringAsFixed(1)}ms');
       debugPrint('  Median: ${median}ms');
       debugPrint('  95th percentile: ${p95}ms');
       debugPrint('  Max: ${max}ms');
 
       // Verify that 95% of renders are within the limit
-      expect(p95, lessThan(500),
-          reason: '95th percentile render time should be under 500ms');
+      expect(p95, lessThan(500), reason: '95th percentile render time should be under 500ms');
     });
 
-    testWidgets(
-        'Property 1: Initial Render Performance - scales linearly with day count',
-        (WidgetTester tester) async {
+    testWidgets('Property 1: Initial Render Performance - scales linearly with day count', (WidgetTester tester) async {
       // Feature: timeline-performance-optimization, Property 1: Initial Render Performance
 
       const iterations = 50;
@@ -254,21 +236,17 @@ void main() {
 
       // Verify all day counts meet the performance requirement
       for (final entry in averages.entries) {
-        expect(entry.value, lessThan(500),
-            reason:
-                'Average render time for ${entry.key} days should be under 500ms');
+        expect(entry.value, lessThan(500), reason: 'Average render time for ${entry.key} days should be under 500ms');
       }
 
       // Verify scaling is reasonable (not exponential)
       // The ratio between 200 days and 100 days should be less than 3x
       final ratio200to100 = averages[200]! / averages[100]!;
       expect(ratio200to100, lessThan(3.0),
-          reason:
-              'Render time should scale linearly, not exponentially (ratio: ${ratio200to100.toStringAsFixed(2)}x)');
+          reason: 'Render time should scale linearly, not exponentially (ratio: ${ratio200to100.toStringAsFixed(2)}x)');
     });
 
-    testWidgets(
-        'Property 1: Initial Render Performance - handles varying element density',
+    testWidgets('Property 1: Initial Render Performance - handles varying element density',
         (WidgetTester tester) async {
       // Feature: timeline-performance-optimization, Property 1: Initial Render Performance
 
@@ -289,10 +267,7 @@ void main() {
           final dayOffset = random.nextInt(dayCount);
           elements.add({
             'pre_id': 'elem_$i',
-            'date': startDate
-                .add(Duration(days: dayOffset))
-                .toIso8601String()
-                .split('T')[0],
+            'date': startDate.add(Duration(days: dayOffset)).toIso8601String().split('T')[0],
             'nat': ['activity', 'delivrable', 'task'][random.nextInt(3)],
             'status': ['pending', 'inprogress', 'validated'][random.nextInt(3)],
           });

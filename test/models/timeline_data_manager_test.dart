@@ -34,15 +34,9 @@ void main() {
             elementCount,
             (i) => {
               'pre_id': 'elem_$i',
-              'date': _formatDate(
-                  startDate.add(Duration(days: random.nextInt(dayCount)))),
+              'date': _formatDate(startDate.add(Duration(days: random.nextInt(dayCount)))),
               'nat': ['activity', 'delivrable', 'task'][random.nextInt(3)],
-              'status': [
-                'pending',
-                'inprogress',
-                'validated',
-                'finished'
-              ][random.nextInt(4)],
+              'status': ['pending', 'inprogress', 'validated', 'finished'][random.nextInt(4)],
             },
           );
 
@@ -51,8 +45,7 @@ void main() {
             elementsDoneCount,
             (i) => {
               'pre_id': 'done_$i',
-              'date': _formatDate(
-                  startDate.add(Duration(days: random.nextInt(dayCount)))),
+              'date': _formatDate(startDate.add(Duration(days: random.nextInt(dayCount)))),
             },
           );
 
@@ -60,8 +53,7 @@ void main() {
           final capacities = List.generate(
             capacityCount,
             (i) => {
-              'date': _formatDate(
-                  startDate.add(Duration(days: random.nextInt(dayCount)))),
+              'date': _formatDate(startDate.add(Duration(days: random.nextInt(dayCount)))),
               'capeff': random.nextInt(8),
               'buseff': random.nextInt(8),
               'compeff': random.nextInt(8),
@@ -73,20 +65,13 @@ void main() {
           final stages = List.generate(
             stageCount,
             (i) {
-              final stageStart =
-                  startDate.add(Duration(days: random.nextInt(dayCount ~/ 2)));
+              final stageStart = startDate.add(Duration(days: random.nextInt(dayCount ~/ 2)));
               final stageDuration = 1 + random.nextInt(10);
               return {
                 'prs_id': 'stage_$i',
-                'type': [
-                  'milestone',
-                  'cycle',
-                  'sequence',
-                  'stage'
-                ][random.nextInt(4)],
+                'type': ['milestone', 'cycle', 'sequence', 'stage'][random.nextInt(4)],
                 'sdate': _formatDate(stageStart),
-                'edate':
-                    _formatDate(stageStart.add(Duration(days: stageDuration))),
+                'edate': _formatDate(stageStart.add(Duration(days: stageDuration))),
                 'pcolor': '#FF0000',
                 'elm_filtered': <String>[],
               };
@@ -119,8 +104,7 @@ void main() {
 
           // Property: The cached result should be identical to the first result
           expect(identical(firstResult, secondResult), isTrue,
-              reason:
-                  'Iteration $iteration: Second call should return the exact same cached list instance');
+              reason: 'Iteration $iteration: Second call should return the exact same cached list instance');
 
           // Verify the results are equal in content as well
           expect(firstResult.length, equals(secondResult.length),
@@ -144,8 +128,7 @@ void main() {
             5,
             (i) => {
               'pre_id': 'elem_$i',
-              'date': _formatDate(
-                  startDate.add(Duration(days: random.nextInt(dayCount)))),
+              'date': _formatDate(startDate.add(Duration(days: random.nextInt(dayCount)))),
               'nat': 'activity',
               'status': 'pending',
             },
@@ -172,8 +155,7 @@ void main() {
             ...elements,
             {
               'pre_id': 'elem_new',
-              'date': _formatDate(
-                  startDate.add(Duration(days: random.nextInt(dayCount)))),
+              'date': _formatDate(startDate.add(Duration(days: random.nextInt(dayCount)))),
               'nat': 'task',
               'status': 'inprogress',
             }
@@ -192,8 +174,7 @@ void main() {
 
           // Property: The results should be different instances (cache invalidated)
           expect(identical(firstResult, secondResult), isFalse,
-              reason:
-                  'Iteration $iteration: Changed data should invalidate cache and return new instance');
+              reason: 'Iteration $iteration: Changed data should invalidate cache and return new instance');
 
           // Clear cache for next iteration
           dataManager.clearCache();
@@ -213,14 +194,11 @@ void main() {
             10,
             (i) => {
               'pre_id': 'elem_$i',
-              'date': _formatDate(
-                  startDate.add(Duration(days: random.nextInt(dayCount)))),
+              'date': _formatDate(startDate.add(Duration(days: random.nextInt(dayCount)))),
               'nat': 'activity',
               'status': 'pending',
-              'sdate': _formatDate(
-                  startDate.add(Duration(days: random.nextInt(dayCount ~/ 2)))),
-              'edate': _formatDate(startDate
-                  .add(Duration(days: dayCount ~/ 2 + random.nextInt(10)))),
+              'sdate': _formatDate(startDate.add(Duration(days: random.nextInt(dayCount ~/ 2)))),
+              'edate': _formatDate(startDate.add(Duration(days: dayCount ~/ 2 + random.nextInt(10)))),
               'type': 'activity',
             },
           );
@@ -228,8 +206,7 @@ void main() {
           final stages = List.generate(
             3,
             (i) {
-              final stageStart =
-                  startDate.add(Duration(days: random.nextInt(dayCount ~/ 2)));
+              final stageStart = startDate.add(Duration(days: random.nextInt(dayCount ~/ 2)));
               return {
                 'prs_id': 'stage_$i',
                 'type': 'stage',
@@ -272,8 +249,7 @@ void main() {
 
           // Property: The cached result should be identical
           expect(identical(firstStageRows, secondStageRows), isTrue,
-              reason:
-                  'Iteration $iteration: Second call should return the exact same cached stage rows instance');
+              reason: 'Iteration $iteration: Second call should return the exact same cached stage rows instance');
 
           // Clear cache for next iteration
           dataManager.clearCache();
@@ -293,8 +269,7 @@ void main() {
             5,
             (i) => {
               'pre_id': 'elem_$i',
-              'date': _formatDate(
-                  startDate.add(Duration(days: random.nextInt(dayCount)))),
+              'date': _formatDate(startDate.add(Duration(days: random.nextInt(dayCount)))),
               'nat': 'activity',
               'status': 'pending',
               'sdate': _formatDate(startDate),
@@ -332,13 +307,11 @@ void main() {
 
           // Property: After clearCache, results should be different instances
           expect(identical(firstResult, secondResult), isFalse,
-              reason:
-                  'Iteration $iteration: clearCache should force recomputation, returning new instance');
+              reason: 'Iteration $iteration: clearCache should force recomputation, returning new instance');
 
           // But content should be equal
           expect(firstResult.length, equals(secondResult.length),
-              reason:
-                  'Iteration $iteration: Content should be equal even though instances differ');
+              reason: 'Iteration $iteration: Content should be equal even though instances differ');
         }
       });
 
@@ -370,11 +343,9 @@ void main() {
         );
 
         // Property: Should still cache and return same instance
-        expect(identical(firstResult, secondResult), isTrue,
-            reason: 'Empty data should still be cached correctly');
+        expect(identical(firstResult, secondResult), isTrue, reason: 'Empty data should still be cached correctly');
 
-        expect(firstResult.length, equals(6),
-            reason: 'Should create 6 days (inclusive of start and end)');
+        expect(firstResult.length, equals(6), reason: 'Should create 6 days (inclusive of start and end)');
       });
     });
   });

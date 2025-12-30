@@ -27,13 +27,11 @@ void main() {
             if (goBelow) {
               // Generate value below minimum
               final belowMin = constraint.min! - random.nextDouble() * 100 - 1;
-              config[paramName] =
-                  constraint.type == 'int' ? belowMin.toInt() : belowMin;
+              config[paramName] = constraint.type == 'int' ? belowMin.toInt() : belowMin;
             } else {
               // Generate value above maximum
               final aboveMax = constraint.max! + random.nextDouble() * 100 + 1;
-              config[paramName] =
-                  constraint.type == 'int' ? aboveMax.toInt() : aboveMax;
+              config[paramName] = constraint.type == 'int' ? aboveMax.toInt() : aboveMax;
             }
           }
         }
@@ -52,8 +50,7 @@ void main() {
         }
 
         // Assert: errors should be reported for out-of-range values
-        expect(result.errors.isNotEmpty, isTrue,
-            reason: 'Out-of-range values should generate errors');
+        expect(result.errors.isNotEmpty, isTrue, reason: 'Out-of-range values should generate errors');
       }
     });
 
@@ -97,8 +94,7 @@ void main() {
         }
 
         // Assert: warnings should be logged for type mismatches
-        expect(result.warnings.isNotEmpty, isTrue,
-            reason: 'Type mismatches should generate warnings');
+        expect(result.warnings.isNotEmpty, isTrue, reason: 'Type mismatches should generate warnings');
       }
     });
 
@@ -127,10 +123,8 @@ void main() {
             if (random.nextBool()) {
               // Out of range
               if (constraint.max != null) {
-                final outOfRange =
-                    constraint.max! + random.nextDouble() * 100 + 1;
-                config[paramName] =
-                    constraint.type == 'int' ? outOfRange.toInt() : outOfRange;
+                final outOfRange = constraint.max! + random.nextDouble() * 100 + 1;
+                config[paramName] = constraint.type == 'int' ? outOfRange.toInt() : outOfRange;
               }
             } else {
               // Wrong type
@@ -142,8 +136,7 @@ void main() {
             if (constraint.min != null && constraint.max != null) {
               final range = constraint.max! - constraint.min!;
               final validValue = constraint.min! + random.nextDouble() * range;
-              final value =
-                  constraint.type == 'int' ? validValue.toInt() : validValue;
+              final value = constraint.type == 'int' ? validValue.toInt() : validValue;
               config[paramName] = value;
               validParams[paramName] = value;
             }
@@ -196,8 +189,7 @@ void main() {
           // Create out-of-range value (which generates errors, not warnings)
           if (constraint.max != null) {
             final outOfRange = constraint.max! + random.nextDouble() * 100 + 1;
-            config[paramName] =
-                constraint.type == 'int' ? outOfRange.toInt() : outOfRange;
+            config[paramName] = constraint.type == 'int' ? outOfRange.toInt() : outOfRange;
             invalidParamCount.add(paramName);
           }
         }
@@ -214,8 +206,7 @@ void main() {
         );
 
         // Assert: each invalid parameter should have a corresponding error
-        final errorParamNames =
-            result.errors.map((e) => e.parameterName).toSet();
+        final errorParamNames = result.errors.map((e) => e.parameterName).toSet();
         expect(
           errorParamNames,
           equals(invalidParamCount),
@@ -227,9 +218,7 @@ void main() {
     // Feature: external-configuration-system, Property 10: Error Message Completeness
     // For any validation failure, error message should contain parameter name, value, and expected range/type
     // Validates: Requirements 3.5, 9.4
-    test(
-        'error messages contain parameter name, value, and expected range/type',
-        () {
+    test('error messages contain parameter name, value, and expected range/type', () {
       final random = Random(42);
       final constraints = ParameterConstraints.all;
 
@@ -248,13 +237,11 @@ void main() {
           if (failureType == 0 && constraint.max != null) {
             // Out of range (above max)
             final outOfRange = constraint.max! + random.nextDouble() * 100 + 1;
-            config[paramName] =
-                constraint.type == 'int' ? outOfRange.toInt() : outOfRange;
+            config[paramName] = constraint.type == 'int' ? outOfRange.toInt() : outOfRange;
           } else if (failureType == 1 && constraint.min != null) {
             // Out of range (below min)
             final outOfRange = constraint.min! - random.nextDouble() * 100 - 1;
-            config[paramName] =
-                constraint.type == 'int' ? outOfRange.toInt() : outOfRange;
+            config[paramName] = constraint.type == 'int' ? outOfRange.toInt() : outOfRange;
           } else if (failureType == 2) {
             // Wrong type
             config[paramName] = 'invalid_type_$i';

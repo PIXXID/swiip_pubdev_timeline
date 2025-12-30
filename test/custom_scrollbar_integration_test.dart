@@ -16,8 +16,7 @@ void main() {
       TimelineConfigurationManager.reset();
     });
 
-    testWidgets('Scrollbar widget exists in widget tree',
-        (WidgetTester tester) async {
+    testWidgets('Scrollbar widget exists in widget tree', (WidgetTester tester) async {
       // Requirements: 3.3
 
       const numDays = 100;
@@ -30,13 +29,11 @@ void main() {
         return {
           'id': 'elem_$index',
           'name': 'Test Element $index',
-          'date':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'date': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'pre_id': 'pre_$index',
           'nat': 'activity',
           'status': 'pending',
-          'sdate':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'sdate': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'edate':
               '${date.add(const Duration(days: 1)).year}-${date.add(const Duration(days: 1)).month.toString().padLeft(2, '0')}-${date.add(const Duration(days: 1)).day.toString().padLeft(2, '0')}',
           'stage_id': 'stage${index % 10}', // Multiple stages
@@ -57,10 +54,7 @@ void main() {
               '${startDate.year}-${startDate.month.toString().padLeft(2, '0')}-${startDate.day.toString().padLeft(2, '0')}',
           'edate':
               '${endDate.year}-${endDate.month.toString().padLeft(2, '0')}-${endDate.day.toString().padLeft(2, '0')}',
-          'elm_filtered': elements
-              .where((e) => e['stage_id'] == 'stage$index')
-              .map((e) => e['pre_id'])
-              .toList(),
+          'elm_filtered': elements.where((e) => e['stage_id'] == 'stage$index').map((e) => e['pre_id']).toList(),
         };
       });
 
@@ -111,8 +105,7 @@ void main() {
       );
 
       // Verify that Positioned widgets exist (scrollbar is one of them)
-      expect(positionedFinder, findsWidgets,
-          reason: 'Scrollbar should be wrapped in a Positioned widget');
+      expect(positionedFinder, findsWidgets, reason: 'Scrollbar should be wrapped in a Positioned widget');
 
       // Find Container widgets that could be the scrollbar
       final containerFinder = find.descendant(
@@ -121,12 +114,10 @@ void main() {
       );
 
       // Verify that Container widgets exist (scrollbar is rendered as a Container)
-      expect(containerFinder, findsWidgets,
-          reason: 'Scrollbar should be rendered as a Container widget');
+      expect(containerFinder, findsWidgets, reason: 'Scrollbar should be rendered as a Container widget');
     });
 
-    testWidgets('Scrollbar position updates with vertical scroll',
-        (WidgetTester tester) async {
+    testWidgets('Scrollbar position updates with vertical scroll', (WidgetTester tester) async {
       // Requirements: 3.3
 
       const numDays = 100;
@@ -139,13 +130,11 @@ void main() {
         return {
           'id': 'elem_$index',
           'name': 'Test Element $index',
-          'date':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'date': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'pre_id': 'pre_$index',
           'nat': 'activity',
           'status': 'pending',
-          'sdate':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'sdate': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'edate':
               '${date.add(const Duration(days: 1)).year}-${date.add(const Duration(days: 1)).month.toString().padLeft(2, '0')}-${date.add(const Duration(days: 1)).day.toString().padLeft(2, '0')}',
           'stage_id': 'stage${index % 20}', // 20 stages
@@ -166,10 +155,7 @@ void main() {
               '${startDate.year}-${startDate.month.toString().padLeft(2, '0')}-${startDate.day.toString().padLeft(2, '0')}',
           'edate':
               '${endDate.year}-${endDate.month.toString().padLeft(2, '0')}-${endDate.day.toString().padLeft(2, '0')}',
-          'elm_filtered': elements
-              .where((e) => e['stage_id'] == 'stage$index')
-              .map((e) => e['pre_id'])
-              .toList(),
+          'elm_filtered': elements.where((e) => e['stage_id'] == 'stage$index').map((e) => e['pre_id']).toList(),
         };
       });
 
@@ -219,26 +205,22 @@ void main() {
       );
 
       // Verify vertical scrollable exists
-      expect(verticalScrollableFinder, findsWidgets,
-          reason: 'Vertical scroll view should exist');
+      expect(verticalScrollableFinder, findsWidgets, reason: 'Vertical scroll view should exist');
 
       // Simulate vertical scroll by dragging
       if (verticalScrollableFinder.evaluate().length > 1) {
         // Get the second SingleChildScrollView (vertical one)
-        await tester.drag(
-            verticalScrollableFinder.at(1), const Offset(0, -100));
+        await tester.drag(verticalScrollableFinder.at(1), const Offset(0, -100));
         await tester.pump();
         await tester.pump(const Duration(milliseconds: 100));
       }
 
       // The scrollbar position should update automatically through the listener
       // We verify this by checking that the widget tree rebuilds without errors
-      expect(timelineFinder, findsOneWidget,
-          reason: 'Scrollbar should update position with vertical scroll');
+      expect(timelineFinder, findsOneWidget, reason: 'Scrollbar should update position with vertical scroll');
     });
 
-    testWidgets('Scrollbar height calculated correctly',
-        (WidgetTester tester) async {
+    testWidgets('Scrollbar height calculated correctly', (WidgetTester tester) async {
       // Requirements: 3.3
 
       const numDays = 100;
@@ -251,13 +233,11 @@ void main() {
         return {
           'id': 'elem_$index',
           'name': 'Test Element $index',
-          'date':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'date': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'pre_id': 'pre_$index',
           'nat': 'activity',
           'status': 'pending',
-          'sdate':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'sdate': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'edate':
               '${date.add(const Duration(days: 1)).year}-${date.add(const Duration(days: 1)).month.toString().padLeft(2, '0')}-${date.add(const Duration(days: 1)).day.toString().padLeft(2, '0')}',
           'stage_id': 'stage${index % 15}', // 15 stages
@@ -277,10 +257,7 @@ void main() {
               '${startDate.year}-${startDate.month.toString().padLeft(2, '0')}-${startDate.day.toString().padLeft(2, '0')}',
           'edate':
               '${endDate.year}-${endDate.month.toString().padLeft(2, '0')}-${endDate.day.toString().padLeft(2, '0')}',
-          'elm_filtered': elements
-              .where((e) => e['stage_id'] == 'stage$index')
-              .map((e) => e['pre_id'])
-              .toList(),
+          'elm_filtered': elements.where((e) => e['stage_id'] == 'stage$index').map((e) => e['pre_id']).toList(),
         };
       });
 
@@ -330,22 +307,18 @@ void main() {
       final rowHeight = timelineState.rowHeight as double;
 
       // Verify that stages exist (needed for scrollbar calculation)
-      expect(stagesRows, isNotEmpty,
-          reason: 'Stages should exist for scrollbar calculation');
+      expect(stagesRows, isNotEmpty, reason: 'Stages should exist for scrollbar calculation');
 
       // Verify row height is positive
-      expect(rowHeight, greaterThan(0),
-          reason: 'Row height should be positive for scrollbar calculation');
+      expect(rowHeight, greaterThan(0), reason: 'Row height should be positive for scrollbar calculation');
 
       // The scrollbar height is calculated as:
       // (viewportHeight * viewportHeight / totalContentHeight).clamp(20.0, viewportHeight)
       // We verify this by checking that the timeline renders without errors
-      expect(timelineFinder, findsOneWidget,
-          reason: 'Scrollbar height should be calculated correctly');
+      expect(timelineFinder, findsOneWidget, reason: 'Scrollbar height should be calculated correctly');
     });
 
-    testWidgets('Scrollbar updates dynamically during vertical scrolling',
-        (WidgetTester tester) async {
+    testWidgets('Scrollbar updates dynamically during vertical scrolling', (WidgetTester tester) async {
       // Requirements: 3.3
 
       const numDays = 100;
@@ -358,13 +331,11 @@ void main() {
         return {
           'id': 'elem_$index',
           'name': 'Test Element $index',
-          'date':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'date': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'pre_id': 'pre_$index',
           'nat': 'activity',
           'status': 'pending',
-          'sdate':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'sdate': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'edate':
               '${date.add(const Duration(days: 1)).year}-${date.add(const Duration(days: 1)).month.toString().padLeft(2, '0')}-${date.add(const Duration(days: 1)).day.toString().padLeft(2, '0')}',
           'stage_id': 'stage${index % 25}', // 25 stages
@@ -384,10 +355,7 @@ void main() {
               '${startDate.year}-${startDate.month.toString().padLeft(2, '0')}-${startDate.day.toString().padLeft(2, '0')}',
           'edate':
               '${endDate.year}-${endDate.month.toString().padLeft(2, '0')}-${endDate.day.toString().padLeft(2, '0')}',
-          'elm_filtered': elements
-              .where((e) => e['stage_id'] == 'stage$index')
-              .map((e) => e['pre_id'])
-              .toList(),
+          'elm_filtered': elements.where((e) => e['stage_id'] == 'stage$index').map((e) => e['pre_id']).toList(),
         };
       });
 
@@ -440,21 +408,18 @@ void main() {
       if (verticalScrollableFinder.evaluate().length > 1) {
         for (int i = 0; i < 5; i++) {
           // Drag vertically (negative Y = scroll down)
-          await tester.drag(
-              verticalScrollableFinder.at(1), Offset(0, -50.0 * (i + 1)));
+          await tester.drag(verticalScrollableFinder.at(1), Offset(0, -50.0 * (i + 1)));
           await tester.pump();
           await tester.pump(const Duration(milliseconds: 50));
 
           // Verify timeline still exists (scrollbar updates without errors)
           expect(timelineFinder, findsOneWidget,
-              reason:
-                  'Scrollbar should update dynamically during vertical scrolling');
+              reason: 'Scrollbar should update dynamically during vertical scrolling');
         }
       } else {
         // If we can't find the vertical scrollable, just verify the timeline exists
         expect(timelineFinder, findsOneWidget,
-            reason:
-                'Timeline should exist even if vertical scroll is not available');
+            reason: 'Timeline should exist even if vertical scroll is not available');
       }
     });
   });

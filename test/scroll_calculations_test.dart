@@ -156,8 +156,7 @@ void main() {
       return stagesRows.isNotEmpty ? stagesRows.length - 1 : -1;
     }
 
-    test('calcule correctement l\'offset vertical pour scroll vers la droite',
-        () {
+    test('calcule correctement l\'offset vertical pour scroll vers la droite', () {
       // Arrange
       const centerDateIndex = 50;
       final stagesRows = [
@@ -189,8 +188,7 @@ void main() {
       expect(result, equals(0.0));
     });
 
-    test('calcule correctement l\'offset vertical pour scroll vers la gauche',
-        () {
+    test('calcule correctement l\'offset vertical pour scroll vers la gauche', () {
       // Arrange
       const centerDateIndex = 50;
       final stagesRows = [
@@ -390,9 +388,7 @@ void main() {
       expect(result, isFalse);
     });
 
-    test(
-        'retourne true quand scrollingLeft=true et userScrollOffset < targetVerticalOffset',
-        () {
+    test('retourne true quand scrollingLeft=true et userScrollOffset < targetVerticalOffset', () {
       // Arrange - Scroll vers la gauche
       const userScrollOffset = 100.0;
       const targetVerticalOffset = 200.0;
@@ -413,9 +409,7 @@ void main() {
       expect(result, isTrue);
     });
 
-    test(
-        'retourne false quand scrollingLeft=true et userScrollOffset >= targetVerticalOffset',
-        () {
+    test('retourne false quand scrollingLeft=true et userScrollOffset >= targetVerticalOffset', () {
       // Arrange - Scroll vers la gauche
       const userScrollOffset = 200.0;
       const targetVerticalOffset = 100.0;
@@ -436,9 +430,7 @@ void main() {
       expect(result, isFalse);
     });
 
-    test(
-        'retourne true quand scrollingLeft=false et userScrollOffset > targetVerticalOffset',
-        () {
+    test('retourne true quand scrollingLeft=false et userScrollOffset > targetVerticalOffset', () {
       // Arrange - Scroll vers la droite
       const userScrollOffset = 200.0;
       const targetVerticalOffset = 100.0;
@@ -459,9 +451,7 @@ void main() {
       expect(result, isTrue);
     });
 
-    test(
-        'retourne false quand scrollingLeft=false et userScrollOffset <= targetVerticalOffset',
-        () {
+    test('retourne false quand scrollingLeft=false et userScrollOffset <= targetVerticalOffset', () {
       // Arrange - Scroll vers la droite
       const userScrollOffset = 100.0;
       const targetVerticalOffset = 200.0;

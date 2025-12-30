@@ -11,8 +11,7 @@ class TimelineItem extends StatefulWidget {
   final double dayWidth;
   final double dayMargin;
   final double height;
-  final Function(String, double?, List<String>?, List<dynamic>, dynamic)?
-      openDayDetail;
+  final Function(String, double?, List<String>?, List<dynamic>, dynamic)? openDayDetail;
 
   const TimelineItem(
       {super.key,
@@ -31,8 +30,7 @@ class TimelineItem extends StatefulWidget {
   State<TimelineItem> createState() => _BouncingTimelineItem();
 }
 
-class _BouncingTimelineItem extends State<TimelineItem>
-    with SingleTickerProviderStateMixin {
+class _BouncingTimelineItem extends State<TimelineItem> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     dynamic day = widget.days[widget.index];
@@ -51,16 +49,13 @@ class _BouncingTimelineItem extends State<TimelineItem>
     double heightCapeff = 0, heightBuseff = 0, heightCompeff = 0;
     bool dayIsCompleted = false;
     if (day['capeff'] > 0) {
-      heightCapeff =
-          (heightLmax * day['capeff']) / ((day['lmax'] > 0) ? day['lmax'] : 1);
+      heightCapeff = (heightLmax * day['capeff']) / ((day['lmax'] > 0) ? day['lmax'] : 1);
     }
     if (day['buseff'] > 0) {
-      heightBuseff =
-          (heightLmax * day['buseff']) / ((day['lmax'] > 0) ? day['lmax'] : 1);
+      heightBuseff = (heightLmax * day['buseff']) / ((day['lmax'] > 0) ? day['lmax'] : 1);
     }
     if (day['compeff'] > 0) {
-      heightCompeff =
-          (heightLmax * day['compeff']) / ((day['lmax'] > 0) ? day['lmax'] : 1);
+      heightCompeff = (heightLmax * day['compeff']) / ((day['lmax'] > 0) ? day['lmax'] : 1);
       if (heightCompeff >= heightLmax) {
         heightCompeff = heightLmax;
         dayIsCompleted = true;
@@ -78,26 +73,19 @@ class _BouncingTimelineItem extends State<TimelineItem>
     int idxCenter = widget.centerItemIndex - widget.index;
     if (idxCenter == 0) {
       dayTextColor = colors['primaryText']!;
-    } else if ((idxCenter >= 1 && idxCenter < 4) ||
-        (idxCenter <= -1 && idxCenter > -4)) {
+    } else if ((idxCenter >= 1 && idxCenter < 4) || (idxCenter <= -1 && idxCenter > -4)) {
       dayTextColor = colors['secondaryText']!;
-    } else if ((idxCenter >= 4 && idxCenter < 6) ||
-        (idxCenter <= -4 && idxCenter > -6)) {
+    } else if ((idxCenter >= 4 && idxCenter < 6) || (idxCenter <= -4 && idxCenter > -6)) {
       dayTextColor = colors['accent1']!;
     } else {
       dayTextColor = Colors.transparent;
     }
 
     // Border radius
-    BorderRadius borderRadius = const BorderRadius.only(
-        topLeft: Radius.circular(4), topRight: Radius.circular(4));
+    BorderRadius borderRadius = const BorderRadius.only(topLeft: Radius.circular(4), topRight: Radius.circular(4));
 
     // Indicateurs de capacité et charges
-    dynamic dayIndicators = {
-      'capacity': day['capeff'],
-      'busy': day['buseff'],
-      'completed': day['compeff']
-    };
+    dynamic dayIndicators = {'capacity': day['capeff'], 'busy': day['buseff'], 'completed': day['compeff']};
 
     return Align(
         alignment: Alignment.bottomCenter,
@@ -113,19 +101,13 @@ class _BouncingTimelineItem extends State<TimelineItem>
               // Lite des élements présent sur la journée
               var elementsDay = widget.elements
                   .where(
-                    (e) =>
-                        e['date'] ==
-                        DateFormat('yyyy-MM-dd').format(day['date']),
+                    (e) => e['date'] == DateFormat('yyyy-MM-dd').format(day['date']),
                   )
                   .toList();
 
               // Callback de la fonction d'ouverture du jour
-              widget.openDayDetail?.call(
-                  DateFormat('yyyy-MM-dd').format(date),
-                  dayProgress,
-                  (day['preIds'] as List<dynamic>).cast<String>(),
-                  elementsDay,
-                  dayIndicators);
+              widget.openDayDetail?.call(DateFormat('yyyy-MM-dd').format(date), dayProgress,
+                  (day['preIds'] as List<dynamic>).cast<String>(), elementsDay, dayIndicators);
             },
             child: SizedBox(
                 width: widget.dayWidth - margin,
@@ -149,9 +131,7 @@ class _BouncingTimelineItem extends State<TimelineItem>
                             size: 12,
                             color: day['alertLevel'] == 1
                                 ? colors['warning']
-                                : (day['alertLevel'] == 2
-                                    ? colors['error']
-                                    : Colors.transparent),
+                                : (day['alertLevel'] == 2 ? colors['error'] : Colors.transparent),
                           ))
                     else
                       Container(height: 18),
@@ -165,19 +145,13 @@ class _BouncingTimelineItem extends State<TimelineItem>
                               left: 0,
                               right: 0,
                               child: Container(
-                                  margin: EdgeInsets.only(
-                                      left: margin / 2,
-                                      right: margin / 2,
-                                      bottom: margin / 3),
+                                  margin: EdgeInsets.only(left: margin / 2, right: margin / 2, bottom: margin / 3),
                                   width: widget.dayWidth - margin - 15,
-                                  height: (heightCapeff > 0)
-                                      ? heightCapeff - 2
-                                      : heightLmax,
+                                  height: (heightCapeff > 0) ? heightCapeff - 2 : heightLmax,
                                   decoration: BoxDecoration(
                                     border: Border(
                                       top: BorderSide(
-                                        color: (widget.index ==
-                                                widget.centerItemIndex)
+                                        color: (widget.index == widget.centerItemIndex)
                                             ? colors['secondaryText']!
                                             : const Color(0x00000000),
                                         width: 1,
@@ -187,13 +161,8 @@ class _BouncingTimelineItem extends State<TimelineItem>
                                   child: Center(
                                       child:
                                           // Icon soleil si aucune capacité
-                                          (heightCapeff == 0 &&
-                                                  heightBuseff == 0 &&
-                                                  heightCompeff == 0)
-                                              ? Icon(Icons.sunny,
-                                                  color: colors[
-                                                      'secondaryBackground'],
-                                                  size: 14)
+                                          (heightCapeff == 0 && heightBuseff == 0 && heightCompeff == 0)
+                                              ? Icon(Icons.sunny, color: colors['secondaryBackground'], size: 14)
                                               : null))),
                           // Barre de travail affecté (busy)
                           Positioned(
@@ -201,10 +170,7 @@ class _BouncingTimelineItem extends State<TimelineItem>
                             left: 0,
                             right: 0,
                             child: Container(
-                              margin: EdgeInsets.only(
-                                  left: margin / 2,
-                                  right: margin / 2,
-                                  bottom: margin / 3),
+                              margin: EdgeInsets.only(left: margin / 2, right: margin / 2, bottom: margin / 3),
                               width: widget.dayWidth - margin - 16,
                               // On affiche 1 pixel pour marquer une journée travaillée
                               height: (heightBuseff <= 0) ? 0.5 : heightBuseff,
@@ -221,24 +187,16 @@ class _BouncingTimelineItem extends State<TimelineItem>
                               right: 0,
                               child: AnimatedContainer(
                                   duration: const Duration(milliseconds: 400),
-                                  height: (dayTextColor != Colors.transparent)
-                                      ? heightCompeff
-                                      : 0,
+                                  height: (dayTextColor != Colors.transparent) ? heightCompeff : 0,
                                   child: Container(
-                                      margin: EdgeInsets.only(
-                                          left: margin / 2,
-                                          right: margin / 2,
-                                          bottom: margin / 3),
+                                      margin: EdgeInsets.only(left: margin / 2, right: margin / 2, bottom: margin / 3),
                                       width: widget.dayWidth - margin - 16,
                                       decoration: BoxDecoration(
                                         borderRadius: borderRadius,
                                         color: completeColor,
                                       ),
                                       child: (dayIsCompleted)
-                                          ? Center(
-                                              child: Icon(Icons.check,
-                                                  color: colors['info'],
-                                                  size: 16))
+                                          ? Center(child: Icon(Icons.check, color: colors['info'], size: 16))
                                           : null)))
                         ])),
                   ],

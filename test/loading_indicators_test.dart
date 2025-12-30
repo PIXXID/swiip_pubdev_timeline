@@ -18,8 +18,7 @@ import 'package:swiip_pubdev_timeline/src/timeline/loading_indicator_overlay.dar
 /// a loading indicator should be displayed to the user.
 void main() {
   group('Property 13: Loading Indicators', () {
-    testWidgets('should not display indicator for operations under threshold',
-        (WidgetTester tester) async {
+    testWidgets('should not display indicator for operations under threshold', (WidgetTester tester) async {
       // Feature: timeline-performance-optimization, Property 13: Loading Indicators
 
       final isLoadingNotifier = ValueNotifier<bool>(false);
@@ -64,8 +63,7 @@ void main() {
       isLoadingNotifier.dispose();
     });
 
-    testWidgets('should display indicator for operations exceeding threshold',
-        (WidgetTester tester) async {
+    testWidgets('should display indicator for operations exceeding threshold', (WidgetTester tester) async {
       // Feature: timeline-performance-optimization, Property 13: Loading Indicators
 
       final isLoadingNotifier = ValueNotifier<bool>(false);
@@ -107,8 +105,7 @@ void main() {
       isLoadingNotifier.dispose();
     });
 
-    testWidgets('should handle rapid loading state changes correctly',
-        (WidgetTester tester) async {
+    testWidgets('should handle rapid loading state changes correctly', (WidgetTester tester) async {
       // Feature: timeline-performance-optimization, Property 13: Loading Indicators
 
       final isLoadingNotifier = ValueNotifier<bool>(false);
@@ -140,14 +137,12 @@ void main() {
 
       // Indicator should not have appeared for any of the quick operations
       expect(find.byType(CircularProgressIndicator), findsNothing,
-          reason:
-              'Indicator should not appear for rapid quick operations under threshold');
+          reason: 'Indicator should not appear for rapid quick operations under threshold');
 
       isLoadingNotifier.dispose();
     });
 
-    testWidgets('should cancel threshold timer when loading stops early',
-        (WidgetTester tester) async {
+    testWidgets('should cancel threshold timer when loading stops early', (WidgetTester tester) async {
       // Feature: timeline-performance-optimization, Property 13: Loading Indicators
 
       final isLoadingNotifier = ValueNotifier<bool>(false);
@@ -180,14 +175,12 @@ void main() {
 
       // Indicator should not appear (timer was cancelled)
       expect(find.byType(CircularProgressIndicator), findsNothing,
-          reason:
-              'Indicator should not appear if loading stops before threshold');
+          reason: 'Indicator should not appear if loading stops before threshold');
 
       isLoadingNotifier.dispose();
     });
 
-    testWidgets('should use custom threshold duration',
-        (WidgetTester tester) async {
+    testWidgets('should use custom threshold duration', (WidgetTester tester) async {
       // Feature: timeline-performance-optimization, Property 13: Loading Indicators
 
       final isLoadingNotifier = ValueNotifier<bool>(false);
@@ -222,8 +215,7 @@ void main() {
       isLoadingNotifier.dispose();
     });
 
-    testWidgets('should properly dispose timer on widget disposal',
-        (WidgetTester tester) async {
+    testWidgets('should properly dispose timer on widget disposal', (WidgetTester tester) async {
       // Feature: timeline-performance-optimization, Property 13: Loading Indicators
 
       final isLoadingNotifier = ValueNotifier<bool>(false);
@@ -251,15 +243,12 @@ void main() {
       await tester.pump(const Duration(milliseconds: 300));
 
       // No errors should occur (timer was properly disposed)
-      expect(tester.takeException(), isNull,
-          reason:
-              'No exceptions should occur when disposing with active timer');
+      expect(tester.takeException(), isNull, reason: 'No exceptions should occur when disposing with active timer');
 
       isLoadingNotifier.dispose();
     });
 
-    test('should handle threshold timing correctly with direct timer test',
-        () async {
+    test('should handle threshold timing correctly with direct timer test', () async {
       // Feature: timeline-performance-optimization, Property 13: Loading Indicators
 
       // This test verifies the threshold mechanism directly using timers
@@ -288,9 +277,7 @@ void main() {
       await Future.delayed(const Duration(milliseconds: 150));
 
       // Indicator should not have been shown
-      expect(indicatorShown, isFalse,
-          reason:
-              'Indicator should not show if loading stops before threshold');
+      expect(indicatorShown, isFalse, reason: 'Indicator should not show if loading stops before threshold');
 
       // Test case 2: Loading exceeds threshold
       indicatorShown = false;
@@ -306,12 +293,10 @@ void main() {
       await Future.delayed(const Duration(milliseconds: 250));
 
       // Indicator should be shown
-      expect(indicatorShown, isTrue,
-          reason: 'Indicator should show if loading exceeds threshold');
+      expect(indicatorShown, isTrue, reason: 'Indicator should show if loading exceeds threshold');
     });
 
-    testWidgets('should display custom overlay and indicator colors',
-        (WidgetTester tester) async {
+    testWidgets('should display custom overlay and indicator colors', (WidgetTester tester) async {
       // Feature: timeline-performance-optimization, Property 13: Loading Indicators
 
       final isLoadingNotifier = ValueNotifier<bool>(false);
@@ -341,12 +326,9 @@ void main() {
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
 
       // Verify custom colors are applied
-      final progressIndicator = tester.widget<CircularProgressIndicator>(
-          find.byType(CircularProgressIndicator));
-      final valueColor =
-          progressIndicator.valueColor as AlwaysStoppedAnimation<Color>;
-      expect(valueColor.value, equals(customIndicatorColor),
-          reason: 'Custom indicator color should be applied');
+      final progressIndicator = tester.widget<CircularProgressIndicator>(find.byType(CircularProgressIndicator));
+      final valueColor = progressIndicator.valueColor as AlwaysStoppedAnimation<Color>;
+      expect(valueColor.value, equals(customIndicatorColor), reason: 'Custom indicator color should be applied');
 
       isLoadingNotifier.value = false;
       await tester.pump();

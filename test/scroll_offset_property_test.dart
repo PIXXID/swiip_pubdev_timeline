@@ -17,8 +17,7 @@ import 'package:flutter_test/flutter_test.dart';
 /// 3. Both controllers work independently
 void main() {
   group('Property 1: Scroll Position Retrieval', () {
-    testWidgets(
-        'For any scroll offset, horizontal controller position should match applied value',
+    testWidgets('For any scroll offset, horizontal controller position should match applied value',
         (WidgetTester tester) async {
       // Feature: native-scroll-only, Property 1: Scroll Position Retrieval
       // Validates: Requirements 2.1, 2.2
@@ -70,8 +69,7 @@ void main() {
           if (difference < 0.01) {
             passedTests++;
           } else {
-            debugPrint(
-                'Iteration $i: Offset mismatch - target=$targetOffset, actual=$actualOffset, diff=$difference');
+            debugPrint('Iteration $i: Offset mismatch - target=$targetOffset, actual=$actualOffset, diff=$difference');
           }
         } catch (e) {
           debugPrint('Iteration $i failed with targetOffset=$targetOffset: $e');
@@ -83,13 +81,11 @@ void main() {
 
       // Verify that all iterations passed
       expect(passedTests, equals(numIterations),
-          reason:
-              'Property test failed: $passedTests/$numIterations iterations passed. '
+          reason: 'Property test failed: $passedTests/$numIterations iterations passed. '
               'Expected horizontal ScrollController.offset to match applied scroll position.');
     });
 
-    testWidgets(
-        'For any scroll offset, vertical controller position should match applied value',
+    testWidgets('For any scroll offset, vertical controller position should match applied value',
         (WidgetTester tester) async {
       // Feature: native-scroll-only, Property 1: Scroll Position Retrieval
       // Validates: Requirements 2.1, 2.2
@@ -141,8 +137,7 @@ void main() {
           if (difference < 0.01) {
             passedTests++;
           } else {
-            debugPrint(
-                'Iteration $i: Offset mismatch - target=$targetOffset, actual=$actualOffset, diff=$difference');
+            debugPrint('Iteration $i: Offset mismatch - target=$targetOffset, actual=$actualOffset, diff=$difference');
           }
         } catch (e) {
           debugPrint('Iteration $i failed with targetOffset=$targetOffset: $e');
@@ -154,13 +149,11 @@ void main() {
 
       // Verify that all iterations passed
       expect(passedTests, equals(numIterations),
-          reason:
-              'Property test failed: $passedTests/$numIterations iterations passed. '
+          reason: 'Property test failed: $passedTests/$numIterations iterations passed. '
               'Expected vertical ScrollController.offset to match applied scroll position.');
     });
 
-    testWidgets('Horizontal and vertical controllers work independently',
-        (WidgetTester tester) async {
+    testWidgets('Horizontal and vertical controllers work independently', (WidgetTester tester) async {
       // Feature: native-scroll-only, Property 1: Scroll Position Retrieval
       // Validates: Requirements 2.1, 2.2
 
@@ -227,8 +220,7 @@ void main() {
                 'Iteration $i: Offset mismatch - horizontal: target=$targetHorizontal, actual=$actualHorizontal, diff=$horizontalDiff; vertical: target=$targetVertical, actual=$actualVertical, diff=$verticalDiff');
           }
         } catch (e) {
-          debugPrint(
-              'Iteration $i failed with targetHorizontal=$targetHorizontal, targetVertical=$targetVertical: $e');
+          debugPrint('Iteration $i failed with targetHorizontal=$targetHorizontal, targetVertical=$targetVertical: $e');
         }
       }
 
@@ -238,8 +230,7 @@ void main() {
 
       // Verify that all iterations passed
       expect(passedTests, equals(numIterations),
-          reason:
-              'Property test failed: $passedTests/$numIterations iterations passed. '
+          reason: 'Property test failed: $passedTests/$numIterations iterations passed. '
               'Expected horizontal and vertical ScrollControllers to work independently.');
     });
   });

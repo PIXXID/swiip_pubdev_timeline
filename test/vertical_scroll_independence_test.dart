@@ -15,8 +15,7 @@ void main() {
       TimelineConfigurationManager.reset();
     });
 
-    testWidgets('Subtask 5.1: Verify vertical scroll controller still works',
-        (WidgetTester tester) async {
+    testWidgets('Subtask 5.1: Verify vertical scroll controller still works', (WidgetTester tester) async {
       // Requirements: 3.1, 3.2, 3.4
       // This test verifies that:
       // - Vertical scroll listener still updates scrollbar position
@@ -35,13 +34,11 @@ void main() {
         return {
           'id': 'elem_$index',
           'name': 'Test Element $index',
-          'date':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'date': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'pre_id': 'pre_$index',
           'nat': 'activity',
           'status': 'pending',
-          'sdate':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'sdate': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'edate':
               '${date.add(const Duration(days: 1)).year}-${date.add(const Duration(days: 1)).month.toString().padLeft(2, '0')}-${date.add(const Duration(days: 1)).day.toString().padLeft(2, '0')}',
           'stage_id': 'stage$stageIndex',
@@ -61,10 +58,7 @@ void main() {
               '${startDate.year}-${startDate.month.toString().padLeft(2, '0')}-${startDate.day.toString().padLeft(2, '0')}',
           'edate':
               '${endDate.year}-${endDate.month.toString().padLeft(2, '0')}-${endDate.day.toString().padLeft(2, '0')}',
-          'elm_filtered': elements
-              .where((e) => e['stage_id'] == 'stage$index')
-              .map((e) => e['pre_id'])
-              .toList(),
+          'elm_filtered': elements.where((e) => e['stage_id'] == 'stage$index').map((e) => e['pre_id']).toList(),
         };
       });
 
@@ -116,16 +110,14 @@ void main() {
       );
 
       // Should find at least one SingleChildScrollView (horizontal and vertical)
-      expect(verticalScrollFinder, findsWidgets,
-          reason: 'Timeline should have scrollable views');
+      expect(verticalScrollFinder, findsWidgets, reason: 'Timeline should have scrollable views');
 
       // Test 2: Verify scrollbar widget exists (indicates vertical scroll is working)
       final scrollbarFinder = find.descendant(
         of: timelineFinder,
         matching: find.byType(Stack),
       );
-      expect(scrollbarFinder, findsWidgets,
-          reason: 'Scrollbar should be present for vertical scrolling');
+      expect(scrollbarFinder, findsWidgets, reason: 'Scrollbar should be present for vertical scrolling');
 
       // Test 3: Verify auto-scroll behavior is preserved by triggering horizontal scroll
       // This should trigger the auto-scroll mechanism
@@ -134,17 +126,14 @@ void main() {
       await tester.pump(const Duration(milliseconds: 300));
 
       // Verify the timeline rendered successfully after scroll
-      expect(timelineFinder, findsOneWidget,
-          reason: 'Timeline should remain functional after horizontal scroll');
+      expect(timelineFinder, findsOneWidget, reason: 'Timeline should remain functional after horizontal scroll');
 
       // Test 4: Verify manual vertical scroll can be performed
       // Find a widget we can drag vertically
       final timelineWidget = tester.widget(timelineFinder);
-      expect(timelineWidget, isNotNull,
-          reason: 'Timeline widget should be accessible');
+      expect(timelineWidget, isNotNull, reason: 'Timeline widget should be accessible');
 
-      debugPrint(
-          '✅ Subtask 5.1: Vertical scroll controller verification passed');
+      debugPrint('✅ Subtask 5.1: Vertical scroll controller verification passed');
     });
 
     testWidgets(
@@ -166,13 +155,11 @@ void main() {
         return {
           'id': 'elem_$index',
           'name': 'Test Element $index',
-          'date':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'date': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'pre_id': 'pre_$index',
           'nat': 'activity',
           'status': 'pending',
-          'sdate':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'sdate': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'edate':
               '${date.add(const Duration(days: 1)).year}-${date.add(const Duration(days: 1)).month.toString().padLeft(2, '0')}-${date.add(const Duration(days: 1)).day.toString().padLeft(2, '0')}',
           'stage_id': 'stage$stageIndex',
@@ -192,10 +179,7 @@ void main() {
               '${startDate.year}-${startDate.month.toString().padLeft(2, '0')}-${startDate.day.toString().padLeft(2, '0')}',
           'edate':
               '${endDate.year}-${endDate.month.toString().padLeft(2, '0')}-${endDate.day.toString().padLeft(2, '0')}',
-          'elm_filtered': elements
-              .where((e) => e['stage_id'] == 'stage$index')
-              .map((e) => e['pre_id'])
-              .toList(),
+          'elm_filtered': elements.where((e) => e['stage_id'] == 'stage$index').map((e) => e['pre_id']).toList(),
         };
       });
 
@@ -272,12 +256,10 @@ void main() {
 
       // Verify that all iterations passed
       expect(passedTests, equals(numIterations),
-          reason:
-              'Property test failed: $passedTests/$numIterations iterations passed. '
+          reason: 'Property test failed: $passedTests/$numIterations iterations passed. '
               'Expected vertical scroll position to update correctly for random offsets.');
 
-      debugPrint(
-          '✅ Property 2: Vertical Scroll Position Updates - All $numIterations iterations passed');
+      debugPrint('✅ Property 2: Vertical Scroll Position Updates - All $numIterations iterations passed');
     });
 
     testWidgets(
@@ -299,13 +281,11 @@ void main() {
         return {
           'id': 'elem_$index',
           'name': 'Test Element $index',
-          'date':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'date': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'pre_id': 'pre_$index',
           'nat': 'activity',
           'status': 'pending',
-          'sdate':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'sdate': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'edate':
               '${date.add(const Duration(days: 1)).year}-${date.add(const Duration(days: 1)).month.toString().padLeft(2, '0')}-${date.add(const Duration(days: 1)).day.toString().padLeft(2, '0')}',
           'stage_id': 'stage$stageIndex',
@@ -325,10 +305,7 @@ void main() {
               '${startDate.year}-${startDate.month.toString().padLeft(2, '0')}-${startDate.day.toString().padLeft(2, '0')}',
           'edate':
               '${endDate.year}-${endDate.month.toString().padLeft(2, '0')}-${endDate.day.toString().padLeft(2, '0')}',
-          'elm_filtered': elements
-              .where((e) => e['stage_id'] == 'stage$index')
-              .map((e) => e['pre_id'])
-              .toList(),
+          'elm_filtered': elements.where((e) => e['stage_id'] == 'stage$index').map((e) => e['pre_id']).toList(),
         };
       });
 
@@ -401,12 +378,10 @@ void main() {
 
       // Verify that all iterations passed
       expect(passedTests, equals(numIterations),
-          reason:
-              'Property test failed: $passedTests/$numIterations iterations passed. '
+          reason: 'Property test failed: $passedTests/$numIterations iterations passed. '
               'Expected auto-scroll to trigger correctly for horizontal scrolls.');
 
-      debugPrint(
-          '✅ Property 3: Auto-Scroll Behavior - All $numIterations iterations passed');
+      debugPrint('✅ Property 3: Auto-Scroll Behavior - All $numIterations iterations passed');
     });
 
     testWidgets(
@@ -428,13 +403,11 @@ void main() {
         return {
           'id': 'elem_$index',
           'name': 'Test Element $index',
-          'date':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'date': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'pre_id': 'pre_$index',
           'nat': 'activity',
           'status': 'pending',
-          'sdate':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'sdate': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'edate':
               '${date.add(const Duration(days: 1)).year}-${date.add(const Duration(days: 1)).month.toString().padLeft(2, '0')}-${date.add(const Duration(days: 1)).day.toString().padLeft(2, '0')}',
           'stage_id': 'stage$stageIndex',
@@ -454,10 +427,7 @@ void main() {
               '${startDate.year}-${startDate.month.toString().padLeft(2, '0')}-${startDate.day.toString().padLeft(2, '0')}',
           'edate':
               '${endDate.year}-${endDate.month.toString().padLeft(2, '0')}-${endDate.day.toString().padLeft(2, '0')}',
-          'elm_filtered': elements
-              .where((e) => e['stage_id'] == 'stage$index')
-              .map((e) => e['pre_id'])
-              .toList(),
+          'elm_filtered': elements.where((e) => e['stage_id'] == 'stage$index').map((e) => e['pre_id']).toList(),
         };
       });
 
@@ -538,12 +508,10 @@ void main() {
 
       // Verify that all iterations passed
       expect(passedTests, equals(numIterations),
-          reason:
-              'Property test failed: $passedTests/$numIterations iterations passed. '
+          reason: 'Property test failed: $passedTests/$numIterations iterations passed. '
               'Expected horizontal and vertical scrolls to work independently.');
 
-      debugPrint(
-          '✅ Property 8: Scroll Independence - All $numIterations iterations passed');
+      debugPrint('✅ Property 8: Scroll Independence - All $numIterations iterations passed');
     });
   });
 }

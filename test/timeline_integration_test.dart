@@ -17,9 +17,7 @@ void main() {
     });
 
     group('Timeline with File-Based Configuration', () {
-      test(
-          'Timeline configuration manager initializes with file-based configuration',
-          () {
+      test('Timeline configuration manager initializes with file-based configuration', () {
         // Requirements: 5.3, 5.4
 
         // Create a custom configuration that simulates file-based config
@@ -50,15 +48,11 @@ void main() {
         expect(config.rowHeight, equals(35.0));
         expect(config.rowMargin, equals(4.0));
         expect(config.bufferDays, equals(7));
-        expect(config.scrollThrottleDuration,
-            equals(const Duration(milliseconds: 20)));
-        expect(config.animationDuration,
-            equals(const Duration(milliseconds: 250)));
+        expect(config.scrollThrottleDuration, equals(const Duration(milliseconds: 20)));
+        expect(config.animationDuration, equals(const Duration(milliseconds: 250)));
       });
 
-      test(
-          'Timeline configuration with partial file configuration uses defaults for missing values',
-          () {
+      test('Timeline configuration with partial file configuration uses defaults for missing values', () {
         // Requirements: 5.3, 5.4
 
         // Create a partial configuration (only some parameters)
@@ -86,9 +80,7 @@ void main() {
     });
 
     group('Timeline Without Configuration (Backward Compatibility)', () {
-      test(
-          'Timeline configuration manager works without any configuration file (backward compatibility)',
-          () {
+      test('Timeline configuration manager works without any configuration file (backward compatibility)', () {
         // Requirements: 8.1, 8.2, 8.3, 8.5
 
         // Do NOT initialize configuration manager
@@ -108,14 +100,11 @@ void main() {
         expect(config.rowHeight, equals(30.0));
         expect(config.rowMargin, equals(3.0));
         expect(config.bufferDays, equals(5));
-        expect(config.scrollThrottleDuration,
-            equals(const Duration(milliseconds: 16)));
-        expect(config.animationDuration,
-            equals(const Duration(milliseconds: 220)));
+        expect(config.scrollThrottleDuration, equals(const Duration(milliseconds: 16)));
+        expect(config.animationDuration, equals(const Duration(milliseconds: 220)));
       });
 
-      testWidgets('Timeline widget initializes without pre-configured manager',
-          (WidgetTester tester) async {
+      testWidgets('Timeline widget initializes without pre-configured manager', (WidgetTester tester) async {
         // Requirements: 8.1, 8.3
 
         // Do NOT pre-initialize configuration manager
@@ -186,8 +175,7 @@ void main() {
         // Verify small preset values
         expect(config.dayWidth, equals(50.0));
         expect(config.bufferDays, equals(3));
-        expect(config.animationDuration,
-            equals(const Duration(milliseconds: 200)));
+        expect(config.animationDuration, equals(const Duration(milliseconds: 200)));
       });
 
       test('Medium dataset preset configuration values are applied', () {
@@ -209,8 +197,7 @@ void main() {
         // Verify medium preset values
         expect(config.dayWidth, equals(45.0));
         expect(config.bufferDays, equals(5));
-        expect(config.animationDuration,
-            equals(const Duration(milliseconds: 220)));
+        expect(config.animationDuration, equals(const Duration(milliseconds: 220)));
       });
 
       test('Large dataset preset configuration values are applied', () {
@@ -232,10 +219,8 @@ void main() {
         // Verify large preset values
         expect(config.dayWidth, equals(40.0));
         expect(config.bufferDays, equals(8));
-        expect(config.scrollThrottleDuration,
-            equals(const Duration(milliseconds: 20)));
-        expect(config.animationDuration,
-            equals(const Duration(milliseconds: 250)));
+        expect(config.scrollThrottleDuration, equals(const Duration(milliseconds: 20)));
+        expect(config.animationDuration, equals(const Duration(milliseconds: 250)));
       });
     });
 
@@ -287,12 +272,10 @@ void main() {
         // Verify defaults are used for invalid values
         expect(config.dayWidth, equals(45.0)); // Default
         expect(config.bufferDays, equals(5)); // Default
-        expect(config.scrollThrottleDuration,
-            equals(const Duration(milliseconds: 16))); // Default
+        expect(config.scrollThrottleDuration, equals(const Duration(milliseconds: 16))); // Default
       });
 
-      testWidgets('Timeline handles empty timeline data with configuration',
-          (WidgetTester tester) async {
+      testWidgets('Timeline handles empty timeline data with configuration', (WidgetTester tester) async {
         // Requirements: 8.1, 8.3
 
         TimelineConfigurationManager.initialize(fileConfig: {

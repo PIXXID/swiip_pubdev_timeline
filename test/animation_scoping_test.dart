@@ -12,11 +12,8 @@ void main() {
 
     // Run 100 iterations of property tests
     for (var iteration = 0; iteration < 100; iteration++) {
-      testWidgets(
-          'Property 12: Animations only active for widgets in viewport - iteration $iteration',
-          (tester) async {
-        final random =
-            Random(iteration); // Use iteration as seed for reproducibility
+      testWidgets('Property 12: Animations only active for widgets in viewport - iteration $iteration', (tester) async {
+        final random = Random(iteration); // Use iteration as seed for reproducibility
 
         // Generate random timeline data
         final totalDays = 20 + random.nextInt(30); // 20-50 days
@@ -197,8 +194,7 @@ void main() {
         final newVisibleStart = 10 + random.nextInt(5);
         final newVisibleEnd = newVisibleStart + 8;
         if (newVisibleEnd < totalDays) {
-          visibleRangeNotifier.value =
-              VisibleRange(newVisibleStart, newVisibleEnd);
+          visibleRangeNotifier.value = VisibleRange(newVisibleStart, newVisibleEnd);
           await tester.pump();
 
           // Change center index to trigger rebuild
@@ -216,9 +212,7 @@ void main() {
 
     // Run 100 iterations testing animation controller disposal
     for (var iteration = 0; iteration < 100; iteration++) {
-      testWidgets(
-          'Property 12: Animation controllers are properly disposed - iteration $iteration',
-          (tester) async {
+      testWidgets('Property 12: Animation controllers are properly disposed - iteration $iteration', (tester) async {
         final random = Random(iteration);
 
         final centerItemIndexNotifier = ValueNotifier<int>(0);
@@ -297,8 +291,7 @@ void main() {
 
     // Run 100 iterations testing animation stops when outside viewport
     for (var iteration = 0; iteration < 100; iteration++) {
-      testWidgets(
-          'Property 12: Animations stop when widget moves outside viewport - iteration $iteration',
+      testWidgets('Property 12: Animations stop when widget moves outside viewport - iteration $iteration',
           (tester) async {
         final random = Random(iteration);
 
@@ -515,8 +508,7 @@ void main() {
       expect(
         transform,
         findsAtLeastNWidgets(1),
-        reason:
-            'OptimizedTimelineItem must use Transform for efficient animations',
+        reason: 'OptimizedTimelineItem must use Transform for efficient animations',
       );
 
       centerItemIndexNotifier.dispose();
@@ -655,8 +647,7 @@ void main() {
       expect(
         repaintBoundaries,
         findsAtLeastNWidgets(2),
-        reason:
-            'OptimizedTimelineItem must have RepaintBoundary around animated content',
+        reason: 'OptimizedTimelineItem must have RepaintBoundary around animated content',
       );
 
       centerItemIndexNotifier.dispose();

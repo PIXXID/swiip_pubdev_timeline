@@ -32,8 +32,7 @@ class LoadingIndicatorOverlay extends StatefulWidget {
   });
 
   @override
-  State<LoadingIndicatorOverlay> createState() =>
-      _LoadingIndicatorOverlayState();
+  State<LoadingIndicatorOverlay> createState() => _LoadingIndicatorOverlayState();
 }
 
 class _LoadingIndicatorOverlayState extends State<LoadingIndicatorOverlay> {

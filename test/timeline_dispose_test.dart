@@ -14,8 +14,7 @@ import 'package:swiip_pubdev_timeline/src/timeline/timeline.dart';
 /// - ValueNotifiers are properly disposed
 void main() {
   group('Timeline Disposal', () {
-    testWidgets('should properly dispose scroll throttle timer',
-        (WidgetTester tester) async {
+    testWidgets('should properly dispose scroll throttle timer', (WidgetTester tester) async {
       // Feature: native-scroll-only, Requirement 6.5
 
       // Create a Timeline widget with minimal configuration
@@ -78,8 +77,7 @@ void main() {
       // No assertion needed - the test passes if no exceptions are thrown
     });
 
-    testWidgets('should properly dispose vertical scroll debounce timer',
-        (WidgetTester tester) async {
+    testWidgets('should properly dispose vertical scroll debounce timer', (WidgetTester tester) async {
       // Feature: native-scroll-only, Requirement 6.5
 
       // Create a Timeline widget with minimal configuration
@@ -142,8 +140,7 @@ void main() {
       // No assertion needed - the test passes if no exceptions are thrown
     });
 
-    testWidgets('should properly dispose ValueNotifiers',
-        (WidgetTester tester) async {
+    testWidgets('should properly dispose ValueNotifiers', (WidgetTester tester) async {
       // Feature: native-scroll-only, Requirement 6.5
 
       // Create a Timeline widget with minimal configuration
@@ -199,8 +196,7 @@ void main() {
       // No assertion needed - the test passes if no exceptions are thrown
     });
 
-    test('should verify timer cancellation prevents callback execution',
-        () async {
+    test('should verify timer cancellation prevents callback execution', () async {
       // Feature: native-scroll-only, Requirement 6.5
 
       // This test verifies that cancelling a timer prevents its callback from executing
@@ -227,8 +223,7 @@ void main() {
       await Future.delayed(const Duration(milliseconds: 50));
 
       // Verify callback was not executed after cancellation
-      expect(callbackExecuted, isFalse,
-          reason: 'Timer callback should not execute after cancellation');
+      expect(callbackExecuted, isFalse, reason: 'Timer callback should not execute after cancellation');
     });
 
     test('should verify multiple timer cancellations are safe', () async {

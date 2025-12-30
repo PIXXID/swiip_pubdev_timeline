@@ -155,9 +155,8 @@ double? calculateTargetVerticalOffset({
       : centerDateIndex - 4; // Index à gauche pour scroll droit
 
   // Trouve la ligne appropriée en fonction de la direction
-  final rowIndex = scrollingLeft
-      ? getLowerStageRowIndex(stagesRows, searchIndex)
-      : getHigherStageRowIndex(stagesRows, searchIndex);
+  final rowIndex =
+      scrollingLeft ? getLowerStageRowIndex(stagesRows, searchIndex) : getHigherStageRowIndex(stagesRows, searchIndex);
 
   // Si aucune ligne trouvée, retourne null
   if (rowIndex == -1) return null;

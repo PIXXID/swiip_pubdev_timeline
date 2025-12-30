@@ -26,8 +26,7 @@ class TimelineDayDate extends StatefulWidget {
   State<TimelineDayDate> createState() => _TimelineDayDate();
 }
 
-class _TimelineDayDate extends State<TimelineDayDate>
-    with SingleTickerProviderStateMixin {
+class _TimelineDayDate extends State<TimelineDayDate> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     dynamic day = widget.days[widget.index];
@@ -50,18 +49,11 @@ class _TimelineDayDate extends State<TimelineDayDate>
                     // Dates
                     Flexible(
                       child: Text(
-                        DateFormat.E(widget.lang)
-                            .format(date)
-                            .toUpperCase()
-                            .substring(0, 1),
+                        DateFormat.E(widget.lang).format(date).toUpperCase().substring(0, 1),
                         style: TextStyle(
-                            color: (idxCenter == 0)
-                                ? colors['primaryText']
-                                : colors['secondaryText'],
+                            color: (idxCenter == 0) ? colors['primaryText'] : colors['secondaryText'],
                             fontSize: (idxCenter == 0) ? 14 : 12,
-                            fontWeight: (idxCenter == 0)
-                                ? FontWeight.w800
-                                : FontWeight.w200),
+                            fontWeight: (idxCenter == 0) ? FontWeight.w800 : FontWeight.w200),
                         overflow: TextOverflow.clip,
                       ),
                     ),
@@ -69,13 +61,9 @@ class _TimelineDayDate extends State<TimelineDayDate>
                       child: Text(
                         DateFormat.Md(widget.lang).format(date),
                         style: TextStyle(
-                            color: (idxCenter == 0)
-                                ? colors['primaryText']
-                                : colors['secondaryText'],
+                            color: (idxCenter == 0) ? colors['primaryText'] : colors['secondaryText'],
                             fontSize: 12,
-                            fontWeight: (idxCenter == 0)
-                                ? FontWeight.w800
-                                : FontWeight.w200),
+                            fontWeight: (idxCenter == 0) ? FontWeight.w800 : FontWeight.w200),
                         overflow: TextOverflow.clip,
                       ),
                     ),

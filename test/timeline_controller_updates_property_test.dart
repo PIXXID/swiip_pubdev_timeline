@@ -121,19 +121,16 @@ void main() {
               try {
                 final parsedDate = DateTime.parse(lastCenterDate!);
                 // Verify date is within range
-                final isWithinRange = parsedDate
-                        .isAfter(startDate.subtract(const Duration(days: 1))) &&
+                final isWithinRange = parsedDate.isAfter(startDate.subtract(const Duration(days: 1))) &&
                     parsedDate.isBefore(endDate.add(const Duration(days: 1)));
 
                 if (isWithinRange) {
                   passedTests++;
                 } else {
-                  debugPrint(
-                      'Iteration $i: Date out of range - $lastCenterDate');
+                  debugPrint('Iteration $i: Date out of range - $lastCenterDate');
                 }
               } catch (e) {
-                debugPrint(
-                    'Iteration $i: Invalid date format - $lastCenterDate');
+                debugPrint('Iteration $i: Invalid date format - $lastCenterDate');
               }
             } else {
               passedTests++;
@@ -152,8 +149,7 @@ void main() {
             }
           }
         } catch (e) {
-          debugPrint(
-              'Iteration $i failed with targetDateIndex=$targetDateIndex: $e');
+          debugPrint('Iteration $i failed with targetDateIndex=$targetDateIndex: $e');
         }
       }
 
@@ -169,8 +165,7 @@ void main() {
 
       // Verify that callback was invoked multiple times (indicates TimelineController is working)
       expect(successfulScrolls, greaterThan(0),
-          reason:
-              'TimelineController should have triggered updateCurrentDate callback at least once');
+          reason: 'TimelineController should have triggered updateCurrentDate callback at least once');
     });
   });
 }

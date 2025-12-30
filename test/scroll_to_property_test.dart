@@ -119,13 +119,11 @@ void main() {
 
       // Verify that all iterations passed
       expect(passedTests, equals(numIterations),
-          reason:
-              'Property test failed: $passedTests/$numIterations iterations passed. '
+          reason: 'Property test failed: $passedTests/$numIterations iterations passed. '
               'Expected scroll offset = dateIndex * (dayWidth - dayMargin) for all valid date indices.');
     });
 
-    testWidgets(
-        'Property 7: Date Index to Scroll Offset Conversion - Edge cases (first and last day)',
+    testWidgets('Property 7: Date Index to Scroll Offset Conversion - Edge cases (first and last day)',
         (WidgetTester tester) async {
       // Feature: standard-scroll-refactoring, Property 7: Date Index to Scroll Offset Conversion
       // Validates: Requirements 5.4, 5.1
@@ -195,14 +193,12 @@ void main() {
 
       // Test last day (index numDays-1) - should not throw
       final lastDayIndex = numDays - 1;
-      expect(() => timelineState.scrollTo(lastDayIndex, animated: false),
-          returnsNormally);
+      expect(() => timelineState.scrollTo(lastDayIndex, animated: false), returnsNormally);
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 10));
     });
 
-    testWidgets(
-        'Property 7: Date Index to Scroll Offset Conversion - Out of bounds indices are clamped',
+    testWidgets('Property 7: Date Index to Scroll Offset Conversion - Out of bounds indices are clamped',
         (WidgetTester tester) async {
       // Feature: standard-scroll-refactoring, Property 7: Date Index to Scroll Offset Conversion
       // Validates: Requirements 5.4, 5.1
@@ -266,14 +262,12 @@ void main() {
       final timelineState = tester.state(timelineFinder) as dynamic;
 
       // Test negative index (should be clamped to 0) - should not throw
-      expect(
-          () => timelineState.scrollTo(-5, animated: false), returnsNormally);
+      expect(() => timelineState.scrollTo(-5, animated: false), returnsNormally);
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 10));
 
       // Test index beyond range (should be clamped to last valid index) - should not throw
-      expect(() => timelineState.scrollTo(numDays + 10, animated: false),
-          returnsNormally);
+      expect(() => timelineState.scrollTo(numDays + 10, animated: false), returnsNormally);
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 10));
     });

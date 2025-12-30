@@ -45,8 +45,7 @@ void main() {
       await Future.delayed(const Duration(milliseconds: 150));
 
       // Verify callback was not executed after cancellation
-      expect(timerExecuted, isFalse,
-          reason: 'Timer callback should not execute after cancellation');
+      expect(timerExecuted, isFalse, reason: 'Timer callback should not execute after cancellation');
     });
 
     test('should debounce rapid state changes', () async {
@@ -72,9 +71,7 @@ void main() {
       await Future.delayed(const Duration(milliseconds: 150));
 
       // Only the last call should have executed
-      expect(callCount, equals(1),
-          reason:
-              'Debouncing should result in only one execution after rapid changes');
+      expect(callCount, equals(1), reason: 'Debouncing should result in only one execution after rapid changes');
 
       debounceTimer?.cancel();
     });
@@ -112,14 +109,12 @@ void main() {
 
       // Wait for second debounce to complete
       await Future.delayed(const Duration(milliseconds: 150));
-      expect(callCount, equals(2),
-          reason: 'Each debounce cycle should result in one execution');
+      expect(callCount, equals(2), reason: 'Each debounce cycle should result in one execution');
 
       debounceTimer?.cancel();
     });
 
-    test('should verify debounce timer cancellation prevents execution',
-        () async {
+    test('should verify debounce timer cancellation prevents execution', () async {
       // Feature: timeline-performance-optimization, Property 8: Auto-Scroll State Management
 
       // This test verifies that cancelling a debounce timer prevents its callback from executing
@@ -139,12 +134,10 @@ void main() {
       await Future.delayed(const Duration(milliseconds: 150));
 
       // Verify callback was not executed
-      expect(callbackExecuted, isFalse,
-          reason: 'Cancelled timer callback should not execute');
+      expect(callbackExecuted, isFalse, reason: 'Cancelled timer callback should not execute');
     });
 
-    test('should verify rapid timer replacements result in single execution',
-        () async {
+    test('should verify rapid timer replacements result in single execution', () async {
       // Feature: timeline-performance-optimization, Property 8: Auto-Scroll State Management
 
       // This simulates the behavior in Timeline where rapid scroll events
@@ -172,9 +165,7 @@ void main() {
       await Future.delayed(const Duration(milliseconds: 150));
 
       // Only the last timer should have executed
-      expect(executionCount, equals(1),
-          reason:
-              'Only the final timer should execute after rapid replacements');
+      expect(executionCount, equals(1), reason: 'Only the final timer should execute after rapid replacements');
 
       debounceTimer?.cancel();
     });

@@ -24,6 +24,14 @@ inclusion: always
 - `flutter_test` - Testing framework
 - `flutter_lints: ^6.0.0` - Linting rules
 
+## Coding Standards
+
+### Dart Code Style
+
+- **Line length**: Maximum 120 characters per line for Dart files
+- Follow standard Dart formatting conventions
+- Use `dart format` with line length override when needed: `dart format --line-length 120 .`
+
 ## Build System
 
 Standard Flutter build system with pub package manager.

@@ -11,15 +11,11 @@ void main() {
 
     // Run 100 iterations of property tests
     for (var iteration = 0; iteration < 100; iteration++) {
-      testWidgets(
-          'Property 2: Selective Widget Rebuilds - iteration $iteration',
-          (tester) async {
-        final random =
-            Random(iteration); // Use iteration as seed for reproducibility
+      testWidgets('Property 2: Selective Widget Rebuilds - iteration $iteration', (tester) async {
+        final random = Random(iteration); // Use iteration as seed for reproducibility
 
         // Generate random timeline data
-        final totalDays =
-            10 + random.nextInt(20); // 10-30 days (reduced for performance)
+        final totalDays = 10 + random.nextInt(20); // 10-30 days (reduced for performance)
         final centerItemIndexNotifier = ValueNotifier<int>(0);
 
         // Create test colors
@@ -96,13 +92,11 @@ void main() {
         // The optimization is that ValueListenableBuilder handles selective rebuilds internally.
 
         // Find all ValueListenableBuilder widgets
-        final valueListenableBuilders =
-            find.byType(ValueListenableBuilder<int>);
+        final valueListenableBuilders = find.byType(ValueListenableBuilder<int>);
         expect(
           valueListenableBuilders,
           findsWidgets,
-          reason:
-              'OptimizedTimelineItem should use ValueListenableBuilder for selective rebuilds',
+          reason: 'OptimizedTimelineItem should use ValueListenableBuilder for selective rebuilds',
         );
 
         // Verify that RepaintBoundary is present to isolate repaints
@@ -110,8 +104,7 @@ void main() {
         expect(
           repaintBoundaries,
           findsWidgets,
-          reason:
-              'OptimizedTimelineItem should use RepaintBoundary to isolate repaints',
+          reason: 'OptimizedTimelineItem should use RepaintBoundary to isolate repaints',
         );
 
         centerItemIndexNotifier.dispose();
@@ -120,9 +113,7 @@ void main() {
 
     // Run 100 iterations testing RepaintBoundary isolation
     for (var iteration = 0; iteration < 100; iteration++) {
-      testWidgets(
-          'Property 2: RepaintBoundary isolates repaints - iteration $iteration',
-          (tester) async {
+      testWidgets('Property 2: RepaintBoundary isolates repaints - iteration $iteration', (tester) async {
         // Verify that RepaintBoundary is present to isolate repaints
         final random = Random(iteration);
 
@@ -192,9 +183,7 @@ void main() {
 
     // Run 100 iterations testing visible range optimization
     for (var iteration = 0; iteration < 100; iteration++) {
-      testWidgets(
-          'Property 2: Widgets outside visible range optimization - iteration $iteration',
-          (tester) async {
+      testWidgets('Property 2: Widgets outside visible range optimization - iteration $iteration', (tester) async {
         // This property will be fully validated when LazyTimelineViewport is implemented
         // For now, we verify that the widget structure supports this optimization
 
@@ -272,8 +261,7 @@ void main() {
         expect(
           timelineItems,
           findsNWidgets(visibleEnd - visibleStart),
-          reason:
-              'Only visible items should be created (${visibleEnd - visibleStart} items)',
+          reason: 'Only visible items should be created (${visibleEnd - visibleStart} items)',
         );
 
         // Change center index
@@ -345,15 +333,13 @@ void main() {
       expect(
         repaintBoundary,
         findsAtLeastNWidgets(1),
-        reason:
-            'OptimizedTimelineItem must have RepaintBoundary for paint isolation',
+        reason: 'OptimizedTimelineItem must have RepaintBoundary for paint isolation',
       );
 
       centerItemIndexNotifier.dispose();
     });
 
-    testWidgets('uses ValueListenableBuilder for selective rebuilds',
-        (tester) async {
+    testWidgets('uses ValueListenableBuilder for selective rebuilds', (tester) async {
       // Validates: Requirements 2.1, 2.3
 
       final centerItemIndexNotifier = ValueNotifier<int>(0);
@@ -405,15 +391,13 @@ void main() {
       expect(
         valueListenableBuilder,
         findsOneWidget,
-        reason:
-            'OptimizedTimelineItem must use ValueListenableBuilder for selective rebuilds',
+        reason: 'OptimizedTimelineItem must use ValueListenableBuilder for selective rebuilds',
       );
 
       centerItemIndexNotifier.dispose();
     });
 
-    testWidgets('is a StatefulWidget with animation controller',
-        (tester) async {
+    testWidgets('is a StatefulWidget with animation controller', (tester) async {
       // Validates: Requirements 1.4, 9.1, 9.5
 
       final centerItemIndexNotifier = ValueNotifier<int>(0);
@@ -523,8 +507,7 @@ void main() {
       centerItemIndexNotifier.dispose();
     });
 
-    testWidgets('calculates day text color based on distance from center',
-        (tester) async {
+    testWidgets('calculates day text color based on distance from center', (tester) async {
       // Validates: Requirements 1.3
 
       final centerItemIndexNotifier = ValueNotifier<int>(5);
@@ -628,8 +611,7 @@ void main() {
                   dayWidth: 45.0,
                   dayMargin: 5.0,
                   height: 300.0,
-                  openDayDetail:
-                      (date, progress, preIds, elements, indicators) {
+                  openDayDetail: (date, progress, preIds, elements, indicators) {
                     tapCalled = true;
                     tappedDate = date;
                   },

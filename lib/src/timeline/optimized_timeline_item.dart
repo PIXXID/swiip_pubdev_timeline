@@ -22,8 +22,7 @@ class OptimizedTimelineItem extends StatefulWidget {
   final double dayWidth;
   final double dayMargin;
   final double height;
-  final Function(String, double?, List<String>?, List<dynamic>, dynamic)?
-      openDayDetail;
+  final Function(String, double?, List<String>?, List<dynamic>, dynamic)? openDayDetail;
 
   const OptimizedTimelineItem({
     super.key,
@@ -44,8 +43,7 @@ class OptimizedTimelineItem extends StatefulWidget {
   State<OptimizedTimelineItem> createState() => _OptimizedTimelineItemState();
 }
 
-class _OptimizedTimelineItemState extends State<OptimizedTimelineItem>
-    with SingleTickerProviderStateMixin {
+class _OptimizedTimelineItemState extends State<OptimizedTimelineItem> with SingleTickerProviderStateMixin {
   late AnimationController _progressAnimationController;
   late Animation<double> _progressAnimation;
   double _targetHeight = 0.0;
@@ -63,8 +61,7 @@ class _OptimizedTimelineItemState extends State<OptimizedTimelineItem>
     // Initialize animation with current height
     final initialHeight = _calculateCompletedHeight();
     _targetHeight = initialHeight;
-    _progressAnimation =
-        Tween<double>(begin: initialHeight, end: initialHeight).animate(
+    _progressAnimation = Tween<double>(begin: initialHeight, end: initialHeight).animate(
       CurvedAnimation(
         parent: _progressAnimationController,
         curve: Curves.easeInOut,
@@ -166,8 +163,7 @@ class _OptimizedTimelineItemState extends State<OptimizedTimelineItem>
     double heightCompeff = 0;
 
     if (widget.day['compeff'] > 0) {
-      heightCompeff = (heightLmax * widget.day['compeff']) /
-          ((widget.day['lmax'] > 0) ? widget.day['lmax'] : 1);
+      heightCompeff = (heightLmax * widget.day['compeff']) / ((widget.day['lmax'] > 0) ? widget.day['lmax'] : 1);
       if (heightCompeff >= heightLmax) {
         heightCompeff = heightLmax;
       }
@@ -182,11 +178,9 @@ class _OptimizedTimelineItemState extends State<OptimizedTimelineItem>
 
     if (idxCenter == 0) {
       return widget.colors['primaryText']!;
-    } else if ((idxCenter >= 1 && idxCenter < 4) ||
-        (idxCenter <= -1 && idxCenter > -4)) {
+    } else if ((idxCenter >= 1 && idxCenter < 4) || (idxCenter <= -1 && idxCenter > -4)) {
       return widget.colors['secondaryText']!;
-    } else if ((idxCenter >= 4 && idxCenter < 6) ||
-        (idxCenter <= -4 && idxCenter > -6)) {
+    } else if ((idxCenter >= 4 && idxCenter < 6) || (idxCenter <= -4 && idxCenter > -6)) {
       return widget.colors['accent1']!;
     } else {
       return Colors.transparent;
@@ -207,16 +201,13 @@ class _OptimizedTimelineItemState extends State<OptimizedTimelineItem>
     bool dayIsCompleted = false;
 
     if (widget.day['capeff'] > 0) {
-      heightCapeff = (heightLmax * widget.day['capeff']) /
-          ((widget.day['lmax'] > 0) ? widget.day['lmax'] : 1);
+      heightCapeff = (heightLmax * widget.day['capeff']) / ((widget.day['lmax'] > 0) ? widget.day['lmax'] : 1);
     }
     if (widget.day['buseff'] > 0) {
-      heightBuseff = (heightLmax * widget.day['buseff']) /
-          ((widget.day['lmax'] > 0) ? widget.day['lmax'] : 1);
+      heightBuseff = (heightLmax * widget.day['buseff']) / ((widget.day['lmax'] > 0) ? widget.day['lmax'] : 1);
     }
     if (widget.day['compeff'] > 0) {
-      heightCompeff = (heightLmax * widget.day['compeff']) /
-          ((widget.day['lmax'] > 0) ? widget.day['lmax'] : 1);
+      heightCompeff = (heightLmax * widget.day['compeff']) / ((widget.day['lmax'] > 0) ? widget.day['lmax'] : 1);
       if (heightCompeff >= heightLmax) {
         heightCompeff = heightLmax;
         dayIsCompleted = true;
@@ -257,9 +248,7 @@ class _OptimizedTimelineItemState extends State<OptimizedTimelineItem>
           // Liste des éléments présents sur la journée
           final elementsDay = widget.elements
               .where(
-                (e) =>
-                    e['date'] ==
-                    DateFormat('yyyy-MM-dd').format(widget.day['date']),
+                (e) => e['date'] == DateFormat('yyyy-MM-dd').format(widget.day['date']),
               )
               .toList();
 
@@ -295,9 +284,7 @@ class _OptimizedTimelineItemState extends State<OptimizedTimelineItem>
                     size: 12,
                     color: widget.day['alertLevel'] == 1
                         ? widget.colors['warning']
-                        : (widget.day['alertLevel'] == 2
-                            ? widget.colors['error']
-                            : Colors.transparent),
+                        : (widget.day['alertLevel'] == 2 ? widget.colors['error'] : Colors.transparent),
                   ),
                 )
               else
@@ -320,14 +307,11 @@ class _OptimizedTimelineItemState extends State<OptimizedTimelineItem>
                             bottom: widget.dayMargin / 3,
                           ),
                           width: widget.dayWidth - widget.dayMargin - 15,
-                          height: (heightCapeff > 0)
-                              ? heightCapeff - 2
-                              : heightLmax,
+                          height: (heightCapeff > 0) ? heightCapeff - 2 : heightLmax,
                           decoration: BoxDecoration(
                             border: Border(
                               top: BorderSide(
-                                color: (widget.index ==
-                                        widget.centerItemIndexNotifier.value)
+                                color: (widget.index == widget.centerItemIndexNotifier.value)
                                     ? widget.colors['secondaryText']!
                                     : const Color(0x00000000),
                                 width: 1,
@@ -337,13 +321,10 @@ class _OptimizedTimelineItemState extends State<OptimizedTimelineItem>
                           child: Center(
                             child:
                                 // Icon soleil si aucune capacité
-                                (heightCapeff == 0 &&
-                                        heightBuseff == 0 &&
-                                        heightCompeff == 0)
+                                (heightCapeff == 0 && heightBuseff == 0 && heightCompeff == 0)
                                     ? Icon(
                                         Icons.sunny,
-                                        color: widget
-                                            .colors['secondaryBackground'],
+                                        color: widget.colors['secondaryBackground'],
                                         size: 14,
                                       )
                                     : null,
@@ -379,8 +360,7 @@ class _OptimizedTimelineItemState extends State<OptimizedTimelineItem>
                           child: AnimatedBuilder(
                             animation: _progressAnimation,
                             builder: (context, child) {
-                              final animatedHeight =
-                                  _isVisible ? _progressAnimation.value : 0.0;
+                              final animatedHeight = _isVisible ? _progressAnimation.value : 0.0;
 
                               return Transform.translate(
                                 offset: Offset(0, heightLmax - animatedHeight),
@@ -390,8 +370,7 @@ class _OptimizedTimelineItemState extends State<OptimizedTimelineItem>
                                     right: widget.dayMargin / 2,
                                     bottom: widget.dayMargin / 3,
                                   ),
-                                  width:
-                                      widget.dayWidth - widget.dayMargin - 16,
+                                  width: widget.dayWidth - widget.dayMargin - 16,
                                   height: animatedHeight,
                                   decoration: BoxDecoration(
                                     borderRadius: borderRadius,

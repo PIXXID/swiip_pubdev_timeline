@@ -14,8 +14,7 @@ void main() {
         monitor.startOperation('test_operation');
 
         // Operation should be tracked
-        expect(monitor.getOperationDuration('test_operation'), isNull,
-            reason: 'Operation not yet completed');
+        expect(monitor.getOperationDuration('test_operation'), isNull, reason: 'Operation not yet completed');
       });
 
       test('endOperation returns duration and records it', () {
@@ -28,8 +27,7 @@ void main() {
 
         expect(duration, isNotNull);
         expect(duration!.inMicroseconds, greaterThan(0));
-        expect(
-            monitor.getOperationDuration('test_operation'), equals(duration));
+        expect(monitor.getOperationDuration('test_operation'), equals(duration));
       });
 
       test('endOperation without startOperation returns null', () {

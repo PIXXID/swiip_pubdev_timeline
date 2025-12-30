@@ -18,9 +18,7 @@ import 'package:swiip_pubdev_timeline/src/timeline/scroll_calculations.dart';
 /// 3. The calculation is consistent across multiple calls with same inputs
 void main() {
   group('Property 2: Center Item Calculation', () {
-    test(
-        'For any scroll offset and viewport width, center index should match pure function result',
-        () {
+    test('For any scroll offset and viewport width, center index should match pure function result', () {
       // Feature: native-scroll-only, Property 2: Center Item Calculation
       // Validates: Requirements 2.3, 3.1, 3.2
 
@@ -57,8 +55,7 @@ void main() {
 
           // Calculate expected center index manually to verify formula
           final centerPosition = scrollOffset + (viewportWidth / 2);
-          final expectedIndex =
-              (centerPosition / (dayWidth - dayMargin)).round();
+          final expectedIndex = (centerPosition / (dayWidth - dayMargin)).round();
           final clampedExpected = expectedIndex.clamp(0, totalDays - 1);
 
           // Verify calculated index matches expected
@@ -71,15 +68,13 @@ void main() {
                 'Iteration $i failed: scrollOffset=$scrollOffset, viewportWidth=$viewportWidth, centerIndex=$centerIndex, expectedIndex=$clampedExpected, isInRange=$isInRange, matchesExpected=$matchesExpected');
           }
         } catch (e) {
-          print(
-              'Iteration $i failed with scrollOffset=$scrollOffset, viewportWidth=$viewportWidth: $e');
+          print('Iteration $i failed with scrollOffset=$scrollOffset, viewportWidth=$viewportWidth: $e');
         }
       }
 
       // Verify that all iterations passed
       expect(passedTests, equals(numIterations),
-          reason:
-              'Property test failed: $passedTests/$numIterations iterations passed. '
+          reason: 'Property test failed: $passedTests/$numIterations iterations passed. '
               'Expected center index to match pure function result and be within valid range.');
     });
 
@@ -133,19 +128,16 @@ void main() {
           if (result1 == result2 && result2 == result3) {
             passedTests++;
           } else {
-            print(
-                'Iteration $i: Inconsistent results - result1=$result1, result2=$result2, result3=$result3');
+            print('Iteration $i: Inconsistent results - result1=$result1, result2=$result2, result3=$result3');
           }
         } catch (e) {
-          print(
-              'Iteration $i failed with scrollOffset=$scrollOffset, viewportWidth=$viewportWidth: $e');
+          print('Iteration $i failed with scrollOffset=$scrollOffset, viewportWidth=$viewportWidth: $e');
         }
       }
 
       // Verify that all iterations passed
       expect(passedTests, equals(numIterations),
-          reason:
-              'Property test failed: $passedTests/$numIterations iterations passed. '
+          reason: 'Property test failed: $passedTests/$numIterations iterations passed. '
               'Expected center index calculation to be consistent (pure function).');
     });
 
@@ -232,8 +224,7 @@ void main() {
         // to avoid edge cases where viewport extends beyond timeline
         final maxReasonableScroll = (totalDays - 20) * (dayWidth - dayMargin);
         final scrollOffset = random.nextDouble() * maxReasonableScroll;
-        final viewportWidth =
-            300.0 + random.nextDouble() * 1200.0; // Max 1500px viewport
+        final viewportWidth = 300.0 + random.nextDouble() * 1200.0; // Max 1500px viewport
 
         try {
           // Calculate center index
@@ -249,8 +240,7 @@ void main() {
           final viewportCenter = scrollOffset + (viewportWidth / 2);
 
           // Calculate the visual position of the center day
-          final dayCenter = centerIndex * (dayWidth - dayMargin) +
-              ((dayWidth - dayMargin) / 2);
+          final dayCenter = centerIndex * (dayWidth - dayMargin) + ((dayWidth - dayMargin) / 2);
 
           // The difference should be less than one full day width
           // (due to rounding in the calculation, the center can be off by up to half a day)
@@ -264,15 +254,13 @@ void main() {
                 'Iteration $i: Visual mismatch - viewportCenter=$viewportCenter, dayCenter=$dayCenter, difference=$difference, tolerance=$tolerance');
           }
         } catch (e) {
-          print(
-              'Iteration $i failed with scrollOffset=$scrollOffset, viewportWidth=$viewportWidth: $e');
+          print('Iteration $i failed with scrollOffset=$scrollOffset, viewportWidth=$viewportWidth: $e');
         }
       }
 
       // Verify that all iterations passed
       expect(passedTests, equals(numIterations),
-          reason:
-              'Property test failed: $passedTests/$numIterations iterations passed. '
+          reason: 'Property test failed: $passedTests/$numIterations iterations passed. '
               'Expected center index to correspond to visually centered day.');
     });
   });

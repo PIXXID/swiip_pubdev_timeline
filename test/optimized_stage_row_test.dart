@@ -12,11 +12,8 @@ void main() {
 
     // Run 100 iterations of property tests
     for (var iteration = 0; iteration < 100; iteration++) {
-      testWidgets(
-          'Property 9: Stage Row Conditional Rebuild - iteration $iteration',
-          (tester) async {
-        final random =
-            Random(iteration); // Use iteration as seed for reproducibility
+      testWidgets('Property 9: Stage Row Conditional Rebuild - iteration $iteration', (tester) async {
+        final random = Random(iteration); // Use iteration as seed for reproducibility
 
         // Generate random timeline data
         final totalDays = 50 + random.nextInt(50); // 50-100 days
@@ -46,12 +43,7 @@ void main() {
 
           return {
             'prs_id': 'stage_$i',
-            'type': [
-              'milestone',
-              'cycle',
-              'sequence',
-              'stage'
-            ][random.nextInt(4)],
+            'type': ['milestone', 'cycle', 'sequence', 'stage'][random.nextInt(4)],
             'sdate': '2024-01-${(startIndex % 28) + 1}',
             'edate': '2024-01-${(endIndex % 28) + 1}',
             'name': 'Stage $i',
@@ -113,9 +105,8 @@ void main() {
         var nonAffectingIndex = 0;
         bool foundNonAffecting = false;
         for (var testIndex = 0; testIndex < totalDays; testIndex++) {
-          final affectsRow = stagesList.any((stage) =>
-              (stage['startDateIndex'] as int) <= testIndex &&
-              (stage['endDateIndex'] as int) >= testIndex);
+          final affectsRow = stagesList.any(
+              (stage) => (stage['startDateIndex'] as int) <= testIndex && (stage['endDateIndex'] as int) >= testIndex);
 
           if (!affectsRow) {
             nonAffectingIndex = testIndex;
@@ -169,9 +160,7 @@ void main() {
 
     // Run 100 iterations testing that only affected rows rebuild
     for (var iteration = 0; iteration < 100; iteration++) {
-      testWidgets(
-          'Property 9: Only affected rows rebuild - iteration $iteration',
-          (tester) async {
+      testWidgets('Property 9: Only affected rows rebuild - iteration $iteration', (tester) async {
         final centerItemIndexNotifier = ValueNotifier<int>(25);
         final visibleRangeNotifier = ValueNotifier<VisibleRange>(
           VisibleRange(20, 30),
@@ -294,8 +283,7 @@ void main() {
 
     // Run 100 iterations testing visible range changes
     for (var iteration = 0; iteration < 100; iteration++) {
-      testWidgets(
-          'Property 9: Visible range changes trigger selective rebuilds - iteration $iteration',
+      testWidgets('Property 9: Visible range changes trigger selective rebuilds - iteration $iteration',
           (tester) async {
         final centerItemIndexNotifier = ValueNotifier<int>(25);
         final visibleRangeNotifier = ValueNotifier<VisibleRange>(
@@ -468,8 +456,7 @@ void main() {
       expect(
         repaintBoundary,
         findsAtLeastNWidgets(1),
-        reason:
-            'OptimizedStageRow must have RepaintBoundary for paint isolation',
+        reason: 'OptimizedStageRow must have RepaintBoundary for paint isolation',
       );
 
       centerItemIndexNotifier.dispose();
@@ -754,8 +741,7 @@ void main() {
       // Appears in both StageItem and as a separate label
       final initialLabels = find.text('Small Activity');
       final initialCount = initialLabels.evaluate().length;
-      expect(initialCount, greaterThan(0),
-          reason: 'Label should be visible initially');
+      expect(initialCount, greaterThan(0), reason: 'Label should be visible initially');
 
       // Move center away from the element
       centerItemIndexNotifier.value = 15;

@@ -21,8 +21,7 @@ class VisibleRange {
   ///
   /// Returns `true` if there is any overlap between the two ranges.
   /// Returns `false` if the ranges are completely separate.
-  bool overlaps(int startIndex, int endIndex) =>
-      !(endIndex < start || startIndex > end);
+  bool overlaps(int startIndex, int endIndex) => !(endIndex < start || startIndex > end);
 
   /// Returns the number of items in this range.
   int get length => end - start + 1;
@@ -30,10 +29,7 @@ class VisibleRange {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is VisibleRange &&
-          runtimeType == other.runtimeType &&
-          start == other.start &&
-          end == other.end;
+      other is VisibleRange && runtimeType == other.runtimeType && start == other.start && end == other.end;
 
   @override
   int get hashCode => Object.hash(start, end);

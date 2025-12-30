@@ -16,8 +16,7 @@ void main() {
       TimelineConfigurationManager.reset();
     });
 
-    testWidgets('Timeline scrolls to defaultDate on initialization',
-        (WidgetTester tester) async {
+    testWidgets('Timeline scrolls to defaultDate on initialization', (WidgetTester tester) async {
       // Requirements: 5.5
 
       const numDays = 100;
@@ -31,13 +30,11 @@ void main() {
         return {
           'id': 'elem_$index',
           'name': 'Test Element $index',
-          'date':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'date': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'pre_id': 'pre_$index',
           'nat': 'activity',
           'status': 'pending',
-          'sdate':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'sdate': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'edate':
               '${date.add(const Duration(days: 1)).year}-${date.add(const Duration(days: 1)).month.toString().padLeft(2, '0')}-${date.add(const Duration(days: 1)).day.toString().padLeft(2, '0')}',
           'stage_id': 'stage1',
@@ -112,8 +109,7 @@ void main() {
 
       // Verify that the timeline initialized and scrolled to the default date
       // The updateCurrentDate callback should have been called with a date near the default date
-      expect(currentCenterDate, isNotNull,
-          reason: 'Timeline should scroll to defaultDate on initialization');
+      expect(currentCenterDate, isNotNull, reason: 'Timeline should scroll to defaultDate on initialization');
 
       // Parse the center date and verify it's close to the default date
       if (currentCenterDate != null) {
@@ -122,13 +118,11 @@ void main() {
 
         // Allow a larger tolerance due to viewport centering and scroll positioning
         expect(daysDifference, lessThanOrEqualTo(15),
-            reason:
-                'Timeline should scroll near defaultDate on initialization');
+            reason: 'Timeline should scroll near defaultDate on initialization');
       }
     });
 
-    testWidgets('Timeline scrolls to nowIndex when no defaultDate provided',
-        (WidgetTester tester) async {
+    testWidgets('Timeline scrolls to nowIndex when no defaultDate provided', (WidgetTester tester) async {
       // Requirements: 5.5
 
       const numDays = 100;
@@ -142,13 +136,11 @@ void main() {
         return {
           'id': 'elem_$index',
           'name': 'Test Element $index',
-          'date':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'date': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'pre_id': 'pre_$index',
           'nat': 'activity',
           'status': 'pending',
-          'sdate':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'sdate': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'edate':
               '${date.add(const Duration(days: 1)).year}-${date.add(const Duration(days: 1)).month.toString().padLeft(2, '0')}-${date.add(const Duration(days: 1)).day.toString().padLeft(2, '0')}',
           'stage_id': 'stage1',
@@ -221,9 +213,7 @@ void main() {
       expect(timelineFinder, findsOneWidget);
 
       // Verify that the timeline initialized and scrolled to today's date
-      expect(currentCenterDate, isNotNull,
-          reason:
-              'Timeline should scroll to nowIndex when no defaultDate provided');
+      expect(currentCenterDate, isNotNull, reason: 'Timeline should scroll to nowIndex when no defaultDate provided');
 
       // Parse the center date and verify it's close to today
       if (currentCenterDate != null) {
@@ -232,14 +222,11 @@ void main() {
 
         // Allow a larger tolerance due to viewport centering and time of day
         expect(daysDifference, lessThanOrEqualTo(15),
-            reason:
-                'Timeline should scroll near today when no defaultDate provided');
+            reason: 'Timeline should scroll near today when no defaultDate provided');
       }
     });
 
-    testWidgets(
-        'Timeline verifies correct initial scroll position with defaultDate',
-        (WidgetTester tester) async {
+    testWidgets('Timeline verifies correct initial scroll position with defaultDate', (WidgetTester tester) async {
       // Requirements: 5.5
 
       const numDays = 100;
@@ -253,13 +240,11 @@ void main() {
         return {
           'id': 'elem_$index',
           'name': 'Test Element $index',
-          'date':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'date': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'pre_id': 'pre_$index',
           'nat': 'activity',
           'status': 'pending',
-          'sdate':
-              '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+          'sdate': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
           'edate':
               '${date.add(const Duration(days: 1)).year}-${date.add(const Duration(days: 1)).month.toString().padLeft(2, '0')}-${date.add(const Duration(days: 1)).day.toString().padLeft(2, '0')}',
           'stage_id': 'stage1',
@@ -330,8 +315,7 @@ void main() {
       final timelineState = tester.state(timelineFinder) as dynamic;
 
       // Verify the timeline initialized successfully
-      expect(timelineState.days, isNotEmpty,
-          reason: 'Timeline should have days initialized');
+      expect(timelineState.days, isNotEmpty, reason: 'Timeline should have days initialized');
 
       // Verify we can still scroll after initialization
       timelineState.scrollTo(20, animated: false);
@@ -339,9 +323,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 50));
 
       // Verify timeline still exists (scroll worked)
-      expect(timelineFinder, findsOneWidget,
-          reason:
-              'Timeline should remain functional after initialization scroll');
+      expect(timelineFinder, findsOneWidget, reason: 'Timeline should remain functional after initialization scroll');
     });
   });
 }

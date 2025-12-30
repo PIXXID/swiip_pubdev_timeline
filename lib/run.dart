@@ -183,8 +183,7 @@ Future<Map<String, dynamic>> fetchTimelineData() async {
   final baseUri = dotenv.env['API_BASE_URL'] ?? '';
   final userId = dotenv.env['USER_ID'] ?? '';
   final prjId = dotenv.env['USER_PROJECTS'] ?? '';
-  final uri =
-      '$baseUri/showTimeline?prj_id=$prjId&usp_id=$userId&timeline_segment=dashboard';
+  final uri = '$baseUri/showTimeline?prj_id=$prjId&usp_id=$userId&timeline_segment=dashboard';
   final userToken = dotenv.env['USER_TOKEN'] ?? '';
 
   final response = await http.get(
@@ -230,8 +229,8 @@ Future<Map<String, dynamic>> readJson() async {
 /// - Navigate to a day-specific page
 /// - Display a modal with day information
 /// - Update other parts of your UI based on the selected day
-void openDayDetail(String date, double? dayProgress, List<String>? preIds,
-    List<dynamic>? elements, dynamic dayIndicators) {
+void openDayDetail(
+    String date, double? dayProgress, List<String>? preIds, List<dynamic>? elements, dynamic dayIndicators) {
   debugPrint(date.toString());
   //debugPrint(dayProgress.toString());
   debugPrint(preIds.toString());
@@ -255,8 +254,8 @@ void openDayDetail(String date, double? dayProgress, List<String>? preIds,
 /// - Navigate to a stage detail page
 /// - Show a modal for stage editing
 /// - Update stage data in your backend
-void openEditStage(String? prsId, String? prsName, String? prsType,
-    String? startDate, String? endDate, double? progress, String? prjId) {
+void openEditStage(String? prsId, String? prsName, String? prsType, String? startDate, String? endDate,
+    double? progress, String? prjId) {
   debugPrint('$prsId $prsName $prsType $startDate $endDate $progress $prjId');
 }
 
@@ -276,8 +275,8 @@ void openEditStage(String? prsId, String? prsName, String? prsType,
 /// - Navigate to an element detail page
 /// - Show a modal for element editing
 /// - Update element data in your backend
-void openEditElement(String? entityId, String? label, String? type,
-    String? startDate, String? endDate, double? progress, String? prjId) {
+void openEditElement(String? entityId, String? label, String? type, String? startDate, String? endDate,
+    double? progress, String? prjId) {
   debugPrint('$entityId $label $type $startDate $endDate $progress $prjId');
 }
 

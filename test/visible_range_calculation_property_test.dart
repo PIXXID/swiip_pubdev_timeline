@@ -15,9 +15,7 @@ import 'package:swiip_pubdev_timeline/src/timeline/scroll_calculations.dart';
 /// - Matches the formula: visibleDays = ceil(viewportWidth / (dayWidth - dayMargin))
 void main() {
   group('Property 3: Visible Range Calculation', () {
-    test(
-        'For any scroll offset and viewport width, visible range should match formula',
-        () {
+    test('For any scroll offset and viewport width, visible range should match formula', () {
       // Feature: native-scroll-only, Property 3: Visible Range Calculation
       // Validates: Requirements 2.4, 4.1, 4.3, 4.4, 4.5
 
@@ -50,41 +48,33 @@ void main() {
 
           // Calculate visible range using the formula
           final visibleDays = (viewportWidth / (dayWidth - dayMargin)).ceil();
-          final expectedStart =
-              (centerIndex - (visibleDays ~/ 2) - buffer).clamp(0, totalDays);
-          final expectedEnd =
-              (centerIndex + (visibleDays ~/ 2) + buffer).clamp(0, totalDays);
+          final expectedStart = (centerIndex - (visibleDays ~/ 2) - buffer).clamp(0, totalDays);
+          final expectedEnd = (centerIndex + (visibleDays ~/ 2) + buffer).clamp(0, totalDays);
 
           // Verify the formula matches expected values
           final formulaMatches = true; // Formula is correct by definition
 
           // Verify range is clamped to [0, totalDays]
-          final isStartClamped =
-              expectedStart >= 0 && expectedStart <= totalDays;
+          final isStartClamped = expectedStart >= 0 && expectedStart <= totalDays;
           final isEndClamped = expectedEnd >= 0 && expectedEnd <= totalDays;
 
           // Verify start <= end
           final isValidRange = expectedStart <= expectedEnd;
 
-          if (formulaMatches &&
-              isStartClamped &&
-              isEndClamped &&
-              isValidRange) {
+          if (formulaMatches && isStartClamped && isEndClamped && isValidRange) {
             passedTests++;
           } else {
             print(
                 'Iteration $i failed: scrollOffset=$scrollOffset, viewportWidth=$viewportWidth, centerIndex=$centerIndex, visibleDays=$visibleDays, expectedStart=$expectedStart, expectedEnd=$expectedEnd');
           }
         } catch (e) {
-          print(
-              'Iteration $i failed with scrollOffset=$scrollOffset, viewportWidth=$viewportWidth: $e');
+          print('Iteration $i failed with scrollOffset=$scrollOffset, viewportWidth=$viewportWidth: $e');
         }
       }
 
       // Verify that all iterations passed
       expect(passedTests, equals(numIterations),
-          reason:
-              'Property test failed: $passedTests/$numIterations iterations passed. '
+          reason: 'Property test failed: $passedTests/$numIterations iterations passed. '
               'Expected visible range to match formula and be properly clamped.');
     });
 
@@ -121,26 +111,19 @@ void main() {
 
           // Calculate visible range
           final visibleDays = (viewportWidth / (dayWidth - dayMargin)).ceil();
-          final visibleStart =
-              (centerIndex - (visibleDays ~/ 2) - buffer).clamp(0, totalDays);
-          final visibleEnd =
-              (centerIndex + (visibleDays ~/ 2) + buffer).clamp(0, totalDays);
+          final visibleStart = (centerIndex - (visibleDays ~/ 2) - buffer).clamp(0, totalDays);
+          final visibleEnd = (centerIndex + (visibleDays ~/ 2) + buffer).clamp(0, totalDays);
 
           // Calculate the actual visible range without buffer
-          final actualVisibleStart =
-              (centerIndex - (visibleDays ~/ 2)).clamp(0, totalDays);
-          final actualVisibleEnd =
-              (centerIndex + (visibleDays ~/ 2)).clamp(0, totalDays);
+          final actualVisibleStart = (centerIndex - (visibleDays ~/ 2)).clamp(0, totalDays);
+          final actualVisibleEnd = (centerIndex + (visibleDays ~/ 2)).clamp(0, totalDays);
 
           // Verify that visible range includes actual visible days
-          final includesVisibleDays = visibleStart <= actualVisibleStart &&
-              visibleEnd >= actualVisibleEnd;
+          final includesVisibleDays = visibleStart <= actualVisibleStart && visibleEnd >= actualVisibleEnd;
 
           // Verify buffer is applied (when not at edges)
-          final bufferApplied = (visibleStart == 0 ||
-                  visibleStart <= actualVisibleStart - buffer) &&
-              (visibleEnd == totalDays ||
-                  visibleEnd >= actualVisibleEnd + buffer);
+          final bufferApplied = (visibleStart == 0 || visibleStart <= actualVisibleStart - buffer) &&
+              (visibleEnd == totalDays || visibleEnd >= actualVisibleEnd + buffer);
 
           if (includesVisibleDays) {
             passedTests++;
@@ -149,15 +132,13 @@ void main() {
                 'Iteration $i: Range mismatch - visibleStart=$visibleStart, visibleEnd=$visibleEnd, actualVisibleStart=$actualVisibleStart, actualVisibleEnd=$actualVisibleEnd, includesVisibleDays=$includesVisibleDays, bufferApplied=$bufferApplied');
           }
         } catch (e) {
-          print(
-              'Iteration $i failed with scrollOffset=$scrollOffset, viewportWidth=$viewportWidth: $e');
+          print('Iteration $i failed with scrollOffset=$scrollOffset, viewportWidth=$viewportWidth: $e');
         }
       }
 
       // Verify that all iterations passed
       expect(passedTests, equals(numIterations),
-          reason:
-              'Property test failed: $passedTests/$numIterations iterations passed. '
+          reason: 'Property test failed: $passedTests/$numIterations iterations passed. '
               'Expected visible range to include all visible days plus buffer.');
     });
 
@@ -179,10 +160,8 @@ void main() {
         totalDays: totalDays,
       );
       final visibleDaysAtStart = (800.0 / (dayWidth - dayMargin)).ceil();
-      final startAtStart = (centerAtStart - (visibleDaysAtStart ~/ 2) - buffer)
-          .clamp(0, totalDays);
-      final endAtStart = (centerAtStart + (visibleDaysAtStart ~/ 2) + buffer)
-          .clamp(0, totalDays);
+      final startAtStart = (centerAtStart - (visibleDaysAtStart ~/ 2) - buffer).clamp(0, totalDays);
+      final endAtStart = (centerAtStart + (visibleDaysAtStart ~/ 2) + buffer).clamp(0, totalDays);
 
       expect(startAtStart, equals(0), reason: 'Start should be clamped to 0');
       expect(endAtStart, greaterThan(0));
@@ -198,15 +177,12 @@ void main() {
         totalDays: totalDays,
       );
       final visibleDaysAtEnd = (800.0 / (dayWidth - dayMargin)).ceil();
-      final startAtEnd =
-          (centerAtEnd - (visibleDaysAtEnd ~/ 2) - buffer).clamp(0, totalDays);
-      final endAtEnd =
-          (centerAtEnd + (visibleDaysAtEnd ~/ 2) + buffer).clamp(0, totalDays);
+      final startAtEnd = (centerAtEnd - (visibleDaysAtEnd ~/ 2) - buffer).clamp(0, totalDays);
+      final endAtEnd = (centerAtEnd + (visibleDaysAtEnd ~/ 2) + buffer).clamp(0, totalDays);
 
       expect(startAtEnd, greaterThanOrEqualTo(0));
       expect(startAtEnd, lessThan(totalDays));
-      expect(endAtEnd, equals(totalDays),
-          reason: 'End should be clamped to totalDays');
+      expect(endAtEnd, equals(totalDays), reason: 'End should be clamped to totalDays');
 
       // Test edge case: very small viewport
       final centerSmallViewport = calculateCenterDateIndex(
@@ -217,11 +193,8 @@ void main() {
         totalDays: totalDays,
       );
       final visibleDaysSmall = (100.0 / (dayWidth - dayMargin)).ceil();
-      final startSmall =
-          (centerSmallViewport - (visibleDaysSmall ~/ 2) - buffer)
-              .clamp(0, totalDays);
-      final endSmall = (centerSmallViewport + (visibleDaysSmall ~/ 2) - buffer)
-          .clamp(0, totalDays);
+      final startSmall = (centerSmallViewport - (visibleDaysSmall ~/ 2) - buffer).clamp(0, totalDays);
+      final endSmall = (centerSmallViewport + (visibleDaysSmall ~/ 2) - buffer).clamp(0, totalDays);
 
       expect(startSmall, greaterThanOrEqualTo(0));
       expect(endSmall, lessThanOrEqualTo(totalDays));
@@ -236,18 +209,14 @@ void main() {
         totalDays: totalDays,
       );
       final visibleDaysLarge = (5000.0 / (dayWidth - dayMargin)).ceil();
-      final startLarge =
-          (centerLargeViewport - (visibleDaysLarge ~/ 2) - buffer)
-              .clamp(0, totalDays);
-      final endLarge = (centerLargeViewport + (visibleDaysLarge ~/ 2) + buffer)
-          .clamp(0, totalDays);
+      final startLarge = (centerLargeViewport - (visibleDaysLarge ~/ 2) - buffer).clamp(0, totalDays);
+      final endLarge = (centerLargeViewport + (visibleDaysLarge ~/ 2) + buffer).clamp(0, totalDays);
 
       // With a very large viewport, the range should span most or all of the timeline
       expect(startLarge, greaterThanOrEqualTo(0));
       expect(endLarge, lessThanOrEqualTo(totalDays));
       expect(endLarge - startLarge, greaterThan(totalDays ~/ 2),
-          reason:
-              'Large viewport should cover significant portion of timeline');
+          reason: 'Large viewport should cover significant portion of timeline');
     });
 
     test('Visible range with different buffer values', () {
@@ -283,23 +252,17 @@ void main() {
 
           // Calculate visible range with buffer
           final visibleDays = (viewportWidth / (dayWidth - dayMargin)).ceil();
-          final visibleStart =
-              (centerIndex - (visibleDays ~/ 2) - buffer).clamp(0, totalDays);
-          final visibleEnd =
-              (centerIndex + (visibleDays ~/ 2) + buffer).clamp(0, totalDays);
+          final visibleStart = (centerIndex - (visibleDays ~/ 2) - buffer).clamp(0, totalDays);
+          final visibleEnd = (centerIndex + (visibleDays ~/ 2) + buffer).clamp(0, totalDays);
 
           // Verify range is valid
-          final isValidRange = visibleStart >= 0 &&
-              visibleEnd <= totalDays &&
-              visibleStart <= visibleEnd;
+          final isValidRange = visibleStart >= 0 && visibleEnd <= totalDays && visibleStart <= visibleEnd;
 
           // Verify range size is reasonable (at least visibleDays - 1, unless clamped)
           // The -1 accounts for integer division rounding
           final rangeSize = visibleEnd - visibleStart;
           final minExpectedSize = visibleDays - 1;
-          final isSizeReasonable = rangeSize >= minExpectedSize ||
-              visibleStart == 0 ||
-              visibleEnd == totalDays;
+          final isSizeReasonable = rangeSize >= minExpectedSize || visibleStart == 0 || visibleEnd == totalDays;
 
           if (isValidRange && isSizeReasonable) {
             passedTests++;
@@ -315,8 +278,7 @@ void main() {
 
       // Verify that all iterations passed
       expect(passedTests, equals(numIterations),
-          reason:
-              'Property test failed: $passedTests/$numIterations iterations passed. '
+          reason: 'Property test failed: $passedTests/$numIterations iterations passed. '
               'Expected visible range to work correctly with different buffer values.');
     });
   });
