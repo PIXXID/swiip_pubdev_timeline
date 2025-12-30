@@ -37,7 +37,6 @@ import 'package:swiip_pubdev_timeline/src/platform/platform_language.dart';
 /// - **Direct Calculations**: Calculates scroll state directly using pure functions
 /// - **Lazy Rendering**: Only renders visible items plus a configurable buffer
 /// - **Data Caching**: Caches formatted data to avoid redundant calculations
-/// - **Scroll Throttling**: Limits scroll updates to ~60 FPS for smooth performance
 /// - **Auto-Scroll**: Vertical scrolling automatically follows horizontal position
 /// - **External Configuration**: Performance tuning via JSON configuration file
 ///
@@ -52,8 +51,7 @@ import 'package:swiip_pubdev_timeline/src/platform/platform_language.dart';
 ///    (`_centerItemIndex`, `_visibleStart`, `_visibleEnd`)
 /// 3. **Pure Calculation Functions**: Calls pure functions from `scroll_calculations.dart`
 ///    to calculate center index and visible range
-/// 4. **Throttled Updates**: Uses a Timer to throttle scroll calculations to ~60 FPS
-/// 5. **Explicit Parameter Passing**: Passes calculated values directly to lazy viewports
+/// 4. **Explicit Parameter Passing**: Passes calculated values directly to lazy viewports
 ///
 /// This architecture is simpler and more transparent than using a custom controller class,
 /// making the scroll logic easier to understand and maintain.
@@ -183,7 +181,6 @@ class _Timeline extends State<Timeline> {
   // - _visibleStart: Start index of the visible range (including buffer)
   // - _visibleEnd: End index of the visible range (including buffer)
   // - _viewportWidth: Current viewport width for calculations
-  // - _scrollThrottleTimer: Timer for throttling scroll calculations to ~60 FPS
   //
   // This approach is simpler than using a custom controller class because:
   // 1. State is managed directly in the widget (no extra abstraction)
@@ -194,7 +191,6 @@ class _Timeline extends State<Timeline> {
   int _visibleStart = 0;
   int _visibleEnd = 0;
   double _viewportWidth = 0.0;
-  Timer? _scrollThrottleTimer;
 
   // ValueNotifier for center item index (used by OptimizedTimelineItem)
   late ValueNotifier<int> _centerItemIndexNotifier;
@@ -351,12 +347,11 @@ class _Timeline extends State<Timeline> {
     // Horizontal scroll listener for calculating scroll state and triggering updates
     //
     // This listener implements the native-only scroll architecture:
-    // 1. Uses Timer-based throttling to limit calculations to ~60 FPS (16ms intervals)
-    // 2. Calculates center index directly using pure function (calculateCenterDateIndex)
-    // 3. Calculates visible range inline using formula: visibleDays = ceil(viewportWidth / (dayWidth - dayMargin))
-    // 4. Updates local state variables (_centerItemIndex, _visibleStart, _visibleEnd)
-    // 5. Only calls setState when values actually change to minimize rebuilds
-    // 6. Triggers callbacks and auto-scroll when center item changes
+    // 1. Calculates center index directly using pure function (calculateCenterDateIndex)
+    // 2. Calculates visible range inline using formula: visibleDays = ceil(viewportWidth / (dayWidth - dayMargin))
+    // 3. Updates local state variables (_centerItemIndex, _visibleStart, _visibleEnd)
+    // 4. Only calls setState when values actually change to minimize rebuilds
+    // 5. Triggers callbacks and auto-scroll when center item changes
     //
     // Architecture benefits:
     // - No custom controller abstraction layer
@@ -365,92 +360,84 @@ class _Timeline extends State<Timeline> {
     // - Easy to test and maintain
     //
     // Performance optimizations:
-    // - Throttling prevents excessive calculations during rapid scrolling
     // - State change detection prevents unnecessary rebuilds
     // - Pure functions enable compiler optimizations
     _controllerTimeline.addListener(() {
-      // Cancel existing throttle timer
-      _scrollThrottleTimer?.cancel();
+      if (!mounted) return;
 
-      // Throttle scroll calculations to ~60 FPS (16ms interval)
-      // This prevents excessive calculations during rapid scrolling while maintaining smooth updates
-      _scrollThrottleTimer = Timer(const Duration(milliseconds: 16), () {
-        if (!mounted) return;
+      _performanceMonitor.startOperation('scroll_update');
 
-        _performanceMonitor.startOperation('scroll_update');
+      final currentOffset = _controllerTimeline.offset;
+      final maxScrollExtent = _controllerTimeline.position.maxScrollExtent;
 
-        final currentOffset = _controllerTimeline.offset;
-        final maxScrollExtent = _controllerTimeline.position.maxScrollExtent;
+      if (currentOffset >= 0 && currentOffset < maxScrollExtent) {
+        // 1. Calculate center index directly using pure function from scroll_calculations.dart
+        // This determines which day item is currently at the center of the viewport
+        final newCenterIndex = calculateCenterDateIndex(
+          scrollOffset: currentOffset,
+          viewportWidth: _viewportWidth,
+          dayWidth: dayWidth,
+          dayMargin: dayMargin,
+          totalDays: days.length,
+        );
 
-        if (currentOffset >= 0 && currentOffset < maxScrollExtent) {
-          // 1. Calculate center index directly using pure function from scroll_calculations.dart
-          // This determines which day item is currently at the center of the viewport
-          final newCenterIndex = calculateCenterDateIndex(
-            scrollOffset: currentOffset,
-            viewportWidth: _viewportWidth,
-            dayWidth: dayWidth,
-            dayMargin: dayMargin,
-            totalDays: days.length,
-          );
+        // 2. Calculate visible range inline using formula
+        // visibleDays = number of days that fit in the viewport
+        // buffer = extra days rendered on each side for smooth scrolling
+        // This determines which items should be rendered by the lazy viewports
+        final visibleDays = (_viewportWidth / (dayWidth - dayMargin)).ceil();
+        final buffer = _config.bufferDays;
+        final newVisibleStart = (newCenterIndex - (visibleDays ~/ 2) - buffer).clamp(0, days.length);
+        final newVisibleEnd = (newCenterIndex + (visibleDays ~/ 2) + buffer).clamp(0, days.length);
 
-          // 2. Calculate visible range inline using formula
-          // visibleDays = number of days that fit in the viewport
-          // buffer = extra days rendered on each side for smooth scrolling
-          // This determines which items should be rendered by the lazy viewports
-          final visibleDays = (_viewportWidth / (dayWidth - dayMargin)).ceil();
-          final buffer = _config.bufferDays;
-          final newVisibleStart = (newCenterIndex - (visibleDays ~/ 2) - buffer).clamp(0, days.length);
-          final newVisibleEnd = (newCenterIndex + (visibleDays ~/ 2) + buffer).clamp(0, days.length);
+        // 3. Update state only when values change (check before setState)
+        // This optimization prevents unnecessary rebuilds when scrolling within the same range
+        if (newCenterIndex != _centerItemIndex || newVisibleStart != _visibleStart || newVisibleEnd != _visibleEnd) {
+          setState(() {
+            _centerItemIndex = newCenterIndex;
+            _visibleStart = newVisibleStart;
+            _visibleEnd = newVisibleEnd;
+          });
 
-          // 3. Update state only when values change (check before setState)
-          // This optimization prevents unnecessary rebuilds when scrolling within the same range
-          if (newCenterIndex != _centerItemIndex || newVisibleStart != _visibleStart || newVisibleEnd != _visibleEnd) {
-            setState(() {
-              _centerItemIndex = newCenterIndex;
-              _visibleStart = newVisibleStart;
-              _visibleEnd = newVisibleEnd;
-            });
+          // Update ValueNotifier for OptimizedTimelineItem
+          _centerItemIndexNotifier.value = newCenterIndex;
 
-            // Update ValueNotifier for OptimizedTimelineItem
-            _centerItemIndexNotifier.value = newCenterIndex;
+          // 4. Trigger callbacks and auto-scroll when center changes
+          if (newCenterIndex != _previousCenterIndex) {
+            // Update current date callback
+            _updateCurrentDateCallback(newCenterIndex);
 
-            // 4. Trigger callbacks and auto-scroll when center changes
-            if (newCenterIndex != _previousCenterIndex) {
-              // Update current date callback
-              _updateCurrentDateCallback(newCenterIndex);
+            // Calculate scroll state for auto-scroll
+            final scrollState = _calculateScrollState(
+              currentScrollOffset: currentOffset,
+              previousScrollOffset: _previousScrollOffset,
+            );
 
-              // Calculate scroll state for auto-scroll
-              final scrollState = _calculateScrollState(
-                currentScrollOffset: currentOffset,
-                previousScrollOffset: _previousScrollOffset,
+            // Auto-scroll only if the change is significant (at least 2 days)
+            final centerIndexDifference = (newCenterIndex - _previousCenterIndex).abs();
+            const minCenterIndexChange = 2;
+
+            if (centerIndexDifference >= minCenterIndexChange) {
+              // Cancel previous debounce timer
+              _verticalScrollDebounceTimer?.cancel();
+
+              // Debounce vertical scroll calculations
+              _verticalScrollDebounceTimer = Timer(
+                _verticalScrollDebounceDuration,
+                () => _applyAutoScroll(scrollState),
               );
-
-              // Auto-scroll only if the change is significant (at least 2 days)
-              final centerIndexDifference = (newCenterIndex - _previousCenterIndex).abs();
-              const minCenterIndexChange = 2;
-
-              if (centerIndexDifference >= minCenterIndexChange) {
-                // Cancel previous debounce timer
-                _verticalScrollDebounceTimer?.cancel();
-
-                // Debounce vertical scroll calculations
-                _verticalScrollDebounceTimer = Timer(
-                  _verticalScrollDebounceDuration,
-                  () => _applyAutoScroll(scrollState),
-                );
-              }
-
-              // Save previous center index
-              _previousCenterIndex = newCenterIndex;
             }
-          }
 
-          // Save previous scroll offset
-          _previousScrollOffset = currentOffset;
+            // Save previous center index
+            _previousCenterIndex = newCenterIndex;
+          }
         }
 
-        _performanceMonitor.endOperation('scroll_update');
-      });
+        // Save previous scroll offset
+        _previousScrollOffset = currentOffset;
+      }
+
+      _performanceMonitor.endOperation('scroll_update');
     });
 
     // On vérifie si la timeline affiche un ou plusieurs projets
@@ -500,10 +487,8 @@ class _Timeline extends State<Timeline> {
   // Destruction du widget
   @override
   void dispose() {
-    // Cancel timers to prevent memory leaks
-    // _scrollThrottleTimer: Throttles scroll calculations
+    // Cancel timer to prevent memory leaks
     // _verticalScrollDebounceTimer: Debounces vertical auto-scroll
-    _scrollThrottleTimer?.cancel();
     _verticalScrollDebounceTimer?.cancel();
     // Dispose ValueNotifiers
     _centerItemIndexNotifier.dispose();
