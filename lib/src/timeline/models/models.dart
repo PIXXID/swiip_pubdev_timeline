@@ -6,7 +6,6 @@ export 'visible_range.dart';
 export 'timeline_configuration.dart';
 export 'performance_metrics.dart';
 export 'performance_monitor.dart';
-export 'timeline_controller.dart';
 export 'timeline_data_manager.dart';
 export 'timeline_error_handler.dart';
 export 'validation_error.dart';

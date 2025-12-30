@@ -11,7 +11,6 @@ import 'optimized_timeline_item.dart';
 import 'loading_indicator_overlay.dart';
 
 // Models
-import 'models/timeline_controller.dart';
 import 'models/timeline_data_manager.dart';
 import 'models/timeline_error_handler.dart';
 import 'models/performance_monitor.dart';
@@ -63,7 +62,6 @@ import 'package:swiip_pubdev_timeline/src/platform/platform_language.dart';
 /// ```
 ///
 /// See also:
-/// - [TimelineController] for scroll state management
 /// - [TimelineConfiguration] for performance tuning options
 class Timeline extends StatefulWidget {
   const Timeline(
@@ -102,9 +100,6 @@ class Timeline extends StatefulWidget {
 class _Timeline extends State<Timeline> {
   // Liste des jours formatés
   List days = [];
-
-  // TimelineController for state management
-  late TimelineController _timelineController;
 
   // TimelineDataManager for data formatting and caching
   late TimelineDataManager _dataManager;
@@ -169,6 +164,12 @@ class _Timeline extends State<Timeline> {
   int _visibleEnd = 0;
   double _viewportWidth = 0.0;
   Timer? _scrollThrottleTimer;
+
+  // ValueNotifier for center item index (used by OptimizedTimelineItem)
+  late ValueNotifier<int> _centerItemIndexNotifier;
+
+  // ValueNotifier for loading state (used by LoadingIndicatorOverlay)
+  late ValueNotifier<bool> _isLoadingNotifier;
 
   bool isUniqueProject = false;
 
@@ -237,6 +238,12 @@ class _Timeline extends State<Timeline> {
 
     // Initialize TimelineDataManager
     _dataManager = TimelineDataManager();
+
+    // Initialize ValueNotifier for center item index
+    _centerItemIndexNotifier = ValueNotifier<int>(0);
+
+    // Initialize ValueNotifier for loading state
+    _isLoadingNotifier = ValueNotifier<bool>(false);
 
     // Apply configuration values to instance variables
     dayWidth = _config.dayWidth;
@@ -314,17 +321,6 @@ class _Timeline extends State<Timeline> {
           DateTime.parse(widget.defaultDate!).difference(startDate).inDays + 1;
     }
 
-    // Initialize TimelineController (viewportWidth will be updated in build)
-    _timelineController = TimelineController(
-      dayWidth: dayWidth,
-      dayMargin: dayMargin,
-      totalDays: days.length,
-      viewportWidth:
-          800, // Default width, will be updated with actual width in build
-      scrollThrottleDuration: _config.scrollThrottleDuration,
-      bufferDays: _config.bufferDays,
-    );
-
     // Écoute du scroll horizontal pour :
     // - calculer quel élément est au centre (calcul pur)
     // - calculer la plage visible (calcul pur)
@@ -375,6 +371,9 @@ class _Timeline extends State<Timeline> {
               _visibleStart = newVisibleStart;
               _visibleEnd = newVisibleEnd;
             });
+
+            // Update ValueNotifier for OptimizedTimelineItem
+            _centerItemIndexNotifier.value = newCenterIndex;
 
             // 4. Trigger callbacks and auto-scroll when center changes
             if (newCenterIndex != _previousCenterIndex) {
@@ -467,11 +466,12 @@ class _Timeline extends State<Timeline> {
     // Cancel timers
     _scrollThrottleTimer?.cancel();
     _verticalScrollDebounceTimer?.cancel();
+    // Dispose ValueNotifiers
+    _centerItemIndexNotifier.dispose();
+    _isLoadingNotifier.dispose();
     // On enlève les écoutes du scroll de la timeline et vertical
     _controllerTimeline.removeListener(() {});
     _controllerVerticalStages.removeListener(() {});
-    // Dispose TimelineController
-    _timelineController.dispose();
     super.dispose();
   }
 
@@ -491,8 +491,7 @@ class _Timeline extends State<Timeline> {
       // The formula is: scroll = dateIndex * (dayWidth - dayMargin) - (viewportWidth / 2)
       // This positions the date at the center of the viewport
       final targetPosition = safeIndex * (dayWidth - dayMargin);
-      final viewportWidth = _timelineController.viewportWidth.value;
-      double scroll = targetPosition - (viewportWidth / 2);
+      double scroll = targetPosition - (_viewportWidth / 2);
 
       // Clamp scroll offset to valid range using ScrollController's maxScrollExtent
       final maxScroll = _controllerTimeline.position.maxScrollExtent;
@@ -540,7 +539,7 @@ class _Timeline extends State<Timeline> {
     // 1. Calcul du dateIndex central
     final centerDateIndex = calculateCenterDateIndex(
       scrollOffset: currentScrollOffset,
-      viewportWidth: _timelineController.viewportWidth.value,
+      viewportWidth: _viewportWidth,
       dayWidth: dayWidth,
       dayMargin: dayMargin,
       totalDays: days.length,
@@ -725,7 +724,7 @@ class _Timeline extends State<Timeline> {
     final String lang = platformLanguage();
 
     return LoadingIndicatorOverlay(
-      isLoadingNotifier: _timelineController.isLoading,
+      isLoadingNotifier: _isLoadingNotifier,
       overlayColor: widget.colors['primaryBackground']?.withValues(alpha: 0.7),
       indicatorColor: widget.colors['primary'],
       child: Scaffold(
@@ -738,12 +737,6 @@ class _Timeline extends State<Timeline> {
 
             // Capture viewport width for scroll calculations
             _viewportWidth = screenWidth;
-
-            // Update TimelineController with actual viewport width immediately
-            if (_timelineController.viewportWidth.value != screenWidth) {
-              // Update synchronously to ensure visible range is calculated correctly
-              _timelineController.updateViewportWidth(screenWidth);
-            }
 
             // Calculate firstElementMargin once and store it for use in scroll calculations
             _firstElementMargin = ((screenWidth - (dayWidth - dayMargin)) / 2);
@@ -958,8 +951,7 @@ class _Timeline extends State<Timeline> {
                                                       colors: widget.colors,
                                                       index: index,
                                                       centerItemIndexNotifier:
-                                                          _timelineController
-                                                              .centerItemIndex,
+                                                          _centerItemIndexNotifier,
                                                       nowIndex: nowIndex,
                                                       day: days[index],
                                                       elements: widget.elements,

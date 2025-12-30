@@ -104,25 +104,25 @@ This implementation plan breaks down the removal of the `TimelineController` cla
 - [x] 4. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 5. Remove TimelineController and related code
-  - [ ] 5.1 Remove TimelineController from Timeline widget
+- [x] 5. Remove TimelineController and related code
+  - [x] 5.1 Remove TimelineController from Timeline widget
     - Remove `_timelineController` instance variable
     - Remove TimelineController initialization from `_initializeTimeline()`
     - Remove TimelineController disposal from `dispose()`
     - Remove import of `timeline_controller.dart`
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
 
-  - [ ] 5.2 Delete TimelineController class file
+  - [x] 5.2 Delete TimelineController class file
     - Delete `lib/src/timeline/models/timeline_controller.dart`
     - Delete `lib/src/timeline/models/visible_range.dart` (if not used elsewhere)
     - _Requirements: 1.1_
 
-  - [ ] 5.3 Update dispose() method
+  - [x] 5.3 Update dispose() method
     - Add `_scrollThrottleTimer?.cancel()` to dispose()
     - Ensure all timers are cancelled properly
     - _Requirements: 6.5_
 
-  - [ ] 5.4 Write unit test for timer cleanup
+  - [x] 5.4 Write unit test for timer cleanup
     - Test that scroll throttle timer is cancelled in dispose()
     - Test that no memory leaks occur from timer
     - _Requirements: 6.5_
