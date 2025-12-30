@@ -183,21 +183,21 @@ This implementation plan breaks down the removal of the `TimelineController` cla
     - Remove any TimelineController mocks or verifications
     - _Requirements: 9.3, 9.4, 9.5_
 
-- [ ] 10. Write integration tests
-  - [ ] 10.1 Write integration test for complete scroll flow
+- [x] 10. Write integration tests
+  - [x] 10.1 Write integration test for complete scroll flow
     - Test user scroll → calculation → state update → render
     - Verify horizontal scroll updates center item and visible range
     - Verify lazy viewports render correct items
     - Verify current date callback fires
     - _Requirements: 2.1, 2.3, 2.4, 3.5, 5.5_
 
-  - [ ] 10.2 Write integration test for throttling behavior
+  - [x] 10.2 Write integration test for throttling behavior
     - Simulate rapid scroll events
     - Verify calculations don't happen more than ~60 FPS
     - Verify state updates are throttled correctly
     - _Requirements: 2.5, 6.1, 6.2, 6.3, 6.4_
 
-  - [ ] 10.3 Write integration test for initialization
+  - [x] 10.3 Write integration test for initialization
     - Test correct initial scroll position (defaultDate or nowIndex)
     - Test correct initial visible range calculation
     - Test correct initial center item
