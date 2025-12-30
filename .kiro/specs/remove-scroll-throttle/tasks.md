@@ -13,38 +13,38 @@ This implementation plan breaks down the removal of scroll throttling into discr
   - Update related comments
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
 
-- [ ] 2. Remove throttle configuration from TimelineConfiguration
-  - [ ] 2.1 Remove scrollThrottleDuration field and constructor parameter
+- [x] 2. Remove throttle configuration from TimelineConfiguration
+  - [x] 2.1 Remove scrollThrottleDuration field and constructor parameter
     - Remove field declaration
     - Remove from constructor parameter list
     - Remove default value initialization
     - _Requirements: 2.1_
 
-  - [ ] 2.2 Update fromMap() factory method
+  - [x] 2.2 Update fromMap() factory method
     - Remove scrollThrottleDuration parsing logic
     - Remove scrollThrottleMs map access
     - Remove Duration creation for throttle
     - _Requirements: 2.2_
 
-  - [ ] 2.3 Update toMap() method
+  - [x] 2.3 Update toMap() method
     - Remove scrollThrottleMs from returned map
     - _Requirements: 2.3_
 
-  - [ ] 2.4 Update copyWith() method
+  - [x] 2.4 Update copyWith() method
     - Remove scrollThrottleDuration parameter
     - Remove scrollThrottleDuration assignment in return statement
     - _Requirements: 2.4_
 
-  - [ ] 2.5 Update equality operator and hashCode
+  - [x] 2.5 Update equality operator and hashCode
     - Remove scrollThrottleDuration from equality comparison
     - Remove scrollThrottleDuration from hashCode calculation
     - _Requirements: 2.5_
 
-  - [ ] 2.6 Update toString() method
+  - [x] 2.6 Update toString() method
     - Remove scrollThrottleDuration from string representation
     - _Requirements: 2.5_
 
-- [ ] 3. Remove throttle constraints from ParameterConstraints
+- [x] 3. Remove throttle constraints from ParameterConstraints
   - Remove 'scrollThrottleMs' entry from the `all` map
   - _Requirements: 2.6_
 

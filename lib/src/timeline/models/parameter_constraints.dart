@@ -107,12 +107,6 @@ class ParameterConstraints {
       max: 20,
       defaultValue: 5,
     ),
-    'scrollThrottleMs': const ParameterConstraints(
-      type: 'int',
-      min: 8,
-      max: 100,
-      defaultValue: 16,
-    ),
     'animationDurationMs': const ParameterConstraints(
       type: 'int',
       min: 100,

@@ -33,17 +33,6 @@
     "warning": "⚠️ Values greater than 12 can cause significant memory usage, especially with many rows. Monitor memory usage if increasing this value."
   },
   
-  "scrollThrottleMs": 20,
-  "_scrollThrottleMs_info": {
-    "type": "int",
-    "range": "8 - 100",
-    "default": 20,
-    "description": "Minimum time in milliseconds between scroll updates (throttling)",
-    "performance_impact": "Lower values = more responsive scrolling but higher CPU usage. Higher values = less CPU usage but may feel laggy.",
-    "recommendation": "Use 16ms (60 FPS) for small datasets. Use 20ms (default) for medium datasets. Increase to 25ms for large datasets on lower-end devices.",
-    "note": "16ms corresponds to 60 FPS, which is the standard for smooth animations"
-  },
-  
   "animationDurationMs": 250,
   "_animationDurationMs_info": {
     "type": "int",
@@ -109,14 +98,12 @@
       "description": "For < 100 days - Better visuals, smoother animations",
       "dayWidth": 70.0,
       "bufferDays": 5,
-      "scrollThrottleMs": 16,
       "animationDurationMs": 200
     },
     "medium_datasets": {
       "description": "For 100-500 days - Balanced performance (default values)",
       "dayWidth": 65.0,
       "bufferDays": 8,
-      "scrollThrottleMs": 20,
       "animationDurationMs": 250
     },
     "large_datasets": {
@@ -124,7 +111,6 @@
       "dayWidth": 50.0,
       "dayMargin": 4.0,
       "bufferDays": 10,
-      "scrollThrottleMs": 25,
       "animationDurationMs": 300
     }
   },
@@ -132,8 +118,8 @@
   "_troubleshooting": {
     "configuration_not_loading": "Ensure the file is named 'timeline_config.json' and is in the package root directory",
     "values_not_applied": "Check console for validation errors. Invalid values are replaced with defaults.",
-    "performance_issues": "Try using a preset for your dataset size, or reduce bufferDays and increase scrollThrottleMs",
+    "performance_issues": "Try using a preset for your dataset size, or reduce bufferDays",
     "memory_issues": "Reduce bufferDays (try 3-5) and dayWidth (try 35-40)",
-    "laggy_scrolling": "Increase scrollThrottleMs to 20-25ms, reduce bufferDays"
+    "laggy_scrolling": "Reduce bufferDays"
   }
 }

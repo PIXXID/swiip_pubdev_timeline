@@ -27,12 +27,6 @@ class TimelineConfiguration {
   /// but increases memory usage and render time.
   final int bufferDays;
 
-  /// Duration for throttling scroll events.
-  ///
-  /// Scroll calculations will be performed at most once per this duration,
-  /// reducing CPU usage during rapid scrolling.
-  final Duration scrollThrottleDuration;
-
   /// Duration for animations (e.g., auto-scroll, transitions).
   final Duration animationDuration;
 
@@ -47,7 +41,6 @@ class TimelineConfiguration {
     this.rowHeight = 30.0,
     this.rowMargin = 3.0,
     this.bufferDays = 5,
-    this.scrollThrottleDuration = const Duration(milliseconds: 16),
     this.animationDuration = const Duration(milliseconds: 220),
   });
 
@@ -57,13 +50,6 @@ class TimelineConfiguration {
   /// Missing parameters will use default values.
   factory TimelineConfiguration.fromMap(Map<String, dynamic> map) {
     // Parse durations
-    Duration scrollThrottleDuration = const Duration(milliseconds: 16);
-    if (map['scrollThrottleMs'] != null) {
-      scrollThrottleDuration = Duration(
-        milliseconds: (map['scrollThrottleMs'] as num).toInt(),
-      );
-    }
-
     Duration animationDuration = const Duration(milliseconds: 220);
     if (map['animationDurationMs'] != null) {
       animationDuration = Duration(
@@ -79,7 +65,6 @@ class TimelineConfiguration {
       rowHeight: (map['rowHeight'] as num?)?.toDouble() ?? 30.0,
       rowMargin: (map['rowMargin'] as num?)?.toDouble() ?? 3.0,
       bufferDays: (map['bufferDays'] as num?)?.toInt() ?? 5,
-      scrollThrottleDuration: scrollThrottleDuration,
       animationDuration: animationDuration,
     );
   }
@@ -96,7 +81,6 @@ class TimelineConfiguration {
       'rowHeight': rowHeight,
       'rowMargin': rowMargin,
       'bufferDays': bufferDays,
-      'scrollThrottleMs': scrollThrottleDuration.inMilliseconds,
       'animationDurationMs': animationDuration.inMilliseconds,
     };
   }
@@ -113,7 +97,6 @@ class TimelineConfiguration {
     double? rowHeight,
     double? rowMargin,
     int? bufferDays,
-    Duration? scrollThrottleDuration,
     Duration? animationDuration,
   }) {
     return TimelineConfiguration(
@@ -124,7 +107,6 @@ class TimelineConfiguration {
       rowHeight: rowHeight ?? this.rowHeight,
       rowMargin: rowMargin ?? this.rowMargin,
       bufferDays: bufferDays ?? this.bufferDays,
-      scrollThrottleDuration: scrollThrottleDuration ?? this.scrollThrottleDuration,
       animationDuration: animationDuration ?? this.animationDuration,
     );
   }
@@ -141,7 +123,6 @@ class TimelineConfiguration {
           rowHeight == other.rowHeight &&
           rowMargin == other.rowMargin &&
           bufferDays == other.bufferDays &&
-          scrollThrottleDuration == other.scrollThrottleDuration &&
           animationDuration == other.animationDuration;
 
   @override
@@ -153,7 +134,6 @@ class TimelineConfiguration {
         rowHeight,
         rowMargin,
         bufferDays,
-        scrollThrottleDuration,
         animationDuration,
       );
 
@@ -167,7 +147,6 @@ class TimelineConfiguration {
         '  rowHeight: $rowHeight,\n'
         '  rowMargin: $rowMargin,\n'
         '  bufferDays: $bufferDays,\n'
-        '  scrollThrottleDuration: $scrollThrottleDuration,\n'
         '  animationDuration: $animationDuration\n'
         ')';
   }

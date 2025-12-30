@@ -1,0 +1,15 @@
+{
+  "enabled": true,
+  "name": "Git Merge to Main",
+  "description": "Manually trigger a git merge from the current branch to the main branch",
+  "version": "1",
+  "when": {
+    "type": "userTriggered"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Execute a git merge from the current branch to the main branch. \nFirst, check the current branch name, then switch to main, pull the latest changes, merge the original branch into main.\nAbandon the merger in case of conflicts. Provide clear feedback on the status of the merger."
+  },
+  "workspaceFolderName": "swiip_pubdev_timeline",
+  "shortName": "manual-git-merge"
+}
