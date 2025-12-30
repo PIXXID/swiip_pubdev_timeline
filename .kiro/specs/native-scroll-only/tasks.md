@@ -127,14 +127,14 @@ This implementation plan breaks down the removal of the `TimelineController` cla
     - Test that no memory leaks occur from timer
     - _Requirements: 6.5_
 
-- [ ] 6. Update auto-scroll implementation
-  - [ ] 6.1 Verify auto-scroll logic works with new state management
+- [x] 6. Update auto-scroll implementation
+  - [x] 6.1 Verify auto-scroll logic works with new state management
     - Ensure `_applyAutoScroll()` uses new state variables
     - Ensure auto-scroll conditions check new state variables
     - Ensure vertical scroll animation works correctly
     - _Requirements: 7.1, 7.3, 7.4_
 
-  - [ ] 6.2 Write property test for auto-scroll behavior
+  - [x] 6.2 Write property test for auto-scroll behavior
     - **Property 6: Auto-Scroll Behavior**
     - **Validates: Requirements 7.1, 7.3, 7.4**
     - Generate random horizontal scroll positions (≥2 day change)
