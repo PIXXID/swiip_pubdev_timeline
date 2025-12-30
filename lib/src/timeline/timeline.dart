@@ -163,6 +163,13 @@ class _Timeline extends State<Timeline> {
   // First element margin for centering calculations
   double _firstElementMargin = 0.0;
 
+  // New state variables for native scroll management
+  int _centerItemIndex = 0;
+  int _visibleStart = 0;
+  int _visibleEnd = 0;
+  double _viewportWidth = 0.0;
+  Timer? _scrollThrottleTimer;
+
   bool isUniqueProject = false;
 
   // Debouncing timer for vertical scroll calculations
@@ -699,6 +706,9 @@ class _Timeline extends State<Timeline> {
             final double screenWidth = constraints.maxWidth;
             final double screenCenter = (screenWidth / 2);
 
+            // Capture viewport width for scroll calculations
+            _viewportWidth = screenWidth;
+
             // Update TimelineController with actual viewport width immediately
             if (_timelineController.viewportWidth.value != screenWidth) {
               // Update synchronously to ensure visible range is calculated correctly
@@ -795,8 +805,10 @@ class _Timeline extends State<Timeline> {
                                             height: datesHeight,
                                             child: days.isNotEmpty
                                                 ? LazyTimelineViewport(
-                                                    controller:
-                                                        _timelineController,
+                                                    visibleStart: _visibleStart,
+                                                    visibleEnd: _visibleEnd,
+                                                    centerItemIndex:
+                                                        _centerItemIndex,
                                                     items: days,
                                                     itemWidth: dayWidth,
                                                     itemMargin: dayMargin,
@@ -807,9 +819,7 @@ class _Timeline extends State<Timeline> {
                                                         colors: widget.colors,
                                                         index: index,
                                                         centerItemIndex:
-                                                            _timelineController
-                                                                .centerItemIndex
-                                                                .value,
+                                                            _centerItemIndex,
                                                         days: days,
                                                         dayWidth: dayWidth,
                                                         dayMargin: dayMargin,
@@ -868,8 +878,10 @@ class _Timeline extends State<Timeline> {
                                                             const ClampingScrollPhysics(), // Permet un scroll fluide
                                                         child:
                                                             LazyStageRowsViewport(
-                                                          controller:
-                                                              _timelineController,
+                                                          visibleStart:
+                                                              _visibleStart,
+                                                          visibleEnd:
+                                                              _visibleEnd,
                                                           stagesRows:
                                                               stagesRows,
                                                           rowHeight: rowHeight,
@@ -903,8 +915,10 @@ class _Timeline extends State<Timeline> {
                                           height: 140,
                                           child: days.isNotEmpty
                                               ? LazyTimelineViewport(
-                                                  controller:
-                                                      _timelineController,
+                                                  visibleStart: _visibleStart,
+                                                  visibleEnd: _visibleEnd,
+                                                  centerItemIndex:
+                                                      _centerItemIndex,
                                                   items: days,
                                                   itemWidth: dayWidth,
                                                   itemMargin: dayMargin,

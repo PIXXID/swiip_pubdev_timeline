@@ -35,8 +35,8 @@ This implementation plan breaks down the removal of the `TimelineController` cla
     - Verify viewport renders only rows in range
     - Run 100 iterations
 
-- [ ] 2. Update Timeline widget state management
-  - [ ] 2.1 Add new state variables to Timeline widget
+- [x] 2. Update Timeline widget state management
+  - [x] 2.1 Add new state variables to Timeline widget
     - Add `int _centerItemIndex = 0`
     - Add `int _visibleStart = 0`
     - Add `int _visibleEnd = 0`
@@ -44,14 +44,14 @@ This implementation plan breaks down the removal of the `TimelineController` cla
     - Add `Timer? _scrollThrottleTimer`
     - _Requirements: 2.3, 2.4_
 
-  - [ ] 2.2 Update build() method to capture viewport width
+  - [x] 2.2 Update build() method to capture viewport width
     - In LayoutBuilder, set `_viewportWidth = constraints.maxWidth`
     - Pass visible range parameters to LazyTimelineViewport
     - Pass visible range parameters to LazyStageRowsViewport
     - Pass centerItemIndex directly instead of from controller
     - _Requirements: 4.2, 5.5_
 
-  - [ ] 2.3 Write unit test for viewport width capture
+  - [x] 2.3 Write unit test for viewport width capture
     - Test that viewport width is correctly captured from LayoutBuilder
     - Test that width updates when constraints change
     - _Requirements: 4.2_

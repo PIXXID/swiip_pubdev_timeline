@@ -116,8 +116,10 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
 
     // Check if any stage in this row contains the new center index
     return widget.stagesList.any((stage) {
-      final startIndex = (stage['startDateIndex'] as int?) ?? 0;
-      final endIndex = (stage['endDateIndex'] as int?) ?? 0;
+      final startIndex =
+          stage['startDateIndex'] is int ? stage['startDateIndex'] as int : 0;
+      final endIndex =
+          stage['endDateIndex'] is int ? stage['endDateIndex'] as int : 0;
       return startIndex <= newIndex && endIndex >= newIndex;
     });
   }
@@ -132,8 +134,10 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
 
     // Check if any stage in this row overlaps with the new visible range
     return widget.stagesList.any((stage) {
-      final startIndex = (stage['startDateIndex'] as int?) ?? 0;
-      final endIndex = (stage['endDateIndex'] as int?) ?? 0;
+      final startIndex =
+          stage['startDateIndex'] is int ? stage['startDateIndex'] as int : 0;
+      final endIndex =
+          stage['endDateIndex'] is int ? stage['endDateIndex'] as int : 0;
       return newRange.overlaps(startIndex, endIndex);
     });
   }
@@ -148,8 +152,10 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
     for (int index = 0; index < widget.stagesList.length; index++) {
       final stage = widget.stagesList[index];
       // Handle missing or null date indices gracefully
-      final startIndex = (stage['startDateIndex'] as int?) ?? 0;
-      final endIndex = (stage['endDateIndex'] as int?) ?? 0;
+      final startIndex =
+          stage['startDateIndex'] is int ? stage['startDateIndex'] as int : 0;
+      final endIndex =
+          stage['endDateIndex'] is int ? stage['endDateIndex'] as int : 0;
 
       // Calculate dimensions
       int daysWidth = endIndex - startIndex + 1;
@@ -160,8 +166,10 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
       double spacerWidth = 0;
 
       if (previousItem != null) {
-        int daysBetweenElements =
-            startIndex - ((previousItem['endDateIndex'] as int?) ?? 0) - 1;
+        final prevEndIndex = previousItem['endDateIndex'] is int
+            ? previousItem['endDateIndex'] as int
+            : 0;
+        int daysBetweenElements = startIndex - prevEndIndex - 1;
         if (daysBetweenElements > 0) {
           spacerWidth =
               daysBetweenElements * (widget.dayWidth - widget.dayMargin);
@@ -331,8 +339,10 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
     bool isStage =
         ['milestone', 'cycle', 'sequence', 'stage'].contains(stage['type']);
 
-    final startIndex = (stage['startDateIndex'] as int?) ?? 0;
-    final endIndex = (stage['endDateIndex'] as int?) ?? 0;
+    final startIndex =
+        stage['startDateIndex'] is int ? stage['startDateIndex'] as int : 0;
+    final endIndex =
+        stage['endDateIndex'] is int ? stage['endDateIndex'] as int : 0;
 
     return !isStage &&
         daysWidth < 4 &&
