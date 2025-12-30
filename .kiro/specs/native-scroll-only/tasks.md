@@ -56,8 +56,8 @@ This implementation plan breaks down the removal of the `TimelineController` cla
     - Test that width updates when constraints change
     - _Requirements: 4.2_
 
-- [ ] 3. Implement direct scroll calculations in Timeline
-  - [ ] 3.1 Update horizontal scroll listener
+- [x] 3. Implement direct scroll calculations in Timeline
+  - [x] 3.1 Update horizontal scroll listener
     - Implement throttling with Timer (16ms interval)
     - Calculate center index using `calculateCenterDateIndex()` directly
     - Calculate visible range inline using formula
@@ -65,7 +65,7 @@ This implementation plan breaks down the removal of the `TimelineController` cla
     - Trigger callbacks and auto-scroll when center changes
     - _Requirements: 2.1, 2.3, 2.4, 2.5, 3.1, 3.2, 4.1, 4.3, 4.4, 4.5_
 
-  - [ ] 3.2 Write property test for scroll position retrieval
+  - [x] 3.2 Write property test for scroll position retrieval
     - **Property 1: Scroll Position Retrieval**
     - **Validates: Requirements 2.1, 2.2**
     - Generate random scroll offsets for both controllers
@@ -73,7 +73,7 @@ This implementation plan breaks down the removal of the `TimelineController` cla
     - Test horizontal and vertical controllers independently
     - Run 100 iterations
 
-  - [ ] 3.3 Write property test for center item calculation
+  - [x] 3.3 Write property test for center item calculation
     - **Property 2: Center Item Calculation**
     - **Validates: Requirements 2.3, 3.1, 3.2**
     - Generate random scroll offsets and viewport widths
@@ -82,7 +82,7 @@ This implementation plan breaks down the removal of the `TimelineController` cla
     - Verify index within valid range [0, totalDays-1]
     - Run 100 iterations
 
-  - [ ] 3.4 Write property test for visible range calculation
+  - [x] 3.4 Write property test for visible range calculation
     - **Property 3: Visible Range Calculation**
     - **Validates: Requirements 2.4, 4.1, 4.3, 4.4, 4.5**
     - Generate random scroll offsets, viewport widths, buffer values
@@ -92,7 +92,7 @@ This implementation plan breaks down the removal of the `TimelineController` cla
     - Test edge cases: scroll at start, scroll at end, small/large viewport
     - Run 100 iterations
 
-  - [ ] 3.5 Write property test for current date callback
+  - [x] 3.5 Write property test for current date callback
     - **Property 4: Current Date Callback Invocation**
     - **Validates: Requirements 3.5**
     - Generate random scroll positions that change center item
@@ -101,7 +101,7 @@ This implementation plan breaks down the removal of the `TimelineController` cla
     - Verify callback not called when center unchanged
     - Run 100 iterations
 
-- [ ] 4. Checkpoint - Ensure all tests pass
+- [x] 4. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 5. Remove TimelineController and related code

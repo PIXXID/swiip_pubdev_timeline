@@ -2,7 +2,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:swiip_pubdev_timeline/src/timeline/lazy_timeline_viewport.dart';
-import 'package:swiip_pubdev_timeline/src/timeline/models/models.dart';
 
 void main() {
   group('LazyTimelineViewport Property Tests', () {
@@ -34,13 +33,12 @@ void main() {
           },
         );
 
-        // Create controller
-        final controller = TimelineController(
-          dayWidth: dayWidth,
-          dayMargin: dayMargin,
-          totalDays: totalDays,
-          viewportWidth: viewportWidth,
-        );
+        // Calculate visible range
+        final visibleDays = (viewportWidth / (dayWidth - dayMargin)).ceil();
+        const buffer = 5;
+        final visibleStart = 0;
+        final visibleEnd = (visibleDays + buffer * 2).clamp(0, totalDays);
+        final centerItemIndex = visibleDays ~/ 2;
 
         // Track how many widgets were built
         var builtWidgetCount = 0;
@@ -54,7 +52,9 @@ void main() {
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: LazyTimelineViewport(
-                    controller: controller,
+                    visibleStart: visibleStart,
+                    visibleEnd: visibleEnd,
+                    centerItemIndex: centerItemIndex,
                     items: days,
                     itemWidth: dayWidth,
                     itemMargin: dayMargin,
@@ -104,8 +104,6 @@ void main() {
           greaterThan(0),
           reason: 'Should render at least some items',
         );
-
-        controller.dispose();
       }
     }, timeout: const Timeout(Duration(minutes: 5)));
 
@@ -130,12 +128,12 @@ void main() {
           },
         );
 
-        final controller = TimelineController(
-          dayWidth: dayWidth,
-          dayMargin: dayMargin,
-          totalDays: totalDays,
-          viewportWidth: viewportWidth,
-        );
+        // Calculate initial visible range
+        final visibleDays = (viewportWidth / (dayWidth - dayMargin)).ceil();
+        const buffer = 5;
+        var visibleStart = 0;
+        var visibleEnd = (visibleDays + buffer * 2).clamp(0, totalDays);
+        var centerItemIndex = visibleDays ~/ 2;
 
         var builtWidgetCount = 0;
         final builtIndices = <int>{};
@@ -146,8 +144,58 @@ void main() {
               body: SizedBox(
                 width: viewportWidth,
                 height: 400,
+                child: StatefulBuilder(
+                  builder: (context, setState) {
+                    return LazyTimelineViewport(
+                      visibleStart: visibleStart,
+                      visibleEnd: visibleEnd,
+                      centerItemIndex: centerItemIndex,
+                      items: days,
+                      itemWidth: dayWidth,
+                      itemMargin: dayMargin,
+                      itemBuilder: (context, index) {
+                        builtWidgetCount++;
+                        builtIndices.add(index);
+                        return SizedBox(
+                          key: ValueKey('day_$index'),
+                          width: dayWidth - dayMargin,
+                          height: 100,
+                          child: Text('Day $index'),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
+        );
+
+        await tester.pumpAndSettle();
+
+        final initialBuildCount = builtWidgetCount;
+        final initialIndices = Set<int>.from(builtIndices);
+
+        // Change the visible range by simulating scroll to middle
+        final scrollOffset = (totalDays / 2) * (dayWidth - dayMargin);
+        final newCenterIndex = (scrollOffset / (dayWidth - dayMargin)).round();
+        visibleStart =
+            (newCenterIndex - (visibleDays ~/ 2) - buffer).clamp(0, totalDays);
+        visibleEnd =
+            (newCenterIndex + (visibleDays ~/ 2) + buffer).clamp(0, totalDays);
+        centerItemIndex = newCenterIndex;
+
+        // Rebuild with new visible range
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: SizedBox(
+                width: viewportWidth,
+                height: 400,
                 child: LazyTimelineViewport(
-                  controller: controller,
+                  visibleStart: visibleStart,
+                  visibleEnd: visibleEnd,
+                  centerItemIndex: centerItemIndex,
                   items: days,
                   itemWidth: dayWidth,
                   itemMargin: dayMargin,
@@ -167,16 +215,6 @@ void main() {
           ),
         );
 
-        await tester.pumpAndSettle();
-
-        final initialBuildCount = builtWidgetCount;
-        final initialIndices = Set<int>.from(builtIndices);
-
-        // Change the visible range by updating scroll offset
-        final newOffset =
-            (totalDays / 2) * (dayWidth - dayMargin); // Scroll to middle
-        controller.updateScrollOffset(newOffset);
-
         await tester.pumpAndSettle(const Duration(milliseconds: 50));
 
         // Verify that new items were built
@@ -194,8 +232,6 @@ void main() {
           isTrue,
           reason: 'Should render different items after scroll',
         );
-
-        controller.dispose();
       }
     }, timeout: const Timeout(Duration(minutes: 5)));
 
@@ -217,18 +253,20 @@ void main() {
           (i) => {'date': DateTime.now().add(Duration(days: i))},
         );
 
-        final controller = TimelineController(
-          dayWidth: dayWidth,
-          dayMargin: dayMargin,
-          totalDays: totalDays,
-          viewportWidth: viewportWidth,
-        );
+        // Calculate visible range
+        final visibleDays = (viewportWidth / (dayWidth - dayMargin)).ceil();
+        const buffer = 5;
+        var visibleStart = 0;
+        var visibleEnd = (visibleDays + buffer * 2).clamp(0, totalDays);
+        var centerItemIndex = visibleDays ~/ 2;
 
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
               body: LazyTimelineViewport(
-                controller: controller,
+                visibleStart: visibleStart,
+                visibleEnd: visibleEnd,
+                centerItemIndex: centerItemIndex,
                 items: days,
                 itemWidth: dayWidth,
                 itemMargin: dayMargin,
@@ -247,25 +285,99 @@ void main() {
         await tester.pumpAndSettle();
 
         // Test at start (offset = 0)
-        controller.updateScrollOffset(0);
+        visibleStart = 0;
+        visibleEnd = (visibleDays + buffer * 2).clamp(0, totalDays);
+        centerItemIndex = 0;
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: LazyTimelineViewport(
+                visibleStart: visibleStart,
+                visibleEnd: visibleEnd,
+                centerItemIndex: centerItemIndex,
+                items: days,
+                itemWidth: dayWidth,
+                itemMargin: dayMargin,
+                itemBuilder: (context, index) {
+                  return SizedBox(
+                    key: ValueKey('day_$index'),
+                    width: dayWidth - dayMargin,
+                    height: 100,
+                  );
+                },
+              ),
+            ),
+          ),
+        );
         await tester.pumpAndSettle(const Duration(milliseconds: 50));
         expect(tester.takeException(), isNull,
             reason: 'Should handle start boundary without errors');
 
         // Test at end (offset = max)
         final maxOffset = totalDays * (dayWidth - dayMargin);
-        controller.updateScrollOffset(maxOffset);
+        final endCenterIndex = (maxOffset / (dayWidth - dayMargin))
+            .round()
+            .clamp(0, totalDays - 1);
+        visibleStart =
+            (endCenterIndex - (visibleDays ~/ 2) - buffer).clamp(0, totalDays);
+        visibleEnd = totalDays;
+        centerItemIndex = endCenterIndex;
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: LazyTimelineViewport(
+                visibleStart: visibleStart,
+                visibleEnd: visibleEnd,
+                centerItemIndex: centerItemIndex,
+                items: days,
+                itemWidth: dayWidth,
+                itemMargin: dayMargin,
+                itemBuilder: (context, index) {
+                  return SizedBox(
+                    key: ValueKey('day_$index'),
+                    width: dayWidth - dayMargin,
+                    height: 100,
+                  );
+                },
+              ),
+            ),
+          ),
+        );
         await tester.pumpAndSettle(const Duration(milliseconds: 50));
         expect(tester.takeException(), isNull,
             reason: 'Should handle end boundary without errors');
 
         // Test beyond end (should clamp)
-        controller.updateScrollOffset(maxOffset * 2);
+        visibleStart = (totalDays - visibleDays - buffer).clamp(0, totalDays);
+        visibleEnd = totalDays;
+        centerItemIndex = totalDays - 1;
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: LazyTimelineViewport(
+                visibleStart: visibleStart,
+                visibleEnd: visibleEnd,
+                centerItemIndex: centerItemIndex,
+                items: days,
+                itemWidth: dayWidth,
+                itemMargin: dayMargin,
+                itemBuilder: (context, index) {
+                  return SizedBox(
+                    key: ValueKey('day_$index'),
+                    width: dayWidth - dayMargin,
+                    height: 100,
+                  );
+                },
+              ),
+            ),
+          ),
+        );
         await tester.pumpAndSettle(const Duration(milliseconds: 50));
         expect(tester.takeException(), isNull,
             reason: 'Should handle beyond-end offset without errors');
-
-        controller.dispose();
       }
     }, timeout: const Timeout(Duration(minutes: 5)));
   });
@@ -273,18 +385,13 @@ void main() {
   group('LazyTimelineViewport Unit Tests', () {
     testWidgets('renders empty timeline without errors',
         (WidgetTester tester) async {
-      final controller = TimelineController(
-        dayWidth: 45.0,
-        dayMargin: 5.0,
-        totalDays: 0,
-        viewportWidth: 800.0,
-      );
-
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
             body: LazyTimelineViewport(
-              controller: controller,
+              visibleStart: 0,
+              visibleEnd: 0,
+              centerItemIndex: 0,
               items: const [],
               itemWidth: 45.0,
               itemMargin: 5.0,
@@ -297,17 +404,9 @@ void main() {
       );
 
       expect(tester.takeException(), isNull);
-      controller.dispose();
     });
 
     testWidgets('renders single item timeline', (WidgetTester tester) async {
-      final controller = TimelineController(
-        dayWidth: 45.0,
-        dayMargin: 5.0,
-        totalDays: 1,
-        viewportWidth: 800.0,
-      );
-
       final days = [
         {'date': DateTime.now()}
       ];
@@ -318,7 +417,9 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: LazyTimelineViewport(
-              controller: controller,
+              visibleStart: 0,
+              visibleEnd: 1,
+              centerItemIndex: 0,
               items: days,
               itemWidth: 45.0,
               itemMargin: 5.0,
@@ -339,19 +440,10 @@ void main() {
 
       expect(buildCount, greaterThan(0));
       expect(tester.takeException(), isNull);
-
-      controller.dispose();
     });
 
     testWidgets('uses Stack with Positioned for layout',
         (WidgetTester tester) async {
-      final controller = TimelineController(
-        dayWidth: 45.0,
-        dayMargin: 5.0,
-        totalDays: 10,
-        viewportWidth: 800.0,
-      );
-
       final days = List.generate(
         10,
         (i) => {'date': DateTime.now().add(Duration(days: i))},
@@ -361,7 +453,9 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: LazyTimelineViewport(
-              controller: controller,
+              visibleStart: 0,
+              visibleEnd: 10,
+              centerItemIndex: 5,
               items: days,
               itemWidth: 45.0,
               itemMargin: 5.0,
@@ -388,20 +482,11 @@ void main() {
 
       // Verify Positioned widgets are used
       expect(find.byType(Positioned), findsWidgets);
-
-      controller.dispose();
     });
 
     testWidgets('calculates correct total width', (WidgetTester tester) async {
       final totalDays = 100;
       final dayWidth = 45.0;
-
-      final controller = TimelineController(
-        dayWidth: dayWidth,
-        dayMargin: 5.0,
-        totalDays: totalDays,
-        viewportWidth: 800.0,
-      );
 
       final days = List.generate(
         totalDays,
@@ -412,7 +497,9 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: LazyTimelineViewport(
-              controller: controller,
+              visibleStart: 0,
+              visibleEnd: 20,
+              centerItemIndex: 10,
               items: days,
               itemWidth: dayWidth,
               itemMargin: 5.0,
@@ -440,19 +527,11 @@ void main() {
 
       final expectedWidth = totalDays * dayWidth;
       expect(sizedBox.width, equals(expectedWidth));
-
-      controller.dispose();
     });
 
     testWidgets('only calls itemBuilder for visible items',
         (WidgetTester tester) async {
       final totalDays = 300;
-      final controller = TimelineController(
-        dayWidth: 45.0,
-        dayMargin: 5.0,
-        totalDays: totalDays,
-        viewportWidth: 800.0,
-      );
 
       final days = List.generate(
         totalDays,
@@ -468,7 +547,9 @@ void main() {
               width: 800,
               height: 400,
               child: LazyTimelineViewport(
-                controller: controller,
+                visibleStart: 0,
+                visibleEnd: 25, // Only render first 25 items
+                centerItemIndex: 12,
                 items: days,
                 itemWidth: 45.0,
                 itemMargin: 5.0,
@@ -491,8 +572,6 @@ void main() {
       // Should build significantly fewer items than total
       expect(buildCount, lessThan(totalDays));
       expect(buildCount, greaterThan(0));
-
-      controller.dispose();
     });
   });
 }

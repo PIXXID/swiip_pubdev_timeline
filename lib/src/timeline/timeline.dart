@@ -327,64 +327,93 @@ class _Timeline extends State<Timeline> {
 
     // Écoute du scroll horizontal pour :
     // - calculer quel élément est au centre (calcul pur)
-    // - mettre à jour le TimelineController avec la position de scroll
+    // - calculer la plage visible (calcul pur)
     // - déclencher l'auto-scroll vertical si nécessaire (action séparée)
     //
     // Architecture de scroll refactorisée :
-    // 1. CALCUL (_calculateScrollState): Fonctions pures qui calculent les valeurs
-    //    sans modifier l'état ni déclencher d'actions
-    // 2. ACTION (_applyAutoScroll): Fonction séparée qui applique le scroll vertical
-    //    basé sur les calculs
+    // 1. CALCUL: Fonctions pures qui calculent les valeurs sans modifier l'état
+    // 2. ACTION: Mise à jour de l'état et déclenchement des callbacks
     //
     // Cette séparation calcul/action améliore la testabilité et la maintenabilité.
     _controllerTimeline.addListener(() {
-      _performanceMonitor.startOperation('scroll_update');
+      // Cancel existing throttle timer
+      _scrollThrottleTimer?.cancel();
 
-      final currentOffset = _controllerTimeline.offset;
-      final maxScrollExtent = _controllerTimeline.position.maxScrollExtent;
+      // Throttle scroll calculations (~60 FPS = 16ms interval)
+      _scrollThrottleTimer = Timer(const Duration(milliseconds: 16), () {
+        if (!mounted) return;
 
-      if (currentOffset >= 0 && currentOffset < maxScrollExtent) {
-        // 1. Mise à jour du TimelineController (throttled)
-        _timelineController.updateScrollOffset(currentOffset);
+        _performanceMonitor.startOperation('scroll_update');
 
-        // 2. Calcul de l'état de scroll (CALCUL PUR)
-        final scrollState = _calculateScrollState(
-          currentScrollOffset: currentOffset,
-          previousScrollOffset: _previousScrollOffset,
-        );
+        final currentOffset = _controllerTimeline.offset;
+        final maxScrollExtent = _controllerTimeline.position.maxScrollExtent;
 
-        // 3. Vérification si le centre a changé de manière significative
-        // Pour éviter les sauts à chaque cran de molette, on ne déclenche l'auto-scroll
-        // que si le changement est significatif (au moins 2 jours de différence)
-        final centerIndexDifference =
-            (scrollState.centerDateIndex - _previousCenterIndex).abs();
-        const minCenterIndexChange = 2; // Minimum 2 jours de différence
+        if (currentOffset >= 0 && currentOffset < maxScrollExtent) {
+          // 1. Calculate center index directly using pure function
+          final newCenterIndex = calculateCenterDateIndex(
+            scrollOffset: currentOffset,
+            viewportWidth: _viewportWidth,
+            dayWidth: dayWidth,
+            dayMargin: dayMargin,
+            totalDays: days.length,
+          );
 
-        if (scrollState.centerDateIndex != _previousCenterIndex) {
-          // Mise à jour du callback de date (toujours, même pour petits changements)
-          _updateCurrentDateCallback(scrollState.centerDateIndex);
+          // 2. Calculate visible range inline using formula
+          final visibleDays = (_viewportWidth / (dayWidth - dayMargin)).ceil();
+          final buffer = _config.bufferDays;
+          final newVisibleStart = (newCenterIndex - (visibleDays ~/ 2) - buffer)
+              .clamp(0, days.length);
+          final newVisibleEnd = (newCenterIndex + (visibleDays ~/ 2) + buffer)
+              .clamp(0, days.length);
 
-          // Auto-scroll uniquement si le changement est significatif
-          if (centerIndexDifference >= minCenterIndexChange) {
-            // Annule le timer de debounce précédent
-            _verticalScrollDebounceTimer?.cancel();
+          // 3. Update state only when values change (check before setState)
+          if (newCenterIndex != _centerItemIndex ||
+              newVisibleStart != _visibleStart ||
+              newVisibleEnd != _visibleEnd) {
+            setState(() {
+              _centerItemIndex = newCenterIndex;
+              _visibleStart = newVisibleStart;
+              _visibleEnd = newVisibleEnd;
+            });
 
-            // Debounce les calculs de scroll vertical
-            _verticalScrollDebounceTimer = Timer(
-              _verticalScrollDebounceDuration,
-              () => _applyAutoScroll(scrollState),
-            );
+            // 4. Trigger callbacks and auto-scroll when center changes
+            if (newCenterIndex != _previousCenterIndex) {
+              // Update current date callback
+              _updateCurrentDateCallback(newCenterIndex);
+
+              // Calculate scroll state for auto-scroll
+              final scrollState = _calculateScrollState(
+                currentScrollOffset: currentOffset,
+                previousScrollOffset: _previousScrollOffset,
+              );
+
+              // Auto-scroll only if the change is significant (at least 2 days)
+              final centerIndexDifference =
+                  (newCenterIndex - _previousCenterIndex).abs();
+              const minCenterIndexChange = 2;
+
+              if (centerIndexDifference >= minCenterIndexChange) {
+                // Cancel previous debounce timer
+                _verticalScrollDebounceTimer?.cancel();
+
+                // Debounce vertical scroll calculations
+                _verticalScrollDebounceTimer = Timer(
+                  _verticalScrollDebounceDuration,
+                  () => _applyAutoScroll(scrollState),
+                );
+              }
+
+              // Save previous center index
+              _previousCenterIndex = newCenterIndex;
+            }
           }
 
-          // Sauvegarde du centre précédent
-          _previousCenterIndex = scrollState.centerDateIndex;
+          // Save previous scroll offset
+          _previousScrollOffset = currentOffset;
         }
 
-        // Sauvegarde de l'offset précédent
-        _previousScrollOffset = currentOffset;
-      }
-
-      _performanceMonitor.endOperation('scroll_update');
+        _performanceMonitor.endOperation('scroll_update');
+      });
     });
 
     // On vérifie si la timeline affiche un ou plusieurs projets
@@ -435,7 +464,8 @@ class _Timeline extends State<Timeline> {
   // Destruction du widget
   @override
   void dispose() {
-    // Cancel debounce timer
+    // Cancel timers
+    _scrollThrottleTimer?.cancel();
     _verticalScrollDebounceTimer?.cancel();
     // On enlève les écoutes du scroll de la timeline et vertical
     _controllerTimeline.removeListener(() {});
