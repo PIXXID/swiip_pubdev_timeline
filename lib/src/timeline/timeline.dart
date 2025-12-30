@@ -977,19 +977,6 @@ class _Timeline extends State<Timeline> {
                     ),
                   ]),
                 ),
-                // MESSAGE SI AUCUNE ACTIVITE
-                if (timelineIsEmpty)
-                  Positioned.fill(
-                    child: Container(
-                      color: widget.colors['primaryBackground'],
-                      padding: const EdgeInsets.all(25),
-                      child: Center(
-                          child: Text(
-                        'Aucune activité ne vous a été attribuée. Vous pouvez consulter le détail des projets et configurer vos équipes.',
-                        style: TextStyle(color: widget.colors['primaryText'], fontSize: 15),
-                      )),
-                    ),
-                  )
               ],
             );
           },
