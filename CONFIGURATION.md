@@ -26,7 +26,6 @@ The `swiip_pubdev_timeline` package supports external configuration through a JS
    {
      "dayWidth": 50.0,
      "bufferDays": 10,
-     "scrollThrottleMs": 25
    }
    ```
 
@@ -106,25 +105,6 @@ Number of days to render outside the visible viewport on each side.
 - Large datasets: `10`
 
 **⚠️ Warning**: Values greater than 10 can cause significant memory usage, especially with many rows. Monitor memory usage if increasing this value.
-
-### scrollThrottleMs
-
-**Type**: `int`  
-**Range**: `8 - 100`  
-**Default**: `20`
-
-Minimum time in milliseconds between scroll updates (throttling).
-
-**Performance Impact**:
-- Lower values = more responsive scrolling but higher CPU usage
-- Higher values = less CPU usage but may feel laggy
-
-**Recommendations**:
-- Standard (60 FPS): `16`
-- Medium datasets: `20` (default)
-- Large datasets or low-end devices: `25`
-
-**Note**: 16ms corresponds to 60 FPS, which is the standard for smooth animations.
 
 ### animationDurationMs
 
@@ -303,7 +283,6 @@ This will print the active configuration at startup:
 - dayWidth: 65.0 (from file)
 - dayMargin: 5.0 (default)
 - bufferDays: 8 (default)
-- scrollThrottleMs: 20 (from file)
 - animationDurationMs: 250 (from file)
 ...
 ```
@@ -337,9 +316,8 @@ This will print the active configuration at startup:
 
 **Solutions**:
 1. Reduce `bufferDays` to 3-5
-2. Increase `scrollThrottleMs` to 20-25
-3. Reduce `dayWidth` to 35-40
-4. Check if you have too many rows (consider pagination)
+2. Reduce `dayWidth` to 35-40
+3. Check if you have too many rows (consider pagination)
 
 ### Memory Issues
 
@@ -356,9 +334,8 @@ This will print the active configuration at startup:
 **Problem**: Scrolling feels choppy or unresponsive.
 
 **Solutions**:
-1. Increase `scrollThrottleMs` to 20-25ms
-2. Reduce `bufferDays` if memory allows
-3. Check device performance (test on target devices)
+1. Reduce `bufferDays` if memory allows
+2. Check device performance (test on target devices)
 
 ### File Size Warning
 
@@ -375,7 +352,6 @@ Recommended configuration:
 {
   "dayWidth": 70.0,
   "bufferDays": 5,
-  "scrollThrottleMs": 16,
   "animationDurationMs": 200
 }
 ```
@@ -389,7 +365,6 @@ Use default values or customize as needed:
 {
   "dayWidth": 65.0,
   "bufferDays": 8,
-  "scrollThrottleMs": 20,
   "animationDurationMs": 250
 }
 ```
@@ -404,7 +379,6 @@ Recommended configuration:
   "dayWidth": 50.0,
   "dayMargin": 4.0,
   "bufferDays": 10,
-  "scrollThrottleMs": 25,
   "animationDurationMs": 300
 }
 ```
@@ -418,7 +392,6 @@ Recommended configuration:
 {
   "dayWidth": 50.0,
   "bufferDays": 5,
-  "scrollThrottleMs": 25,
   "animationDurationMs": 300
 }
 ```
@@ -432,7 +405,6 @@ Recommended configuration:
 {
   "dayWidth": 65.0,
   "bufferDays": 12,
-  "scrollThrottleMs": 16,
   "animationDurationMs": 250
 }
 ```
@@ -473,7 +445,6 @@ Recommended configuration:
   "dayWidth": 50.0,
   "dayMargin": 4.0,
   "bufferDays": 10,
-  "scrollThrottleMs": 25,
   "animationDurationMs": 300
 }
 ```
@@ -485,7 +456,6 @@ Recommended configuration:
   "dayWidth": 60.0,
   "dayMargin": 4.0,
   "bufferDays": 9,
-  "scrollThrottleMs": 18,
   "animationDurationMs": 230,
   "rowHeight": 28.0,
   "rowMargin": 2.5,
@@ -499,7 +469,6 @@ Recommended configuration:
 ```json
 {
   "bufferDays": 10,
-  "scrollThrottleMs": 25
 }
 ```
 

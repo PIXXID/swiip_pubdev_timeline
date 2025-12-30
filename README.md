@@ -168,7 +168,6 @@ The timeline now supports external configuration through a JSON file, allowing y
    {
      "dayWidth": 50.0,
      "bufferDays": 10,
-     "scrollThrottleMs": 25
    }
    ```
 
@@ -176,9 +175,9 @@ The timeline now supports external configuration through a JSON file, allowing y
 
 #### Recommended Configurations
 
-- **Small datasets (< 100 days)**: `dayWidth: 70.0`, `bufferDays: 5`, `scrollThrottleMs: 16`
-- **Medium datasets (100-500 days)**: Default values - `dayWidth: 65.0`, `bufferDays: 8`, `scrollThrottleMs: 20`
-- **Large datasets (> 500 days)**: `dayWidth: 50.0`, `bufferDays: 10`, `scrollThrottleMs: 25`
+- **Small datasets (< 100 days)**: `dayWidth: 70.0`, `bufferDays: 5`
+- **Medium datasets (100-500 days)**: Default values - `dayWidth: 65.0`, `bufferDays: 8`
+- **Large datasets (> 500 days)**: `dayWidth: 50.0`, `bufferDays: 10`
 
 #### Configuration Parameters
 
@@ -189,7 +188,6 @@ All parameters are optional. If not specified, sensible defaults are used:
 | `dayWidth` | double | 20.0 - 100.0 | 65.0 | Width of each day column |
 | `dayMargin` | double | 0.0 - 20.0 | 5.0 | Spacing between days |
 | `bufferDays` | int | 1 - 20 | 8 | Days rendered outside viewport |
-| `scrollThrottleMs` | int | 8 - 100 | 20 | Scroll update throttling (ms) |
 | `animationDurationMs` | int | 100 - 500 | 250 | Animation duration (ms) |
 | `rowHeight` | double | 20.0 - 60.0 | 30.0 | Height of each stage row |
 | `rowMargin` | double | 0.0 - 10.0 | 3.0 | Spacing between rows |
@@ -213,13 +211,11 @@ For optimal performance with large datasets:
    - Large datasets: `10-12` days
    - ⚠️ Values > 12 can cause memory issues
 
-3. **Optimize scroll throttling**: For large datasets or low-end devices, increase `scrollThrottleMs` to 25ms to reduce CPU usage. Default is 20ms.
+3. **Minimize data updates**: The timeline caches formatted data. Avoid unnecessary updates to `elements`, `stages`, or `capacities` props.
 
-4. **Minimize data updates**: The timeline caches formatted data. Avoid unnecessary updates to `elements`, `stages`, or `capacities` props.
+4. **Provide stable keys**: When using the timeline in a list or with dynamic data, provide stable keys to help Flutter optimize rebuilds.
 
-5. **Provide stable keys**: When using the timeline in a list or with dynamic data, provide stable keys to help Flutter optimize rebuilds.
-
-6. **Monitor performance**: Enable debug mode to see active configuration:
+5. **Monitor performance**: Enable debug mode to see active configuration:
    ```dart
    TimelineConfigurationManager.enableDebugMode();
    ```
@@ -282,7 +278,7 @@ On a typical device with 500 days and 100 stages:
 
 **Issue**: Timeline renders slowly with large datasets
 
-**Solution**: Use the recommended configuration for large datasets in your configuration file, or adjust `bufferDays` and `scrollThrottleMs` parameters. See [CONFIGURATION.md](CONFIGURATION.md) for detailed tuning guide.
+**Solution**: Use the recommended configuration for large datasets in your configuration file, or adjust `bufferDays` parameters. See [CONFIGURATION.md](CONFIGURATION.md) for detailed tuning guide.
 
 **Issue**: Configuration not loading
 
@@ -296,9 +292,6 @@ On a typical device with 500 days and 100 stages:
 
 **Solution**: Reduce `bufferDays` to 5-8 and `dayWidth` to 50-60. Use the recommended configuration for your dataset size. Verify proper widget disposal.
 
-**Issue**: Laggy scrolling
-
-**Solution**: Increase `scrollThrottleMs` to 25ms in your configuration. This reduces CPU usage at the cost of slightly less responsive scrolling. Default is 20ms.
 
 For more troubleshooting help, see [CONFIGURATION.md](CONFIGURATION.md).
 
@@ -328,7 +321,6 @@ Timeline(
    {
      "dayWidth": 50.0,
      "bufferDays": 10,
-     "scrollThrottleMs": 25
    }
    ```
 
@@ -341,7 +333,6 @@ Timeline(
    {
      "dayWidth": 50.0,
      "bufferDays": 12,
-     "scrollThrottleMs": 20
    }
    ```
 
