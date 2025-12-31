@@ -1,7 +1,6 @@
 /// Data models for timeline performance optimization.
 library;
 
-export 'scroll_state.dart';
 export 'visible_range.dart';
 export 'timeline_configuration.dart';
 export 'performance_metrics.dart';

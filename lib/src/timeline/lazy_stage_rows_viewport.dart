@@ -40,9 +40,6 @@ class StageRowsViewport extends StatefulWidget {
   /// Callback for editing an element.
   final Function(String?, String?, String?, String?, String?, double?, String?)? openEditElement;
 
-  /// The scroll controller for vertical scrolling.
-  final ScrollController verticalScrollController;
-
   /// Height of the viewport container.
   final double viewportHeight;
   final double viewportWidth;
@@ -63,7 +60,6 @@ class StageRowsViewport extends StatefulWidget {
     required this.totalDays,
     required this.colors,
     required this.isUniqueProject,
-    required this.verticalScrollController,
     required this.viewportWidth,
     required this.viewportHeight,
     this.openEditStage,

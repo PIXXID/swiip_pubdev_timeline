@@ -138,22 +138,22 @@ class MyApp extends StatelessWidget {
                 return Align(
                     alignment: Alignment.topLeft,
                     child: SafeArea(
-                      left: false,
-                      top: true,
-                      right: false,
-                      bottom: true,
-                      minimum: const EdgeInsets.all(16.0),
-                      child: Timeline(
-                          colors: colors,
-                          infos: timelineData['infos'],
-                          elements: timelineData['elements'],
-                          elementsDone: timelineData['elementsDone'],
-                          capacities: timelineData['capacities'],
-                          stages: timelineData['stages'],
-                          openDayDetail: openDayDetail,
-                          openEditStage: openEditStage,
-                          openEditElement: openEditElement),
-                    ));
+                        left: false,
+                        top: true,
+                        right: false,
+                        bottom: true,
+                        minimum: const EdgeInsets.all(16.0),
+                        child: Timeline(
+                            colors: colors,
+                            infos: timelineData['infos'],
+                            elements: timelineData['elements'],
+                            elementsDone: timelineData['elementsDone'],
+                            capacities: timelineData['capacities'],
+                            stages: timelineData['stages'],
+                            openDayDetail: openDayDetail,
+                            openEditStage: openEditStage,
+                            openEditElement: openEditElement,
+                            updateCurrentDate: updateCurrentDate)));
               } else {
                 return const Center(child: Text('Aucune donnée disponible'));
               }
@@ -190,7 +190,7 @@ Future<Map<String, dynamic>> fetchTimelineData() async {
     },
   );
   if (response.statusCode == 200) {
-    debugPrint(response.body);
+    //debugPrint(response.body);
     return jsonDecode(response.body) as Map<String, dynamic>;
   } else {
     debugPrint(response.body);
@@ -282,6 +282,10 @@ void openEditElement(String? entityId, String? label, String? type, String? star
 /// Use this when you only need to know which day was selected,
 /// without needing the full day details.
 void selectDay(String? date) {
+  debugPrint(date.toString());
+}
+
+void updateCurrentDate(String? date) {
   debugPrint(date.toString());
 }
 
