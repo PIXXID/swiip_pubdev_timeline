@@ -22,13 +22,13 @@ This implementation plan breaks down the removal of the `TimelineController` cla
     - Verify correct center item index passed to itemBuilder
     - Run 100 iterations
 
-  - [x] 1.3 Update LazyStageRowsViewport constructor and implementation
+  - [x] 1.3 Update StageRowsViewport constructor and implementation
     - Replace `controller` parameter with `visibleStart` and `visibleEnd`
     - Remove ValueListenableBuilder from build() method
     - Use parameters directly to render stage rows in range
     - _Requirements: 5.2, 5.4_
 
-  - [x] 1.4 Write property test for LazyStageRowsViewport rendering
+  - [x] 1.4 Write property test for StageRowsViewport rendering
     - **Property 5: Lazy Viewport Rendering**
     - **Validates: Requirements 5.5**
     - Generate random visible ranges for stage rows
@@ -47,7 +47,7 @@ This implementation plan breaks down the removal of the `TimelineController` cla
   - [x] 2.2 Update build() method to capture viewport width
     - In LayoutBuilder, set `_viewportWidth = constraints.maxWidth`
     - Pass visible range parameters to LazyTimelineViewport
-    - Pass visible range parameters to LazyStageRowsViewport
+    - Pass visible range parameters to StageRowsViewport
     - Pass centerItemIndex directly instead of from controller
     - _Requirements: 4.2, 5.5_
 

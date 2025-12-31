@@ -74,9 +74,9 @@ This specification defines the requirements for further simplifying the Timeline
 #### Acceptance Criteria
 
 1. THE LazyTimelineViewport SHALL accept `visibleStart` and `visibleEnd` parameters
-2. THE LazyStageRowsViewport SHALL accept `visibleStart` and `visibleEnd` parameters
+2. THE StageRowsViewport SHALL accept `visibleStart` and `visibleEnd` parameters
 3. THE LazyTimelineViewport SHALL remove dependency on TimelineController
-4. THE LazyStageRowsViewport SHALL remove dependency on TimelineController
+4. THE StageRowsViewport SHALL remove dependency on TimelineController
 5. THE Timeline SHALL pass calculated visible range to lazy viewports
 
 ### Requirement 6: Maintain Scroll Throttling [DEPRECATED]

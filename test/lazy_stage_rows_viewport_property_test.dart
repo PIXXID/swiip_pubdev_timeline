@@ -5,7 +5,7 @@ import 'package:swiip_pubdev_timeline/src/timeline/lazy_stage_rows_viewport.dart
 import 'package:swiip_pubdev_timeline/src/timeline/optimized_stage_row.dart';
 
 void main() {
-  group('LazyStageRowsViewport Rendering Property Tests', () {
+  group('StageRowsViewport Rendering Property Tests', () {
     testWidgets('Property 5: Lazy Viewport Rendering - renders only stage rows in visible range',
         (WidgetTester tester) async {
       // Feature: native-scroll-only, Property 5: Lazy Viewport Rendering
@@ -23,6 +23,7 @@ void main() {
         final rowHeight = 40.0 + random.nextDouble() * 20; // 40-60 height
         final rowMargin = 2.0 + random.nextDouble() * 4; // 2-6 margin
         final viewportHeight = 400.0 + random.nextDouble() * 400; // 400-800
+        final viewportWidth = 400.0 + random.nextDouble() * 400; // 400-800
 
         // Generate random horizontal visible range
         final maxStart = totalDays - 10;
@@ -47,7 +48,7 @@ void main() {
         // Create a scroll controller for vertical scrolling
         final verticalScrollController = ScrollController();
 
-        // Build the LazyStageRowsViewport with random parameters
+        // Build the StageRowsViewport with random parameters
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
@@ -56,7 +57,7 @@ void main() {
                 height: viewportHeight,
                 child: SingleChildScrollView(
                   controller: verticalScrollController,
-                  child: LazyStageRowsViewport(
+                  child: StageRowsViewport(
                     visibleStart: visibleStart,
                     visibleEnd: visibleEnd,
                     stagesRows: stagesRows,
@@ -71,6 +72,7 @@ void main() {
                     },
                     isUniqueProject: false,
                     verticalScrollController: verticalScrollController,
+                    viewportWidth: viewportWidth,
                     viewportHeight: viewportHeight,
                     bufferRows: 2,
                   ),
@@ -134,6 +136,7 @@ void main() {
         final rowHeight = 50.0;
         final rowMargin = 3.0;
         final viewportHeight = 400.0;
+        final viewportWidth = 400.0; // 400-800
 
         final visibleStart = 0;
         final visibleEnd = 20;
@@ -160,7 +163,7 @@ void main() {
                 height: viewportHeight,
                 child: SingleChildScrollView(
                   controller: verticalScrollController,
-                  child: LazyStageRowsViewport(
+                  child: StageRowsViewport(
                     visibleStart: visibleStart,
                     visibleEnd: visibleEnd,
                     stagesRows: stagesRows,
@@ -174,6 +177,7 @@ void main() {
                     },
                     isUniqueProject: false,
                     verticalScrollController: verticalScrollController,
+                    viewportWidth: viewportWidth,
                     viewportHeight: viewportHeight,
                     bufferRows: 2,
                   ),
@@ -253,7 +257,7 @@ void main() {
                   height: 400,
                   child: SingleChildScrollView(
                     controller: verticalScrollController,
-                    child: LazyStageRowsViewport(
+                    child: StageRowsViewport(
                       visibleStart: visibleStart,
                       visibleEnd: visibleEnd,
                       stagesRows: stagesRows,
@@ -265,6 +269,7 @@ void main() {
                       colors: const {'primary': Colors.blue},
                       isUniqueProject: false,
                       verticalScrollController: verticalScrollController,
+                      viewportWidth: 400.0,
                       viewportHeight: 400.0,
                       bufferRows: 2,
                     ),
@@ -318,7 +323,7 @@ void main() {
               body: SizedBox(
                 width: 800,
                 height: 400,
-                child: LazyStageRowsViewport(
+                child: StageRowsViewport(
                   visibleStart: visibleStart,
                   visibleEnd: visibleEnd,
                   stagesRows: stagesRows,
@@ -330,6 +335,7 @@ void main() {
                   colors: const {'primary': Colors.blue},
                   isUniqueProject: false,
                   verticalScrollController: verticalScrollController,
+                  viewportWidth: 400.0,
                   viewportHeight: 400.0,
                   bufferRows: 2,
                 ),
@@ -344,8 +350,8 @@ void main() {
         expect(tester.takeException(), isNull,
             reason: 'Should pass horizontal visible range correctly (iteration $iteration)');
 
-        // Verify LazyStageRowsViewport is rendered
-        expect(find.byType(LazyStageRowsViewport), findsOneWidget, reason: 'LazyStageRowsViewport should be rendered');
+        // Verify StageRowsViewport is rendered
+        expect(find.byType(StageRowsViewport), findsOneWidget, reason: 'StageRowsViewport should be rendered');
 
         verticalScrollController.dispose();
       }

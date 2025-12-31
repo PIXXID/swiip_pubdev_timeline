@@ -828,7 +828,7 @@ class _Timeline extends State<Timeline> {
                                         Expanded(
                                           child: SizedBox(
                                               child: stagesRows.isNotEmpty
-                                                  ? LazyStageRowsViewport(
+                                                  ? StageRowsViewport(
                                                       // Pass calculated visible range directly as parameters
                                                       // This eliminates the need for a controller with ValueNotifiers
                                                       visibleStart: _visibleStart,
@@ -842,6 +842,7 @@ class _Timeline extends State<Timeline> {
                                                       colors: widget.colors,
                                                       isUniqueProject: isUniqueProject,
                                                       verticalScrollController: _controllerVerticalStages,
+                                                      viewportWidth: _viewportWidth,
                                                       viewportHeight: _viewportHeight,
                                                       openEditStage: widget.openEditStage,
                                                       openEditElement: widget.openEditElement,

@@ -177,11 +177,11 @@ class _OptimizedTimelineItemState extends State<OptimizedTimelineItem> with Sing
     final idxCenter = centerIndex - widget.index;
 
     if (idxCenter == 0) {
-      return widget.colors['primaryText']!;
+      return widget.colors['primaryText'] ?? Colors.white;
     } else if ((idxCenter >= 1 && idxCenter < 4) || (idxCenter <= -1 && idxCenter > -4)) {
-      return widget.colors['secondaryText']!;
+      return widget.colors['secondaryText'] ?? Colors.grey;
     } else if ((idxCenter >= 4 && idxCenter < 6) || (idxCenter <= -4 && idxCenter > -6)) {
-      return widget.colors['accent1']!;
+      return widget.colors['accent1'] ?? Colors.blue;
     } else {
       return Colors.transparent;
     }

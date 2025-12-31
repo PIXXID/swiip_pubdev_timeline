@@ -2,16 +2,8 @@ import 'package:flutter/material.dart';
 import 'models/visible_range.dart';
 import 'optimized_stage_row.dart';
 
-/// A viewport widget that implements lazy rendering for stage rows.
-///
-/// This widget only renders stage rows that are currently visible in the
-/// vertical viewport plus a configurable buffer on each side. This significantly
-/// improves performance when dealing with timelines that have many stage rows
-/// by reducing the number of widgets that need to be built and maintained.
-///
-/// The widget calculates which rows are visible based on the vertical scroll
-/// position and only renders those rows plus a buffer.
-class LazyStageRowsViewport extends StatefulWidget {
+/// This widget renders stage rows
+class StageRowsViewport extends StatefulWidget {
   /// Start index of the visible horizontal range (inclusive).
   final int visibleStart;
 
@@ -53,12 +45,13 @@ class LazyStageRowsViewport extends StatefulWidget {
 
   /// Height of the viewport container.
   final double viewportHeight;
+  final double viewportWidth;
 
   /// Number of rows to render as buffer above and below visible area.
   final int bufferRows;
 
-  /// Creates a [LazyStageRowsViewport] with the specified configuration.
-  const LazyStageRowsViewport({
+  /// Creates a [StageRowsViewport] with the specified configuration.
+  const StageRowsViewport({
     super.key,
     required this.visibleStart,
     required this.visibleEnd,
@@ -71,6 +64,7 @@ class LazyStageRowsViewport extends StatefulWidget {
     required this.colors,
     required this.isUniqueProject,
     required this.verticalScrollController,
+    required this.viewportWidth,
     required this.viewportHeight,
     this.openEditStage,
     this.openEditElement,
@@ -78,18 +72,15 @@ class LazyStageRowsViewport extends StatefulWidget {
   });
 
   @override
-  State<LazyStageRowsViewport> createState() => _LazyStageRowsViewportState();
+  State<StageRowsViewport> createState() => _StageRowsViewportState();
 }
 
-class _LazyStageRowsViewportState extends State<LazyStageRowsViewport> {
-  /// Current visible range of rows (vertical).
-  VisibleRange _visibleRowRange = const VisibleRange(0, 0);
-
+class _StageRowsViewportState extends State<StageRowsViewport> {
   /// ValueNotifier for horizontal visible range (for OptimizedStageRow compatibility).
   late final ValueNotifier<VisibleRange> _visibleRangeNotifier;
 
   /// ValueNotifier for center item index (for OptimizedStageRow compatibility).
-  /// Note: centerItemIndex is not provided to LazyStageRowsViewport, so we use 0 as default.
+  /// Note: centerItemIndex is not provided to StageRowsViewport, so we use 0 as default.
   late final ValueNotifier<int> _centerItemIndexNotifier;
 
   @override
@@ -101,16 +92,10 @@ class _LazyStageRowsViewportState extends State<LazyStageRowsViewport> {
       VisibleRange(widget.visibleStart, widget.visibleEnd),
     );
     _centerItemIndexNotifier = ValueNotifier<int>(0);
-
-    // Calculate initial visible range
-    _updateVisibleRowRange();
-
-    // Listen to vertical scroll changes
-    widget.verticalScrollController.addListener(_onVerticalScroll);
   }
 
   @override
-  void didUpdateWidget(LazyStageRowsViewport oldWidget) {
+  void didUpdateWidget(StageRowsViewport oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     // Update ValueNotifiers when widget parameters change
@@ -121,52 +106,9 @@ class _LazyStageRowsViewportState extends State<LazyStageRowsViewport> {
 
   @override
   void dispose() {
-    widget.verticalScrollController.removeListener(_onVerticalScroll);
     _visibleRangeNotifier.dispose();
     _centerItemIndexNotifier.dispose();
     super.dispose();
-  }
-
-  /// Called when vertical scroll position changes.
-  void _onVerticalScroll() {
-    _updateVisibleRowRange();
-  }
-
-  /// Calculates and updates the visible row range based on scroll position.
-  void _updateVisibleRowRange() {
-    if (!mounted) return;
-
-    // Handle empty stage rows
-    if (widget.stagesRows.isEmpty) {
-      final emptyRange = const VisibleRange(0, 0);
-      if (emptyRange != _visibleRowRange) {
-        setState(() {
-          _visibleRowRange = emptyRange;
-        });
-      }
-      return;
-    }
-
-    final scrollOffset = widget.verticalScrollController.hasClients ? widget.verticalScrollController.offset : 0.0;
-
-    // Calculate which rows are visible
-    final rowTotalHeight = widget.rowHeight + (widget.rowMargin * 2);
-    final firstVisibleRow = (scrollOffset / rowTotalHeight).floor();
-    final visibleRowCount = (widget.viewportHeight / rowTotalHeight).ceil();
-    final lastVisibleRow = firstVisibleRow + visibleRowCount;
-
-    // Add buffer
-    final start = (firstVisibleRow - widget.bufferRows).clamp(0, widget.stagesRows.length);
-    final end = (lastVisibleRow + widget.bufferRows).clamp(0, widget.stagesRows.length);
-
-    final newRange = VisibleRange(start, end);
-
-    // Only update if range has changed
-    if (newRange != _visibleRowRange) {
-      setState(() {
-        _visibleRowRange = newRange;
-      });
-    }
   }
 
   @override
@@ -180,7 +122,7 @@ class _LazyStageRowsViewportState extends State<LazyStageRowsViewport> {
     // Build only visible rows
     final visibleRows = <Widget>[];
 
-    for (var i = _visibleRowRange.start; i <= _visibleRowRange.end && i < widget.stagesRows.length; i++) {
+    for (var i = 0; i < widget.stagesRows.length; i++) {
       final rowTop = i * (widget.rowHeight + (widget.rowMargin * 2));
 
       visibleRows.add(
@@ -190,7 +132,6 @@ class _LazyStageRowsViewportState extends State<LazyStageRowsViewport> {
           right: 0,
           child: Container(
             margin: EdgeInsets.symmetric(vertical: widget.rowMargin),
-            width: widget.totalDays * (widget.dayWidth - widget.dayMargin),
             height: widget.rowHeight,
             child: OptimizedStageRow(
               colors: widget.colors,

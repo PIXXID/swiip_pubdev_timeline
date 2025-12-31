@@ -84,7 +84,7 @@ The new architecture is simpler because:
 - No changes required
 - Continues to render visible items based on TimelineController
 
-#### LazyStageRowsViewport (lib/src/timeline/lazy_stage_rows_viewport.dart)
+#### StageRowsViewport (lib/src/timeline/lazy_stage_rows_viewport.dart)
 - No changes required
 - Continues to render visible stage rows
 
