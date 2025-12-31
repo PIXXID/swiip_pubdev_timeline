@@ -130,14 +130,8 @@ class _Timeline extends State<Timeline> {
   double dayMargin = 5;
   // Hauteut de la liste des jours
   double datesHeight = 65.0;
-  // Hauteur du container de la timeline et des stages/éléments
-  double timelineHeightContainer = 300.0;
-  // Hauteur de la timeline
-  double timelineHeight = 300.0;
   // Diamètre des pins d'alertes
   double alertWidth = 6;
-  // Liste des widgets des alertes
-  List<Widget> alertList = [];
 
   // Liste des lignes d'étapes
   List stagesRows = [];
@@ -172,15 +166,13 @@ class _Timeline extends State<Timeline> {
   double _previousScrollOffset = 0.0;
   int _previousCenterIndex = 0;
 
-  // First element margin for centering calculations
-  double _firstElementMargin = 0.0;
-
   // Native scroll state management (replaces TimelineController)
   // These local variables track the current scroll state:
   // - _centerItemIndex: The day item currently at the center of the viewport
   // - _visibleStart: Start index of the visible range (including buffer)
   // - _visibleEnd: End index of the visible range (including buffer)
   // - _viewportWidth: Current viewport width for calculations
+  // - _viewportHeight: Current viewport height for calculations
   //
   // This approach is simpler than using a custom controller class because:
   // 1. State is managed directly in the widget (no extra abstraction)
@@ -191,6 +183,7 @@ class _Timeline extends State<Timeline> {
   int _visibleStart = 0;
   int _visibleEnd = 0;
   double _viewportWidth = 0.0;
+  double _viewportHeight = 0.0;
 
   // ValueNotifier for center item index (used by OptimizedTimelineItem)
   late ValueNotifier<int> _centerItemIndexNotifier;
@@ -276,7 +269,6 @@ class _Timeline extends State<Timeline> {
     dayWidth = _config.dayWidth;
     dayMargin = _config.dayMargin;
     datesHeight = _config.datesHeight;
-    timelineHeightContainer = _config.timelineHeight;
     rowHeight = _config.rowHeight;
     rowMargin = _config.rowMargin;
 
@@ -374,7 +366,7 @@ class _Timeline extends State<Timeline> {
         // 1. Calculate center index directly using pure function from scroll_calculations.dart
         // This determines which day item is currently at the center of the viewport
         final newCenterIndex = calculateCenterDateIndex(
-          scrollOffset: currentOffset,
+          scrollOffset: currentOffset - (_viewportWidth / 2),
           viewportWidth: _viewportWidth,
           dayWidth: dayWidth,
           dayMargin: dayMargin,
@@ -451,9 +443,6 @@ class _Timeline extends State<Timeline> {
       }
       isUniqueProject = uniquePrjIds.length > 1 ? false : true;
     }
-
-    // timelineHeight will be calculated from available space in build()
-    // timelineHeightContainer will be calculated dynamically
 
     // Scrollbar position will be calculated dynamically in build()
     scrollbarOffset = 0;
@@ -585,21 +574,16 @@ class _Timeline extends State<Timeline> {
     // 4. Calcul de la hauteur totale des lignes
     final totalRowsHeight = (rowHeight + rowMargin) * stagesRows.length;
 
-    // 5. Récupération de la hauteur du viewport
-    final viewportHeight = _controllerVerticalStages.hasClients
-        ? _controllerVerticalStages.position.viewportDimension
-        : timelineHeightContainer;
-
-    // 6. Détermination de l'auto-scroll
+    // 5. Détermination de l'auto-scroll
     final enableAutoScroll = shouldEnableAutoScroll(
       userScrollOffset: userScrollOffset,
       targetVerticalOffset: targetVerticalOffset,
       scrollingLeft: scrollingLeft,
       totalRowsHeight: totalRowsHeight,
-      viewportHeight: viewportHeight,
+      viewportHeight: _viewportHeight,
     );
 
-    // 7. Retour de l'état calculé
+    // 6. Retour de l'état calculé
     return ScrollState(
       centerDateIndex: centerDateIndex,
       targetVerticalOffset: targetVerticalOffset,
@@ -650,13 +634,10 @@ class _Timeline extends State<Timeline> {
     // Calcul de la hauteur totale des lignes
     final totalRowsHeight = (rowHeight + rowMargin) * stagesRows.length;
 
-    // Récupération de la hauteur du viewport
-    final viewportHeight = _controllerVerticalStages.position.viewportDimension;
-
     // Détermine l'offset final en vérifiant l'espace restant
-    // Si l'espace restant est suffisant (> viewportHeight / 2), on scroll vers le target
+    // Si l'espace restant est suffisant (> _viewportHeight / 2), on scroll vers le target
     // Sinon, on scroll vers le maximum pour éviter l'effet rebond
-    final finalOffset = (totalRowsHeight - targetOffset > viewportHeight / 2) ? targetOffset : maxExtent;
+    final finalOffset = (totalRowsHeight - targetOffset > _viewportHeight / 2) ? targetOffset : maxExtent;
 
     // Vérification 4: La différence doit être significative pour éviter les petits sauts
     // Seuil: au moins la largeur d'un jour (dayWidth)
@@ -744,6 +725,7 @@ class _Timeline extends State<Timeline> {
     // Langue et locale
     final String lang = platformLanguage();
 
+    // Overlay de chargement
     return LoadingIndicatorOverlay(
       isLoadingNotifier: _isLoadingNotifier,
       overlayColor: widget.colors['primaryBackground']?.withValues(alpha: 0.7),
@@ -752,32 +734,23 @@ class _Timeline extends State<Timeline> {
         backgroundColor: widget.colors['primaryBackground'],
         body: LayoutBuilder(
           builder: (context, constraints) {
-            // Get actual available width from parent container
-            final double screenWidth = constraints.maxWidth;
-            final double screenCenter = (screenWidth / 2);
-
             // Capture viewport width for scroll calculations
             // This value is used by the scroll listener to calculate:
             // - Center item index (which day is at the center)
             // - Visible range (which days should be rendered)
             // The width is captured here because LayoutBuilder provides the actual
             // available space, which may differ from MediaQuery.of(context).size.width
-            _viewportWidth = screenWidth;
-
-            // Calculate firstElementMargin once and store it for use in scroll calculations
-            _firstElementMargin = ((screenWidth - (dayWidth - dayMargin)) / 2);
-
-            // Calculate dynamic heights based on available space
-            final double availableHeight = constraints.maxHeight;
+            _viewportWidth = constraints.maxWidth;
+            _viewportHeight = constraints.maxHeight;
 
             return Stack(
               // Trait rouge indiquant le jour en cours
               children: [
                 Positioned(
-                  left: screenCenter,
-                  top: 45,
+                  left: _viewportWidth / 2,
+                  top: 0,
                   child: Container(
-                    height: availableHeight - datesHeight - 200, // Adjust for dates and bottom controls
+                    height: _viewportHeight, // Adjust for dates and bottom controls
                     width: 1,
                     decoration: BoxDecoration(color: widget.colors['error']),
                   ),
@@ -790,15 +763,8 @@ class _Timeline extends State<Timeline> {
                         padding: const EdgeInsets.symmetric(vertical: 4),
                         child: LayoutBuilder(
                           builder: (context, innerConstraints) {
-                            // Use available height from constraints
-                            final availableHeight = innerConstraints.maxHeight;
-
-                            // Update timelineHeightContainer for scrollbar calculations
-                            timelineHeightContainer = availableHeight;
-
                             return SizedBox(
-                              width: screenWidth,
-                              height: availableHeight,
+                              width: _viewportWidth,
                               child: Listener(
                                 onPointerSignal: (event) {
                                   if (event is PointerScrollEvent) {
@@ -821,9 +787,9 @@ class _Timeline extends State<Timeline> {
                                 child: SingleChildScrollView(
                                   controller: _controllerTimeline,
                                   scrollDirection: Axis.horizontal,
-                                  padding: EdgeInsets.symmetric(horizontal: _firstElementMargin),
+                                  // Padding pour que le 1er element soit au milieu de l'écran
+                                  padding: EdgeInsets.symmetric(horizontal: _viewportWidth / 2),
                                   child: SizedBox(
-                                    height: availableHeight, // Use available height
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       mainAxisSize: MainAxisSize.min, // Prevent Column from expanding infinitely
@@ -831,7 +797,7 @@ class _Timeline extends State<Timeline> {
                                         // DATES
                                         SizedBox(
                                           width: days.length * (dayWidth),
-                                          height: datesHeight,
+                                          height: 70,
                                           child: days.isNotEmpty
                                               ? LazyTimelineViewport(
                                                   // Pass calculated visible range directly as parameters
@@ -876,9 +842,7 @@ class _Timeline extends State<Timeline> {
                                                       colors: widget.colors,
                                                       isUniqueProject: isUniqueProject,
                                                       verticalScrollController: _controllerVerticalStages,
-                                                      viewportHeight: availableHeight -
-                                                          datesHeight -
-                                                          140, // Subtract dates and timeline heights
+                                                      viewportHeight: _viewportHeight,
                                                       openEditStage: widget.openEditStage,
                                                       openEditElement: widget.openEditElement,
                                                     )
@@ -886,8 +850,7 @@ class _Timeline extends State<Timeline> {
                                         ),
                                         // CHARGE DYNAMIQUE
                                         SizedBox(
-                                          width: days.length * (dayWidth),
-                                          height: 140,
+                                          height: 80,
                                           child: days.isNotEmpty
                                               ? LazyTimelineViewport(
                                                   visibleStart: _visibleStart,
@@ -906,7 +869,7 @@ class _Timeline extends State<Timeline> {
                                                       elements: widget.elements,
                                                       dayWidth: dayWidth,
                                                       dayMargin: dayMargin,
-                                                      height: 120,
+                                                      height: 80,
                                                       openDayDetail: widget.openDayDetail,
                                                     );
                                                   },

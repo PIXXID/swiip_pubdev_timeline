@@ -465,6 +465,7 @@ int _centerItemIndex = 0;
 int _visibleStart = 0;
 int _visibleEnd = 0;
 double _viewportWidth = 0.0;
+double _viewporHeight = 0.0;
 Timer? _scrollThrottleTimer;
 ```
 

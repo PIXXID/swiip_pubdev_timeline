@@ -274,7 +274,6 @@ void main() {
       final timelineState = tester.state(timelineFinder) as dynamic;
 
       // Scroll to a specific date
-      final initialCallbackCount = callbackCount;
       timelineState.scrollTo(50, animated: false);
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 100));

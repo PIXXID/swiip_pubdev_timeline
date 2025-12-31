@@ -166,20 +166,6 @@ Height of the date header row in pixels.
 
 **Recommendations**: `65.0` for standard layouts, adjust based on your date formatting needs.
 
-### timelineHeight
-
-**Type**: `double`  
-**Range**: `100.0 - 1000.0`  
-**Default**: `300.0`
-
-Total height of the timeline widget in pixels.
-
-**Performance Impact**:
-- Larger values = more rows visible but more rendering work
-- Smaller values = less rendering but more scrolling needed
-
-**Recommendations**: Calculate as `rowHeight * expected_visible_rows + datesHeight`
-
 ## Using Configuration in Code
 
 ### Automatic Loading
@@ -459,8 +445,7 @@ Recommended configuration:
   "animationDurationMs": 230,
   "rowHeight": 28.0,
   "rowMargin": 2.5,
-  "datesHeight": 60.0,
-  "timelineHeight": 350.0
+  "datesHeight": 60.0
 }
 ```
 

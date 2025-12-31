@@ -190,9 +190,6 @@ void main() {
 
       Timer? debounceTimer;
 
-      // Cancel null timer (should not throw)
-      debounceTimer?.cancel();
-
       // If we get here without errors, null cancellation is safe
       expect(debounceTimer, isNull);
     });

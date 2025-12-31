@@ -19,7 +19,6 @@ void main() {
         expect(result.validatedConfig['dayWidth'], equals(defaults['dayWidth']));
         expect(result.validatedConfig['dayMargin'], equals(defaults['dayMargin']));
         expect(result.validatedConfig['datesHeight'], equals(defaults['datesHeight']));
-        expect(result.validatedConfig['timelineHeight'], equals(defaults['timelineHeight']));
         expect(result.validatedConfig['rowHeight'], equals(defaults['rowHeight']));
         expect(result.validatedConfig['rowMargin'], equals(defaults['rowMargin']));
         expect(result.validatedConfig['bufferDays'], equals(defaults['bufferDays']));
@@ -269,28 +268,11 @@ void main() {
         expect(result.errors, isEmpty);
       });
 
-      test('timelineHeight at minimum boundary (100.0) is accepted', () {
-        final config = {'timelineHeight': 100.0};
-        final result = ConfigurationValidator.validate(config);
-
-        expect(result.validatedConfig['timelineHeight'], equals(100.0));
-        expect(result.errors, isEmpty);
-      });
-
-      test('timelineHeight at maximum boundary (1000.0) is accepted', () {
-        final config = {'timelineHeight': 1000.0};
-        final result = ConfigurationValidator.validate(config);
-
-        expect(result.validatedConfig['timelineHeight'], equals(1000.0));
-        expect(result.errors, isEmpty);
-      });
-
       test('all parameters at their minimum boundaries are accepted', () {
         final config = {
           'dayWidth': 20.0,
           'dayMargin': 0.0,
           'datesHeight': 40.0,
-          'timelineHeight': 100.0,
           'rowHeight': 20.0,
           'rowMargin': 0.0,
           'bufferDays': 1,
@@ -302,7 +284,6 @@ void main() {
         expect(result.validatedConfig['dayWidth'], equals(20.0));
         expect(result.validatedConfig['dayMargin'], equals(0.0));
         expect(result.validatedConfig['datesHeight'], equals(40.0));
-        expect(result.validatedConfig['timelineHeight'], equals(100.0));
         expect(result.validatedConfig['rowHeight'], equals(20.0));
         expect(result.validatedConfig['rowMargin'], equals(0.0));
         expect(result.validatedConfig['bufferDays'], equals(1));
@@ -315,7 +296,6 @@ void main() {
           'dayWidth': 100.0,
           'dayMargin': 20.0,
           'datesHeight': 100.0,
-          'timelineHeight': 1000.0,
           'rowHeight': 60.0,
           'rowMargin': 10.0,
           'bufferDays': 20,
@@ -327,7 +307,6 @@ void main() {
         expect(result.validatedConfig['dayWidth'], equals(100.0));
         expect(result.validatedConfig['dayMargin'], equals(20.0));
         expect(result.validatedConfig['datesHeight'], equals(100.0));
-        expect(result.validatedConfig['timelineHeight'], equals(1000.0));
         expect(result.validatedConfig['rowHeight'], equals(60.0));
         expect(result.validatedConfig['rowMargin'], equals(10.0));
         expect(result.validatedConfig['bufferDays'], equals(20));

@@ -73,17 +73,7 @@
     "performance_impact": "Minimal impact. Affects how much space the date indicators take.",
     "recommendation": "Use 65.0 for standard layouts, adjust based on your date formatting needs"
   },
-  
-  "timelineHeight": 300.0,
-  "_timelineHeight_info": {
-    "type": "double",
-    "range": "100.0 - 1000.0",
-    "default": 300.0,
-    "description": "Total height of the timeline widget in pixels",
-    "performance_impact": "Larger values = more rows visible at once but more rendering work. Smaller values = less rendering but more scrolling needed.",
-    "recommendation": "Adjust based on your layout needs. Consider rowHeight * expected_visible_rows + datesHeight"
-  },
-  
+    
   "_usage_notes": {
     "1": "Copy this file to 'timeline_config.json' in your package root directory",
     "2": "Remove all lines starting with '_' (these are comments and will be ignored by the parser)",

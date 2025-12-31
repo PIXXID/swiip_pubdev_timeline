@@ -10,7 +10,6 @@ void main() {
         expect(config.dayWidth, equals(45.0));
         expect(config.dayMargin, equals(5.0));
         expect(config.datesHeight, equals(65.0));
-        expect(config.timelineHeight, equals(300.0));
         expect(config.rowHeight, equals(30.0));
         expect(config.rowMargin, equals(3.0));
         expect(config.bufferDays, equals(5));
@@ -22,7 +21,6 @@ void main() {
           dayWidth: 50.0,
           dayMargin: 10.0,
           datesHeight: 70.0,
-          timelineHeight: 400.0,
           rowHeight: 35.0,
           rowMargin: 5.0,
           bufferDays: 10,
@@ -31,7 +29,6 @@ void main() {
         expect(config.dayWidth, equals(50.0));
         expect(config.dayMargin, equals(10.0));
         expect(config.datesHeight, equals(70.0));
-        expect(config.timelineHeight, equals(400.0));
         expect(config.rowHeight, equals(35.0));
         expect(config.rowMargin, equals(5.0));
         expect(config.bufferDays, equals(10));
@@ -83,13 +80,6 @@ void main() {
         expect(updated.dayWidth, equals(original.dayWidth));
       });
 
-      test('returns new instance with updated timelineHeight', () {
-        const original = TimelineConfiguration();
-        final updated = original.copyWith(timelineHeight: 500.0);
-        expect(updated.timelineHeight, equals(500.0));
-        expect(updated.dayWidth, equals(original.dayWidth));
-      });
-
       test('returns new instance with updated rowHeight', () {
         const original = TimelineConfiguration();
         final updated = original.copyWith(rowHeight: 40.0);
@@ -133,7 +123,6 @@ void main() {
         expect(updated.bufferDays, equals(8));
         expect(updated.animationDuration, equals(const Duration(milliseconds: 250)));
         expect(updated.datesHeight, equals(original.datesHeight));
-        expect(updated.timelineHeight, equals(original.timelineHeight));
       });
 
       test('returns new instance when no fields are updated', () {
@@ -142,7 +131,6 @@ void main() {
         expect(updated.dayWidth, equals(original.dayWidth));
         expect(updated.dayMargin, equals(original.dayMargin));
         expect(updated.datesHeight, equals(original.datesHeight));
-        expect(updated.timelineHeight, equals(original.timelineHeight));
         expect(updated.rowHeight, equals(original.rowHeight));
         expect(updated.rowMargin, equals(original.rowMargin));
         expect(updated.bufferDays, equals(original.bufferDays));
@@ -236,7 +224,6 @@ void main() {
         expect(str, contains('dayWidth: 45.0'));
         expect(str, contains('dayMargin: 5.0'));
         expect(str, contains('datesHeight: 65.0'));
-        expect(str, contains('timelineHeight: 300.0'));
         expect(str, contains('rowHeight: 30.0'));
         expect(str, contains('rowMargin: 3.0'));
         expect(str, contains('bufferDays: 5'));
@@ -260,7 +247,6 @@ void main() {
           'dayWidth': 50.0,
           'dayMargin': 10.0,
           'datesHeight': 70.0,
-          'timelineHeight': 400.0,
           'rowHeight': 35.0,
           'rowMargin': 5.0,
           'bufferDays': 10,
@@ -272,7 +258,6 @@ void main() {
         expect(config.dayWidth, equals(50.0));
         expect(config.dayMargin, equals(10.0));
         expect(config.datesHeight, equals(70.0));
-        expect(config.timelineHeight, equals(400.0));
         expect(config.rowHeight, equals(35.0));
         expect(config.rowMargin, equals(5.0));
         expect(config.bufferDays, equals(10));
@@ -331,7 +316,6 @@ void main() {
             dayWidth: 20.0 + random.nextDouble() * 80.0, // 20.0 - 100.0
             dayMargin: random.nextDouble() * 20.0, // 0.0 - 20.0
             datesHeight: 40.0 + random.nextDouble() * 60.0, // 40.0 - 100.0
-            timelineHeight: 100.0 + random.nextDouble() * 900.0, // 100.0 - 1000.0
             rowHeight: 20.0 + random.nextDouble() * 40.0, // 20.0 - 60.0
             rowMargin: random.nextDouble() * 10.0, // 0.0 - 10.0
             bufferDays: 1 + random.nextInt(20), // 1 - 20
@@ -349,8 +333,6 @@ void main() {
               reason: 'dayMargin should be preserved in round-trip (iteration $i)');
           expect(roundTrippedConfig.datesHeight, equals(originalConfig.datesHeight),
               reason: 'datesHeight should be preserved in round-trip (iteration $i)');
-          expect(roundTrippedConfig.timelineHeight, equals(originalConfig.timelineHeight),
-              reason: 'timelineHeight should be preserved in round-trip (iteration $i)');
           expect(roundTrippedConfig.rowHeight, equals(originalConfig.rowHeight),
               reason: 'rowHeight should be preserved in round-trip (iteration $i)');
           expect(roundTrippedConfig.rowMargin, equals(originalConfig.rowMargin),

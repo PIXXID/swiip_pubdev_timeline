@@ -256,7 +256,6 @@ void main() {
           dayWidth: config['dayWidth'],
           dayMargin: config['dayMargin'],
           datesHeight: config['datesHeight'],
-          timelineHeight: config['timelineHeight'],
           rowHeight: config['rowHeight'],
           rowMargin: config['rowMargin'],
           bufferDays: config['bufferDays'],
@@ -302,7 +301,6 @@ void main() {
           dayWidth: config['dayWidth'],
           dayMargin: config['dayMargin'],
           datesHeight: config['datesHeight'],
-          timelineHeight: config['timelineHeight'],
           rowHeight: config['rowHeight'],
           rowMargin: config['rowMargin'],
           bufferDays: config['bufferDays'],
@@ -348,7 +346,6 @@ void main() {
           dayWidth: config['dayWidth'],
           dayMargin: config['dayMargin'],
           datesHeight: config['datesHeight'],
-          timelineHeight: config['timelineHeight'],
           rowHeight: config['rowHeight'],
           rowMargin: config['rowMargin'],
           bufferDays: config['bufferDays'],
@@ -384,7 +381,6 @@ Map<String, dynamic> _generateRandomValidConfigMap(Random random) {
   final dayWidth = 20.0 + random.nextDouble() * 80.0; // 20.0 - 100.0
   final dayMargin = random.nextDouble() * 20.0; // 0.0 - 20.0
   final datesHeight = 40.0 + random.nextDouble() * 60.0; // 40.0 - 100.0
-  final timelineHeight = 100.0 + random.nextDouble() * 900.0; // 100.0 - 1000.0
   final rowHeight = 20.0 + random.nextDouble() * 40.0; // 20.0 - 60.0
   final rowMargin = random.nextDouble() * 10.0; // 0.0 - 10.0
   final bufferDays = 1 + random.nextInt(20); // 1 - 20
@@ -394,7 +390,6 @@ Map<String, dynamic> _generateRandomValidConfigMap(Random random) {
     'dayWidth': dayWidth,
     'dayMargin': dayMargin,
     'datesHeight': datesHeight,
-    'timelineHeight': timelineHeight,
     'rowHeight': rowHeight,
     'rowMargin': rowMargin,
     'bufferDays': bufferDays,

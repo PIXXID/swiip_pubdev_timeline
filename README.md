@@ -192,7 +192,6 @@ All parameters are optional. If not specified, sensible defaults are used:
 | `rowHeight` | double | 20.0 - 60.0 | 30.0 | Height of each stage row |
 | `rowMargin` | double | 0.0 - 10.0 | 3.0 | Spacing between rows |
 | `datesHeight` | double | 40.0 - 100.0 | 65.0 | Height of date header |
-| `timelineHeight` | double | 100.0 - 1000.0 | 300.0 | Total timeline height |
 
 For detailed configuration documentation, see [CONFIGURATION.md](CONFIGURATION.md).
 

@@ -83,12 +83,6 @@ class ParameterConstraints {
       max: 100.0,
       defaultValue: 65.0,
     ),
-    'timelineHeight': const ParameterConstraints(
-      type: 'double',
-      min: 100.0,
-      max: 1000.0,
-      defaultValue: 300.0,
-    ),
     'rowHeight': const ParameterConstraints(
       type: 'double',
       min: 20.0,

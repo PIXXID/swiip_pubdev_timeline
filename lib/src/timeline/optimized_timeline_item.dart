@@ -264,138 +264,143 @@ class _OptimizedTimelineItemState extends State<OptimizedTimelineItem> with Sing
         child: SizedBox(
           width: widget.dayWidth - widget.dayMargin,
           height: widget.height,
-          child: Column(
-            children: <Widget>[
-              // Alertes
-              if (widget.index == widget.nowIndex)
-                Padding(
-                  padding: const EdgeInsets.only(top: 3, bottom: 5),
-                  child: Icon(
-                    Icons.circle_outlined,
-                    size: 12,
-                    color: widget.colors['primaryText'],
-                  ),
-                )
-              else if (widget.day['alertLevel'] != 0)
-                Padding(
-                  padding: const EdgeInsets.only(top: 3, bottom: 5),
-                  child: Icon(
-                    Icons.circle_rounded,
-                    size: 12,
-                    color: widget.day['alertLevel'] == 1
-                        ? widget.colors['warning']
-                        : (widget.day['alertLevel'] == 2 ? widget.colors['error'] : Colors.transparent),
-                  ),
-                )
-              else
-                const SizedBox(height: 18),
-              // Barre avec données
-              Expanded(
-                child: SizedBox(
-                  height: heightLmax,
-                  child: Stack(
-                    children: [
-                      // Barre de capacité
-                      Positioned(
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        child: Container(
-                          margin: EdgeInsets.only(
-                            left: widget.dayMargin / 2,
-                            right: widget.dayMargin / 2,
-                            bottom: widget.dayMargin / 3,
-                          ),
-                          width: widget.dayWidth - widget.dayMargin - 15,
-                          height: (heightCapeff > 0) ? heightCapeff - 2 : heightLmax,
-                          decoration: BoxDecoration(
-                            border: Border(
-                              top: BorderSide(
-                                color: (widget.index == widget.centerItemIndexNotifier.value)
-                                    ? widget.colors['secondaryText']!
-                                    : const Color(0x00000000),
-                                width: 1,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.red.withValues(alpha: 0.10),
+            ),
+            child: Column(
+              children: <Widget>[
+                // Alertes
+                if (widget.index == widget.nowIndex)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 3, bottom: 5),
+                    child: Icon(
+                      Icons.circle_outlined,
+                      size: 12,
+                      color: widget.colors['primaryText'],
+                    ),
+                  )
+                else if (widget.day['alertLevel'] != 0)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 3, bottom: 5),
+                    child: Icon(
+                      Icons.circle_rounded,
+                      size: 12,
+                      color: widget.day['alertLevel'] == 1
+                          ? widget.colors['warning']
+                          : (widget.day['alertLevel'] == 2 ? widget.colors['error'] : Colors.transparent),
+                    ),
+                  )
+                else
+                  const SizedBox(height: 18),
+                // Barre avec données
+                Expanded(
+                  child: SizedBox(
+                    height: heightLmax,
+                    child: Stack(
+                      children: [
+                        // Barre de capacité
+                        Positioned(
+                          bottom: 0,
+                          left: 0,
+                          right: 0,
+                          child: Container(
+                            margin: EdgeInsets.only(
+                              left: widget.dayMargin / 2,
+                              right: widget.dayMargin / 2,
+                              bottom: widget.dayMargin / 3,
+                            ),
+                            width: widget.dayWidth - widget.dayMargin - 15,
+                            height: (heightCapeff > 0) ? heightCapeff - 2 : heightLmax,
+                            decoration: BoxDecoration(
+                              border: Border(
+                                top: BorderSide(
+                                  color: (widget.index == widget.centerItemIndexNotifier.value)
+                                      ? widget.colors['secondaryText']!
+                                      : const Color(0x00000000),
+                                  width: 1,
+                                ),
                               ),
                             ),
-                          ),
-                          child: Center(
-                            child:
-                                // Icon soleil si aucune capacité
-                                (heightCapeff == 0 && heightBuseff == 0 && heightCompeff == 0)
-                                    ? Icon(
-                                        Icons.sunny,
-                                        color: widget.colors['secondaryBackground'],
-                                        size: 14,
-                                      )
-                                    : null,
-                          ),
-                        ),
-                      ),
-                      // Barre de travail affecté (busy)
-                      Positioned(
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        child: Container(
-                          margin: EdgeInsets.only(
-                            left: widget.dayMargin / 2,
-                            right: widget.dayMargin / 2,
-                            bottom: widget.dayMargin / 3,
-                          ),
-                          width: widget.dayWidth - widget.dayMargin - 16,
-                          // On affiche 1 pixel pour marquer une journée travaillée
-                          height: (heightBuseff <= 0) ? 0.5 : heightBuseff,
-                          decoration: BoxDecoration(
-                            borderRadius: borderRadius,
-                            color: busyColor,
-                          ),
-                        ),
-                      ),
-                      // Barre de travail terminé - Using AnimatedBuilder with Transform
-                      Positioned(
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        child: RepaintBoundary(
-                          child: AnimatedBuilder(
-                            animation: _progressAnimation,
-                            builder: (context, child) {
-                              final animatedHeight = _isVisible ? _progressAnimation.value : 0.0;
-
-                              return Transform.translate(
-                                offset: Offset(0, heightLmax - animatedHeight),
-                                child: Container(
-                                  margin: EdgeInsets.only(
-                                    left: widget.dayMargin / 2,
-                                    right: widget.dayMargin / 2,
-                                    bottom: widget.dayMargin / 3,
-                                  ),
-                                  width: widget.dayWidth - widget.dayMargin - 16,
-                                  height: animatedHeight,
-                                  decoration: BoxDecoration(
-                                    borderRadius: borderRadius,
-                                    color: completeColor,
-                                  ),
-                                  child: (dayIsCompleted && animatedHeight > 0)
-                                      ? Center(
-                                          child: Icon(
-                                            Icons.check,
-                                            color: widget.colors['info'],
-                                            size: 16,
-                                          ),
+                            child: Center(
+                              child:
+                                  // Icon soleil si aucune capacité
+                                  (heightCapeff == 0 && heightBuseff == 0 && heightCompeff == 0)
+                                      ? Icon(
+                                          Icons.stop_circle,
+                                          color: widget.colors['secondaryBackground'],
+                                          size: 14,
                                         )
                                       : null,
-                                ),
-                              );
-                            },
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                        // Barre de travail affecté (busy)
+                        Positioned(
+                          bottom: 0,
+                          left: 0,
+                          right: 0,
+                          child: Container(
+                            margin: EdgeInsets.only(
+                              left: widget.dayMargin / 2,
+                              right: widget.dayMargin / 2,
+                              bottom: widget.dayMargin / 3,
+                            ),
+                            width: widget.dayWidth - widget.dayMargin - 16,
+                            // On affiche 1 pixel pour marquer une journée travaillée
+                            height: (heightBuseff <= 0) ? 0.5 : heightBuseff,
+                            decoration: BoxDecoration(
+                              borderRadius: borderRadius,
+                              color: busyColor,
+                            ),
+                          ),
+                        ),
+                        // Barre de travail terminé - Using AnimatedBuilder with Transform
+                        Positioned(
+                          bottom: 0,
+                          left: 0,
+                          right: 0,
+                          child: RepaintBoundary(
+                            child: AnimatedBuilder(
+                              animation: _progressAnimation,
+                              builder: (context, child) {
+                                final animatedHeight = _isVisible ? _progressAnimation.value : 0.0;
+
+                                return Transform.translate(
+                                  offset: Offset(0, heightLmax - animatedHeight),
+                                  child: Container(
+                                    margin: EdgeInsets.only(
+                                      left: widget.dayMargin / 2,
+                                      right: widget.dayMargin / 2,
+                                      bottom: widget.dayMargin / 3,
+                                    ),
+                                    width: widget.dayWidth - widget.dayMargin - 16,
+                                    height: animatedHeight,
+                                    decoration: BoxDecoration(
+                                      borderRadius: borderRadius,
+                                      color: completeColor,
+                                    ),
+                                    child: (dayIsCompleted && animatedHeight > 0)
+                                        ? Center(
+                                            child: Icon(
+                                              Icons.check,
+                                              color: widget.colors['info'],
+                                              size: 16,
+                                            ),
+                                          )
+                                        : null,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

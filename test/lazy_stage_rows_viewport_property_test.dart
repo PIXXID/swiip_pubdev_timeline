@@ -47,9 +47,6 @@ void main() {
         // Create a scroll controller for vertical scrolling
         final verticalScrollController = ScrollController();
 
-        // Track which rows were built
-        final builtRowIndices = <int>[];
-
         // Build the LazyStageRowsViewport with random parameters
         await tester.pumpWidget(
           MaterialApp(
@@ -188,8 +185,6 @@ void main() {
 
         await tester.pumpAndSettle();
 
-        final initialRowCount = find.byType(OptimizedStageRow).evaluate().length;
-
         // Scroll down to middle of timeline
         if (verticalScrollController.hasClients) {
           final maxScroll = verticalScrollController.position.maxScrollExtent;
@@ -218,8 +213,6 @@ void main() {
     testWidgets('Property 5: Lazy Viewport Rendering - handles edge cases for stage rows', (WidgetTester tester) async {
       // Feature: native-scroll-only, Property 5: Lazy Viewport Rendering
       // Validates: Requirements 5.5
-
-      final random = Random(654);
 
       for (var iteration = 0; iteration < 100; iteration++) {
         // Test various edge cases

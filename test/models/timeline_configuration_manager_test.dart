@@ -55,7 +55,6 @@ void main() {
         expect(access1.rowHeight, equals(config.rowHeight));
         expect(access1.rowMargin, equals(config.rowMargin));
         expect(access1.datesHeight, equals(config.datesHeight));
-        expect(access1.timelineHeight, equals(config.timelineHeight));
       }
     });
 
@@ -102,8 +101,6 @@ void main() {
             reason: 'rowMargin should match programmatic config');
         expect(resultConfig.datesHeight, equals(programmaticConfig.datesHeight),
             reason: 'datesHeight should match programmatic config');
-        expect(resultConfig.timelineHeight, equals(programmaticConfig.timelineHeight),
-            reason: 'timelineHeight should match programmatic config');
 
         // Assert: values should NOT match file config
         expect(resultConfig.dayWidth, isNot(equals(fileConfig.dayWidth)),
@@ -172,7 +169,6 @@ TimelineConfiguration _generateRandomValidConfig(Random random) {
   final dayWidth = 20.0 + random.nextDouble() * 80.0; // 20.0 - 100.0
   final dayMargin = random.nextDouble() * 20.0; // 0.0 - 20.0
   final datesHeight = 40.0 + random.nextDouble() * 60.0; // 40.0 - 100.0
-  final timelineHeight = 100.0 + random.nextDouble() * 900.0; // 100.0 - 1000.0
   final rowHeight = 20.0 + random.nextDouble() * 40.0; // 20.0 - 60.0
   final rowMargin = random.nextDouble() * 10.0; // 0.0 - 10.0
   final bufferDays = 1 + random.nextInt(20); // 1 - 20
@@ -182,7 +178,6 @@ TimelineConfiguration _generateRandomValidConfig(Random random) {
     dayWidth: dayWidth,
     dayMargin: dayMargin,
     datesHeight: datesHeight,
-    timelineHeight: timelineHeight,
     rowHeight: rowHeight,
     rowMargin: rowMargin,
     bufferDays: bufferDays,

@@ -25,7 +25,6 @@ void main() {
           'dayWidth': 50.0,
           'dayMargin': 6.0,
           'datesHeight': 70.0,
-          'timelineHeight': 350.0,
           'rowHeight': 35.0,
           'rowMargin': 4.0,
           'bufferDays': 7,
@@ -43,7 +42,6 @@ void main() {
         expect(config.dayWidth, equals(50.0));
         expect(config.dayMargin, equals(6.0));
         expect(config.datesHeight, equals(70.0));
-        expect(config.timelineHeight, equals(350.0));
         expect(config.rowHeight, equals(35.0));
         expect(config.rowMargin, equals(4.0));
         expect(config.bufferDays, equals(7));
@@ -72,7 +70,6 @@ void main() {
         // Verify defaults are used for missing values
         expect(config.dayMargin, equals(5.0)); // default
         expect(config.datesHeight, equals(65.0)); // default
-        expect(config.timelineHeight, equals(300.0)); // default
         expect(config.rowHeight, equals(30.0)); // default
       });
     });
@@ -94,7 +91,6 @@ void main() {
         expect(config.dayWidth, equals(45.0));
         expect(config.dayMargin, equals(5.0));
         expect(config.datesHeight, equals(65.0));
-        expect(config.timelineHeight, equals(300.0));
         expect(config.rowHeight, equals(30.0));
         expect(config.rowMargin, equals(3.0));
         expect(config.bufferDays, equals(5));

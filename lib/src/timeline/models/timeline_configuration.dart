@@ -12,9 +12,6 @@ class TimelineConfiguration {
   /// Height of the dates section in pixels.
   final double datesHeight;
 
-  /// Height of the timeline section in pixels.
-  final double timelineHeight;
-
   /// Height of each stage row in pixels.
   final double rowHeight;
 
@@ -37,7 +34,6 @@ class TimelineConfiguration {
     this.dayWidth = 45.0,
     this.dayMargin = 5.0,
     this.datesHeight = 65.0,
-    this.timelineHeight = 300.0,
     this.rowHeight = 30.0,
     this.rowMargin = 3.0,
     this.bufferDays = 5,
@@ -61,7 +57,6 @@ class TimelineConfiguration {
       dayWidth: (map['dayWidth'] as num?)?.toDouble() ?? 45.0,
       dayMargin: (map['dayMargin'] as num?)?.toDouble() ?? 5.0,
       datesHeight: (map['datesHeight'] as num?)?.toDouble() ?? 65.0,
-      timelineHeight: (map['timelineHeight'] as num?)?.toDouble() ?? 300.0,
       rowHeight: (map['rowHeight'] as num?)?.toDouble() ?? 30.0,
       rowMargin: (map['rowMargin'] as num?)?.toDouble() ?? 3.0,
       bufferDays: (map['bufferDays'] as num?)?.toInt() ?? 5,
@@ -77,7 +72,6 @@ class TimelineConfiguration {
       'dayWidth': dayWidth,
       'dayMargin': dayMargin,
       'datesHeight': datesHeight,
-      'timelineHeight': timelineHeight,
       'rowHeight': rowHeight,
       'rowMargin': rowMargin,
       'bufferDays': bufferDays,
@@ -93,7 +87,6 @@ class TimelineConfiguration {
     double? dayWidth,
     double? dayMargin,
     double? datesHeight,
-    double? timelineHeight,
     double? rowHeight,
     double? rowMargin,
     int? bufferDays,
@@ -103,7 +96,6 @@ class TimelineConfiguration {
       dayWidth: dayWidth ?? this.dayWidth,
       dayMargin: dayMargin ?? this.dayMargin,
       datesHeight: datesHeight ?? this.datesHeight,
-      timelineHeight: timelineHeight ?? this.timelineHeight,
       rowHeight: rowHeight ?? this.rowHeight,
       rowMargin: rowMargin ?? this.rowMargin,
       bufferDays: bufferDays ?? this.bufferDays,
@@ -119,7 +111,6 @@ class TimelineConfiguration {
           dayWidth == other.dayWidth &&
           dayMargin == other.dayMargin &&
           datesHeight == other.datesHeight &&
-          timelineHeight == other.timelineHeight &&
           rowHeight == other.rowHeight &&
           rowMargin == other.rowMargin &&
           bufferDays == other.bufferDays &&
@@ -130,7 +121,6 @@ class TimelineConfiguration {
         dayWidth,
         dayMargin,
         datesHeight,
-        timelineHeight,
         rowHeight,
         rowMargin,
         bufferDays,
@@ -143,7 +133,6 @@ class TimelineConfiguration {
         '  dayWidth: $dayWidth,\n'
         '  dayMargin: $dayMargin,\n'
         '  datesHeight: $datesHeight,\n'
-        '  timelineHeight: $timelineHeight,\n'
         '  rowHeight: $rowHeight,\n'
         '  rowMargin: $rowMargin,\n'
         '  bufferDays: $bufferDays,\n'
