@@ -186,10 +186,13 @@ class _Timeline extends State<Timeline> {
   double _viewportHeight = 0.0;
 
   // ValueNotifier for center item index (used by OptimizedTimelineItem)
-  late ValueNotifier<int> _centerItemIndexNotifier;
+  final ValueNotifier<int> _centerItemIndexNotifier = ValueNotifier<int>(0);
 
   // ValueNotifier for loading state (used by LoadingIndicatorOverlay)
-  late ValueNotifier<bool> _isLoadingNotifier;
+  final ValueNotifier<bool> _isLoadingNotifier = ValueNotifier<bool>(false);
+
+  // ValueNotifier for visible range (used by OptimizedTimelineItem)
+  //late ValueNotifier<VisibleRange> _visibleRangeNotifier;
 
   bool isUniqueProject = false;
 
@@ -259,11 +262,10 @@ class _Timeline extends State<Timeline> {
     // Initialize TimelineDataManager
     _dataManager = TimelineDataManager();
 
-    // Initialize ValueNotifier for center item index
-    _centerItemIndexNotifier = ValueNotifier<int>(0);
-
-    // Initialize ValueNotifier for loading state
-    _isLoadingNotifier = ValueNotifier<bool>(false);
+    // ValueNotifiers are already initialized at declaration
+    // Reset them to initial values
+    _centerItemIndexNotifier.value = 0;
+    _isLoadingNotifier.value = false;
 
     // Apply configuration values to instance variables
     dayWidth = _config.dayWidth;

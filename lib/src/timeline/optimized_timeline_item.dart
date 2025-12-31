@@ -213,7 +213,7 @@ class _OptimizedTimelineItemState extends State<OptimizedTimelineItem> with Sing
         dayIsCompleted = true;
       }
       // Met à jour la couleur si progression
-      completeColor = widget.colors['primary']!;
+      completeColor = widget.colors['primary'] ?? Colors.white;
     }
 
     // Réduit la hauteur en cas de dépassement excessif
@@ -316,7 +316,7 @@ class _OptimizedTimelineItemState extends State<OptimizedTimelineItem> with Sing
                               border: Border(
                                 top: BorderSide(
                                   color: (widget.index == widget.centerItemIndexNotifier.value)
-                                      ? widget.colors['secondaryText']!
+                                      ? widget.colors['secondaryText'] ?? Colors.grey
                                       : const Color(0x00000000),
                                   width: 1,
                                 ),

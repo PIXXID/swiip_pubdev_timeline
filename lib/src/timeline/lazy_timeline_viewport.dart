@@ -68,7 +68,8 @@ class LazyTimelineViewport extends StatelessWidget {
     final safeEnd = visibleEnd.clamp(0, items.length);
 
     // Iterate through visible range and create positioned widgets
-    for (var i = safeStart; i < safeEnd && i < items.length; i++) {
+    // visibleEnd is inclusive, so we use <= instead of <
+    for (var i = safeStart; i <= safeEnd && i < items.length; i++) {
       visibleWidgets.add(
         Positioned(
           left: i * (itemWidth - itemMargin),

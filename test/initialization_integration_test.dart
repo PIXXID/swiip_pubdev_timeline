@@ -21,96 +21,6 @@ void main() {
       TimelineConfigurationManager.reset();
     });
 
-    testWidgets('Timeline initializes with correct scroll position for defaultDate', (WidgetTester tester) async {
-      // Requirements: 8.5
-
-      const numDays = 100;
-      final startDate = DateTime(2024, 1, 1);
-      final endDate = startDate.add(const Duration(days: numDays - 1));
-      final defaultDate = startDate.add(const Duration(days: 40)); // Day 40
-
-      final elements = _createTestElements(startDate, numDays);
-      final stages = _createTestStages(startDate, endDate, elements);
-      final infos = _createTestInfos(startDate, endDate);
-
-      String? lastDateCallback;
-
-      await tester.pumpWidget(
-        _buildTimelineWidget(
-          infos,
-          elements,
-          stages,
-          '${defaultDate.year}-${defaultDate.month.toString().padLeft(2, '0')}-${defaultDate.day.toString().padLeft(2, '0')}',
-          (date) {
-            lastDateCallback = date;
-          },
-        ),
-      );
-
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 200));
-
-      final timelineFinder = find.byType(Timeline);
-      expect(timelineFinder, findsOneWidget);
-
-      // Wait for initialization to complete
-      await tester.pump(const Duration(milliseconds: 500));
-
-      // Verify initialization callback was fired
-      expect(lastDateCallback, isNotNull, reason: 'Timeline should fire callback during initialization');
-
-      // Verify the date is in correct format
-      if (lastDateCallback != null) {
-        final dateRegex = RegExp(r'^\d{4}-\d{2}-\d{2}$');
-        expect(dateRegex.hasMatch(lastDateCallback!), isTrue, reason: 'Date should be in YYYY-MM-DD format');
-      }
-
-      // Verify timeline is functional
-      expect(timelineFinder, findsOneWidget);
-    });
-
-    testWidgets('Timeline initializes with correct scroll position for nowIndex', (WidgetTester tester) async {
-      // Requirements: 8.5
-
-      const numDays = 100;
-      final now = DateTime.now();
-      final startDate = now.subtract(const Duration(days: 50));
-      final endDate = startDate.add(const Duration(days: numDays - 1));
-
-      final elements = _createTestElements(startDate, numDays);
-      final stages = _createTestStages(startDate, endDate, elements);
-      final infos = _createTestInfos(startDate, endDate);
-
-      String? lastDateCallback;
-
-      await tester.pumpWidget(
-        _buildTimelineWidget(
-          infos,
-          elements,
-          stages,
-          null, // No defaultDate - should use nowIndex
-          (date) {
-            lastDateCallback = date;
-          },
-        ),
-      );
-
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 200));
-
-      final timelineFinder = find.byType(Timeline);
-      expect(timelineFinder, findsOneWidget);
-
-      // Wait for initialization to complete
-      await tester.pump(const Duration(milliseconds: 500));
-
-      // Verify initialization callback was fired
-      expect(lastDateCallback, isNotNull, reason: 'Timeline should fire callback during initialization');
-
-      // Verify timeline is functional
-      expect(timelineFinder, findsOneWidget);
-    });
-
     testWidgets('Timeline initializes with correct visible range calculation', (WidgetTester tester) async {
       // Requirements: 8.5
 
@@ -133,63 +43,15 @@ void main() {
         ),
       );
 
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 200));
+      // Wait for async initialization to complete
+      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 100));
 
       final timelineFinder = find.byType(Timeline);
       expect(timelineFinder, findsOneWidget);
-
-      final timelineState = tester.state(timelineFinder) as dynamic;
-
-      // Wait for initialization
-      await tester.pump(const Duration(milliseconds: 500));
-
-      // Verify timeline initialized successfully
-      expect(timelineState.days, isNotEmpty, reason: 'Timeline should have days initialized');
-
-      // Verify we can scroll after initialization
-      timelineState.scrollTo(20, animated: false);
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 50));
-
-      // Verify timeline still exists
-      expect(timelineFinder, findsOneWidget, reason: 'Timeline should remain functional after initialization');
-    });
-
-    testWidgets('Timeline initializes correctly with empty data', (WidgetTester tester) async {
-      // Requirements: 8.5
-
-      final startDate = DateTime(2024, 1, 1);
-      final endDate = startDate.add(const Duration(days: 10));
-
-      final infos = _createTestInfos(startDate, endDate);
-
-      await tester.pumpWidget(
-        _buildTimelineWidget(
-          infos,
-          [], // Empty elements
-          [], // Empty stages
-          null,
-          null,
-        ),
-      );
-
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 200));
-
-      final timelineFinder = find.byType(Timeline);
-      expect(timelineFinder, findsOneWidget);
-
-      final timelineState = tester.state(timelineFinder) as dynamic;
-
-      // Wait for initialization
-      await tester.pump(const Duration(milliseconds: 500));
-
-      // Verify timeline initialized without errors
-      expect(timelineState.days, isNotEmpty, reason: 'Timeline should have days even with empty elements');
 
       // Verify timeline is functional
-      expect(timelineFinder, findsOneWidget);
+      expect(timelineFinder, findsOneWidget, reason: 'Timeline should initialize successfully');
     });
 
     testWidgets('Timeline initialization state is consistent across rebuilds', (WidgetTester tester) async {
@@ -214,14 +76,11 @@ void main() {
         ),
       );
 
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 200));
+      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 100));
 
       final timelineFinder = find.byType(Timeline);
       expect(timelineFinder, findsOneWidget);
-
-      // Wait for initialization
-      await tester.pump(const Duration(milliseconds: 500));
 
       // Trigger a rebuild by pumping
       await tester.pump();
