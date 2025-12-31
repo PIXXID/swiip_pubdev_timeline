@@ -66,13 +66,11 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
 
     // Listen to state changes with conditional rebuild
     widget.centerItemIndexNotifier.addListener(_onCenterIndexChanged);
-    widget.visibleRangeNotifier.addListener(_onVisibleRangeChanged);
   }
 
   @override
   void dispose() {
     widget.centerItemIndexNotifier.removeListener(_onCenterIndexChanged);
-    widget.visibleRangeNotifier.removeListener(_onVisibleRangeChanged);
     super.dispose();
   }
 
@@ -80,59 +78,12 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
   /// Only rebuilds if this row is affected by the change.
   void _onCenterIndexChanged() {
     final newIndex = widget.centerItemIndexNotifier.value;
+    // Skip if index hasn't changed
+    if (_lastCenterIndex == newIndex) return;
 
-    // Rebuild only if the center affects this row
-    if (_shouldRebuildForCenterChange(newIndex)) {
-      setState(() {
-        _lastCenterIndex = newIndex;
-        _updateLabelsVisibility();
-      });
-    }
-  }
-
-  /// Called when visible range changes.
-  /// Only rebuilds if this row is affected by the change.
-  void _onVisibleRangeChanged() {
-    final newRange = widget.visibleRangeNotifier.value;
-
-    // Rebuild only if the visible range affects this row
-    if (_shouldRebuildForRangeChange(newRange)) {
-      setState(() {
-        _lastVisibleRange = newRange;
-        // No need to recalculate positions, just trigger rebuild
-      });
-    }
-  }
-
-  /// Determines if the row should rebuild based on center index change.
-  ///
-  /// Returns true if:
-  /// - The center index has actually changed
-  /// - Any stage in this row contains the new center index
-  bool _shouldRebuildForCenterChange(int newIndex) {
-    if (_lastCenterIndex == newIndex) return false;
-
-    // Check if any stage in this row contains the new center index
-    return widget.stagesList.any((stage) {
-      final startIndex = stage['startDateIndex'] is int ? stage['startDateIndex'] as int : 0;
-      final endIndex = stage['endDateIndex'] is int ? stage['endDateIndex'] as int : 0;
-      return startIndex <= newIndex && endIndex >= newIndex;
-    });
-  }
-
-  /// Determines if the row should rebuild based on visible range change.
-  ///
-  /// Returns true if:
-  /// - The visible range has actually changed
-  /// - Any stage in this row overlaps with the new visible range
-  bool _shouldRebuildForRangeChange(VisibleRange newRange) {
-    if (_lastVisibleRange == newRange) return false;
-
-    // Check if any stage in this row overlaps with the new visible range
-    return widget.stagesList.any((stage) {
-      final startIndex = stage['startDateIndex'] is int ? stage['startDateIndex'] as int : 0;
-      final endIndex = stage['endDateIndex'] is int ? stage['endDateIndex'] as int : 0;
-      return newRange.overlaps(startIndex, endIndex);
+    setState(() {
+      _lastCenterIndex = newIndex;
+      _updateLabelsVisibility();
     });
   }
 
@@ -317,7 +268,6 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
 
     final startIndex = stage['startDateIndex'] is int ? stage['startDateIndex'] as int : 0;
     final endIndex = stage['endDateIndex'] is int ? stage['endDateIndex'] as int : 0;
-
     return !isStage && daysWidth < 4 && startIndex <= centerIndex && endIndex >= centerIndex;
   }
 

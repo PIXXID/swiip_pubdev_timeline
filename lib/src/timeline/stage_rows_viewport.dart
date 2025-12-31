@@ -10,6 +10,9 @@ class StageRowsViewport extends StatefulWidget {
   /// End index of the visible horizontal range (exclusive).
   final int visibleEnd;
 
+  /// Center item index for label visibility calculations.
+  final int centerItemIndex;
+
   /// The complete list of stage rows to be rendered.
   final List<dynamic> stagesRows;
 
@@ -52,6 +55,7 @@ class StageRowsViewport extends StatefulWidget {
     super.key,
     required this.visibleStart,
     required this.visibleEnd,
+    required this.centerItemIndex,
     required this.stagesRows,
     required this.rowHeight,
     required this.rowMargin,
@@ -87,7 +91,7 @@ class _StageRowsViewportState extends State<StageRowsViewport> {
     _visibleRangeNotifier = ValueNotifier<VisibleRange>(
       VisibleRange(widget.visibleStart, widget.visibleEnd),
     );
-    _centerItemIndexNotifier = ValueNotifier<int>(0);
+    _centerItemIndexNotifier = ValueNotifier<int>(widget.centerItemIndex);
   }
 
   @override
@@ -97,6 +101,11 @@ class _StageRowsViewportState extends State<StageRowsViewport> {
     // Update ValueNotifiers when widget parameters change
     if (oldWidget.visibleStart != widget.visibleStart || oldWidget.visibleEnd != widget.visibleEnd) {
       _visibleRangeNotifier.value = VisibleRange(widget.visibleStart, widget.visibleEnd);
+    }
+
+    // Update center item index notifier when it changes
+    if (oldWidget.centerItemIndex != widget.centerItemIndex) {
+      _centerItemIndexNotifier.value = widget.centerItemIndex;
     }
   }
 

@@ -270,29 +270,6 @@ class _OptimizedTimelineItemState extends State<OptimizedTimelineItem> with Sing
             ),
             child: Column(
               children: <Widget>[
-                // Alertes
-                if (widget.index == widget.nowIndex)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 3, bottom: 5),
-                    child: Icon(
-                      Icons.circle_outlined,
-                      size: 12,
-                      color: widget.colors['primaryText'],
-                    ),
-                  )
-                else if (widget.day['alertLevel'] != 0)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 3, bottom: 5),
-                    child: Icon(
-                      Icons.circle_rounded,
-                      size: 12,
-                      color: widget.day['alertLevel'] == 1
-                          ? widget.colors['warning']
-                          : (widget.day['alertLevel'] == 2 ? widget.colors['error'] : Colors.transparent),
-                    ),
-                  )
-                else
-                  const SizedBox(height: 18),
                 // Barre avec données
                 Expanded(
                   child: SizedBox(
@@ -399,6 +376,29 @@ class _OptimizedTimelineItemState extends State<OptimizedTimelineItem> with Sing
                     ),
                   ),
                 ),
+                // Alertes
+                if (widget.index == widget.nowIndex)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 3, bottom: 5),
+                    child: Icon(
+                      Icons.circle_outlined,
+                      size: 12,
+                      color: widget.colors['primaryText'],
+                    ),
+                  )
+                else if (widget.day['alertLevel'] != 0)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 3, bottom: 5),
+                    child: Icon(
+                      Icons.circle_rounded,
+                      size: 12,
+                      color: widget.day['alertLevel'] == 1
+                          ? widget.colors['warning']
+                          : (widget.day['alertLevel'] == 2 ? widget.colors['error'] : Colors.transparent),
+                    ),
+                  )
+                else
+                  const SizedBox(height: 18),
               ],
             ),
           ),

@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 // Widgets
 import 'timeline_day_date.dart';
 import 'lazy_timeline_viewport.dart';
-import 'lazy_stage_rows_viewport.dart';
+import 'stage_rows_viewport.dart';
 import 'optimized_timeline_item.dart';
 import 'loading_indicator_overlay.dart';
 
@@ -163,6 +163,7 @@ class _Timeline extends State<Timeline> {
   int _visibleEnd = 0;
   double _viewportWidth = 0.0;
   double _viewportHeight = 0.0;
+  double _viewportMargin = 0.0;
 
   // ValueNotifier for center item index (used by OptimizedTimelineItem)
   final ValueNotifier<int> _centerItemIndexNotifier = ValueNotifier<int>(0);
@@ -370,7 +371,6 @@ class _Timeline extends State<Timeline> {
           // 4. Trigger callbacks and auto-scroll when center changes
           if (newCenterIndex != _previousCenterIndex) {
             // Update current date callback
-            debugPrint('$newCenterIndex');
             _updateCurrentDateCallback(newCenterIndex);
 
             // Save previous center index
@@ -484,8 +484,6 @@ class _Timeline extends State<Timeline> {
     // Formate la date au format YYYY-MM-DD
     final dayDate = DateFormat('yyyy-MM-dd').format(days[safeIndex]['date']);
 
-    debugPrint(dayDate);
-
     // Appelle le callback
     widget.updateCurrentDate!.call(dayDate);
   }
@@ -527,6 +525,7 @@ class _Timeline extends State<Timeline> {
             // available space, which may differ from MediaQuery.of(context).size.width
             _viewportWidth = constraints.maxWidth;
             _viewportHeight = constraints.maxHeight;
+            _viewportMargin = (_viewportWidth / 2) - (dayWidth / 2);
 
             return Stack(
               // Trait rouge indiquant le jour en cours
@@ -573,7 +572,7 @@ class _Timeline extends State<Timeline> {
                                   controller: _controllerTimeline,
                                   scrollDirection: Axis.horizontal,
                                   // Padding pour que le 1er element soit au milieu de l'écran
-                                  padding: EdgeInsets.symmetric(horizontal: _viewportWidth / 2),
+                                  padding: EdgeInsets.symmetric(horizontal: _viewportMargin),
                                   child: SizedBox(
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -618,6 +617,7 @@ class _Timeline extends State<Timeline> {
                                                       // This eliminates the need for a controller with ValueNotifiers
                                                       visibleStart: _visibleStart,
                                                       visibleEnd: _visibleEnd,
+                                                      centerItemIndex: _centerItemIndex,
                                                       stagesRows: stagesRows,
                                                       rowHeight: rowHeight,
                                                       rowMargin: rowMargin,
