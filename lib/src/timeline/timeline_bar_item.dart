@@ -141,7 +141,7 @@ class _TimelineBarItemState extends State<TimelineBarItem> with SingleTickerProv
           width: widget.dayWidth / 2,
           height: widget.height,
           decoration: BoxDecoration(
-            color: widget.colors['primaryBackground']!.withValues(alpha: 0.85),
+            color: widget.colors['primaryBackground']!.withValues(alpha: 0.8),
           ),
           margin: const EdgeInsets.only(top: 5.0),
           child: Column(
@@ -209,7 +209,7 @@ class _TimelineBarItemState extends State<TimelineBarItem> with SingleTickerProv
                             color: widget.day['alertLevel'] == 1
                                 ? widget.colors['warning']
                                 : (widget.day['alertLevel'] == 2 ? widget.colors['error'] : Colors.transparent),
-                            size: 15,
+                            size: 13,
                           ),
                         ),
                       ),
