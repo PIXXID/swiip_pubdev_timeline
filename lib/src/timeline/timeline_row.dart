@@ -42,7 +42,7 @@ class TimelineRow extends StatefulWidget {
 
 class _TimelineRowState extends State<TimelineRow> {
   // Cached stage items with their positions (calculated once)
-  List<_TimelineRowItemData> _TimelineRowItemsData = [];
+  List<_TimelineRowItemData> _timelineRowItemsData = [];
 
   // Cached widgets for each stage (built once, reused)
   Map<int, Widget> _cachedStageWidgets = {};
@@ -90,7 +90,7 @@ class _TimelineRowState extends State<TimelineRow> {
   /// Calculates and caches the positions of all stage items.
   /// This is called ONCE during initialization and positions never change.
   void _calculateStagePositions() {
-    _TimelineRowItemsData = [];
+    _timelineRowItemsData = [];
     _cachedStageWidgets = {};
     double currentPosition = 0;
 
@@ -122,7 +122,7 @@ class _TimelineRowState extends State<TimelineRow> {
       currentPosition += spacerWidth;
 
       // Store the stage data with its fixed position
-      _TimelineRowItemsData.add(_TimelineRowItemData(
+      _timelineRowItemsData.add(_TimelineRowItemData(
         stage: stage,
         position: currentPosition,
         itemWidth: itemWidth,
@@ -280,7 +280,7 @@ class _TimelineRowState extends State<TimelineRow> {
 
     final centerIndex = widget.centerItemIndexNotifier.value;
 
-    for (final itemData in _TimelineRowItemsData) {
+    for (final itemData in _timelineRowItemsData) {
       // Add label if needed
       if (_shouldShowLabel(itemData.stage, centerIndex, itemData.daysWidth)) {
         _cachedLabels.add(_buildLabel(itemData.stage, itemData.position));
@@ -296,7 +296,7 @@ class _TimelineRowState extends State<TimelineRow> {
     // Use cached widgets instead of rebuilding them
     final visibleTimelineRowItems = <Widget>[];
 
-    for (final itemData in _TimelineRowItemsData) {
+    for (final itemData in _timelineRowItemsData) {
       // Check if stage overlaps with visible range (with buffer for smooth scrolling)
       bool isVisible = !(itemData.endIndex < visibleRange.start - 2 || itemData.startIndex > visibleRange.end + 2);
 
