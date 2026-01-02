@@ -63,7 +63,7 @@ Trigger callbacks
 
 **Current Implementation:**
 ```dart
-_controllerTimeline.addListener(() {
+_controllerHorizontal.addListener(() {
   // Cancel existing throttle timer
   _scrollThrottleTimer?.cancel();
   
@@ -78,7 +78,7 @@ _controllerTimeline.addListener(() {
 
 **New Implementation:**
 ```dart
-_controllerTimeline.addListener(() {
+_controllerHorizontal.addListener(() {
   if (!mounted) return;
   
   // Execute scroll calculations immediately

@@ -9,7 +9,7 @@ This specification defines the requirements for further simplifying the Timeline
 - **Timeline**: The main widget displaying project schedules, stages, and activities across days
 - **TimelineController**: Custom controller class that manages scroll state, center item index, and visible range using ValueNotifiers
 - **ScrollController**: Flutter's native controller for managing scroll position and behavior
-- **Horizontal_Scroll**: Left-right navigation through timeline days using `_controllerTimeline`
+- **Horizontal_Scroll**: Left-right navigation through timeline days using `_controllerHorizontal`
 - **Vertical_Scroll**: Up-down navigation through stage rows using `_controllerVerticalStages`
 - **Center_Item**: The day item currently positioned at the center of the viewport
 - **Visible_Range**: The range of items (with buffer) that should be rendered in the viewport
@@ -37,7 +37,7 @@ This specification defines the requirements for further simplifying the Timeline
 
 #### Acceptance Criteria
 
-1. THE Timeline SHALL use `_controllerTimeline.offset` directly to get horizontal scroll position
+1. THE Timeline SHALL use `_controllerHorizontal.offset` directly to get horizontal scroll position
 2. THE Timeline SHALL use `_controllerVerticalStages.offset` directly to get vertical scroll position
 3. THE Timeline SHALL calculate center item index directly from scroll offset using pure functions
 4. THE Timeline SHALL calculate visible range directly from scroll offset and viewport width
@@ -50,7 +50,7 @@ This specification defines the requirements for further simplifying the Timeline
 #### Acceptance Criteria
 
 1. WHEN horizontal scroll position changes, THE Timeline SHALL call `calculateCenterDateIndex()` directly
-2. THE Timeline SHALL pass scroll offset from `_controllerTimeline.offset` to the calculation function
+2. THE Timeline SHALL pass scroll offset from `_controllerHorizontal.offset` to the calculation function
 3. THE Timeline SHALL store the calculated center index in a local variable
 4. THE Timeline SHALL compare the new center index with the previous value to detect changes
 5. WHEN the center index changes, THE Timeline SHALL trigger the `updateCurrentDate` callback if provided

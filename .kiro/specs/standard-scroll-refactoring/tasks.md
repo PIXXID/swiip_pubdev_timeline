@@ -18,9 +18,9 @@ This implementation plan breaks down the refactoring of the Timeline component t
 
 - [x] 2. Update scrollTo() method to use ScrollController directly
   - [x] 2.1 Modify scrollTo() to call ScrollController methods directly
-    - Replace `_scrollH()` call with `_controllerTimeline.jumpTo()`
-    - Replace `_scrollHAnimated()` call with `_controllerTimeline.animateTo()`
-    - Update scroll offset clamping to use `_controllerTimeline.position.maxScrollExtent`
+    - Replace `_scrollH()` call with `_controllerHorizontal.jumpTo()`
+    - Replace `_scrollHAnimated()` call with `_controllerHorizontal.animateTo()`
+    - Update scroll offset clamping to use `_controllerHorizontal.position.maxScrollExtent`
     - Remove `sliderValue` state update
     - _Requirements: 5.1, 5.2, 5.3, 5.4_
 
@@ -44,7 +44,7 @@ This implementation plan breaks down the refactoring of the Timeline component t
     - **Validates: Requirements 2.1, 1.5**
     - Generate random scroll offsets (0 to maxScrollExtent)
     - Apply scroll using jumpTo()
-    - Verify _controllerTimeline.offset matches expected value
+    - Verify _controllerHorizontal.offset matches expected value
     - Run 100 iterations
 
   - [x] 3.3 Write property test for TimelineController updates

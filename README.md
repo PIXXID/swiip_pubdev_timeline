@@ -81,7 +81,7 @@ The timeline widget includes several performance optimizations that work automat
 The timeline uses a **native-only scroll architecture** that relies entirely on Flutter's built-in ScrollController:
 
 **Native ScrollControllers**:
-- `_controllerTimeline`: Manages horizontal scroll through timeline days
+- `_controllerHorizontal`: Manages horizontal scroll through timeline days
 - `_controllerVerticalStages`: Manages vertical scroll through stage rows
 - Direct access to scroll position via `controller.offset`
 

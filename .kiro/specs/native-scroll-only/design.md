@@ -100,13 +100,13 @@ The new architecture is simpler because:
 **Scroll Listener (in `_initializeTimeline()`):**
 ```dart
 // Before:
-_controllerTimeline.addListener(() {
+_controllerHorizontal.addListener(() {
   _timelineController.updateScrollOffset(currentOffset);
   // ... rest of logic
 });
 
 // After:
-_controllerTimeline.addListener(() {
+_controllerHorizontal.addListener(() {
   // Cancel existing throttle timer
   _scrollThrottleTimer?.cancel();
   
@@ -114,7 +114,7 @@ _controllerTimeline.addListener(() {
   _scrollThrottleTimer = Timer(Duration(milliseconds: 16), () {
     if (!mounted) return;
     
-    final currentOffset = _controllerTimeline.offset;
+    final currentOffset = _controllerHorizontal.offset;
     
     // Calculate center index directly
     final newCenterIndex = calculateCenterDateIndex(
@@ -471,7 +471,7 @@ Timer? _scrollThrottleTimer;
 
 **Scroll Listener in _initializeTimeline():**
 ```dart
-_controllerTimeline.addListener(() {
+_controllerHorizontal.addListener(() {
   // Cancel existing throttle timer
   _scrollThrottleTimer?.cancel();
   
@@ -479,8 +479,8 @@ _controllerTimeline.addListener(() {
   _scrollThrottleTimer = Timer(const Duration(milliseconds: 16), () {
     if (!mounted) return;
     
-    final currentOffset = _controllerTimeline.offset;
-    final maxScrollExtent = _controllerTimeline.position.maxScrollExtent;
+    final currentOffset = _controllerHorizontal.offset;
+    final maxScrollExtent = _controllerHorizontal.position.maxScrollExtent;
     
     if (currentOffset >= 0 && currentOffset < maxScrollExtent) {
       // Calculate center index directly
@@ -541,7 +541,7 @@ void dispose() {
   _verticalScrollDebounceTimer?.cancel();
   
   // Remove listeners
-  _controllerTimeline.removeListener(() {});
+  _controllerHorizontal.removeListener(() {});
   _controllerVerticalStages.removeListener(() {});
   
   // Remove TimelineController disposal (no longer exists)

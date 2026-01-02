@@ -4,7 +4,7 @@
 
 This design describes the refactoring of the Timeline component to replace the custom slider-based scroll control with standard Flutter scrolling mechanisms. The refactoring will simplify the codebase by removing approximately 50 lines of slider-related code while maintaining all existing functionality through native scroll behaviors.
 
-The key insight is that the existing `_controllerTimeline` ScrollController already handles horizontal scrolling correctly - the slider was simply an additional UI control that duplicated this functionality. By removing the slider and its associated state management, we simplify the component without losing any capability.
+The key insight is that the existing `_controllerHorizontal` ScrollController already handles horizontal scrolling correctly - the slider was simply an additional UI control that duplicated this functionality. By removing the slider and its associated state management, we simplify the component without losing any capability.
 
 ## Architecture
 
@@ -17,7 +17,7 @@ Slider Widget (onChanged)
     ↓
 _scrollH() / _scrollHAnimated()
     ↓
-_controllerTimeline.jumpTo() / animateTo()
+_controllerHorizontal.jumpTo() / animateTo()
     ↓
 Scroll Listener
     ↓
@@ -33,7 +33,7 @@ User Interaction (mouse/touch/trackpad)
     ↓
 SingleChildScrollView (horizontal)
     ↓
-_controllerTimeline (ScrollController)
+_controllerHorizontal (ScrollController)
     ↓
 Scroll Listener
     ↓
@@ -67,9 +67,9 @@ The new architecture is simpler because:
 - `build()` - Remove Slider widget from UI tree
 
 **Preserved Components:**
-- `_controllerTimeline` (ScrollController) - Continues to manage horizontal scroll
+- `_controllerHorizontal` (ScrollController) - Continues to manage horizontal scroll
 - `_controllerVerticalStages` (ScrollController) - Continues to manage vertical scroll
-- Scroll listener on `_controllerTimeline` - Continues to track position and update center item
+- Scroll listener on `_controllerHorizontal` - Continues to track position and update center item
 - `_performAutoScroll()` - Continues to handle automatic vertical scrolling
 - `TimelineController` - Continues to manage visible range and center item calculations
 
@@ -102,7 +102,7 @@ No changes to data models are required. All existing models remain unchanged:
 
 ### Property 1: Horizontal Scroll Position Updates
 
-*For any* horizontal scroll gesture or programmatic scroll operation, the horizontal scroll position reported by `_controllerTimeline.offset` should update to reflect the new position.
+*For any* horizontal scroll gesture or programmatic scroll operation, the horizontal scroll position reported by `_controllerHorizontal.offset` should update to reflect the new position.
 
 **Validates: Requirements 2.1, 1.5**
 
@@ -202,7 +202,7 @@ Property-based testing will verify the correctness properties defined above usin
 1. **Property 1: Horizontal Scroll Position Updates**
    - Generate random scroll offsets within valid range
    - Apply scroll using `jumpTo()`
-   - Verify `_controllerTimeline.offset` matches expected value
+   - Verify `_controllerHorizontal.offset` matches expected value
 
 2. **Property 2: Vertical Scroll Position Updates**
    - Generate random vertical scroll offsets within valid range
@@ -299,17 +299,17 @@ void scrollTo(int dateIndex, {bool animated = false}) {
   final safeIndex = TimelineErrorHandler.clampIndex(dateIndex, 0, days.length - 1);
   if (safeIndex >= 0 && days.isNotEmpty) {
     double scroll = safeIndex * (dayWidth - dayMargin);
-    final maxScroll = _controllerTimeline.position.maxScrollExtent;
+    final maxScroll = _controllerHorizontal.position.maxScrollExtent;
     scroll = TimelineErrorHandler.clampScrollOffset(scroll, maxScroll);
     
     if (animated) {
-      _controllerTimeline.animateTo(
+      _controllerHorizontal.animateTo(
         scroll,
         duration: _config.animationDuration,
         curve: Curves.easeInOut,
       );
     } else {
-      _controllerTimeline.jumpTo(scroll);
+      _controllerHorizontal.jumpTo(scroll);
     }
   }
 }
@@ -318,16 +318,16 @@ void scrollTo(int dateIndex, {bool animated = false}) {
 **Scroll listener (remove slider value update):**
 ```dart
 // Before:
-_controllerTimeline.addListener(() {
+_controllerHorizontal.addListener(() {
   // ... existing code ...
   setState(() {
-    sliderValue = _controllerTimeline.offset;  // REMOVE THIS
+    sliderValue = _controllerHorizontal.offset;  // REMOVE THIS
   });
   // ... rest of listener ...
 });
 
 // After:
-_controllerTimeline.addListener(() {
+_controllerHorizontal.addListener(() {
   // ... existing code without sliderValue update ...
 });
 ```

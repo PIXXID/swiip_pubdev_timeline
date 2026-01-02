@@ -87,7 +87,7 @@ Ce plan d'implémentation décompose la refactorisation du mécanisme de scroll 
   - Ensure all tests pass, ask the user if questions arise.
 
 - [x] 6. Refactoriser le listener de scroll horizontal
-  - [x] 6.1 Simplifier le listener _controllerTimeline
+  - [x] 6.1 Simplifier le listener _controllerHorizontal
     - Remplacer le calcul inline du centerItemIndex par un appel à _calculateScrollState()
     - Utiliser scrollState.centerDateIndex au lieu du calcul local
     - Remplacer l'appel à _performAutoScroll() par _applyAutoScroll(scrollState)

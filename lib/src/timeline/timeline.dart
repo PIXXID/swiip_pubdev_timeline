@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/gestures.dart';
 import 'package:intl/intl.dart';
+import 'package:defer_pointer/defer_pointer.dart';
 
 // Widgets
 import 'timeline_day_date.dart';
@@ -43,7 +43,7 @@ import 'package:swiip_pubdev_timeline/src/platform/platform_language.dart';
 /// The Timeline uses a simplified scroll architecture that relies entirely on native Flutter
 /// ScrollControllers without custom abstraction layers:
 ///
-/// 1. **Native Controllers**: Uses `_controllerTimeline`
+/// 1. **Native Controllers**: Uses `_controllerHorizontal`
 ///    for horizontal and vertical scrolling respectively
 /// 2. **Direct State Management**: Maintains scroll state in local variables
 ///    (`_centerItemIndex`, `_visibleStart`, `_visibleEnd`)
@@ -138,8 +138,10 @@ class _Timeline extends State<Timeline> {
   bool timelineIsEmpty = false;
 
   // Controllers for native Flutter scrolling
-  // _controllerTimeline: Manages horizontal scroll through timeline days
-  final ScrollController _controllerTimeline = ScrollController();
+  // _controllerHorizontal: Manages horizontal scroll through timeline days
+  final ScrollController _controllerHorizontal = ScrollController();
+  // _controllerVertical: Manages vertical scroll through stage rows
+  final ScrollController _controllerVertical = ScrollController();
 
   // Scroll vertical si l'utilisateur a scrollé à la main
   double? userScrollOffset;
@@ -326,13 +328,13 @@ class _Timeline extends State<Timeline> {
     // Performance optimizations:
     // - State change detection prevents unnecessary rebuilds
     // - Pure functions enable compiler optimizations
-    _controllerTimeline.addListener(() {
+    _controllerHorizontal.addListener(() {
       if (!mounted) return;
 
       _performanceMonitor.startOperation('scroll_update');
 
-      final currentOffset = _controllerTimeline.offset;
-      final maxScrollExtent = _controllerTimeline.position.maxScrollExtent;
+      final currentOffset = _controllerHorizontal.offset;
+      final maxScrollExtent = _controllerHorizontal.position.maxScrollExtent;
 
       if (currentOffset >= 0 && currentOffset < maxScrollExtent) {
         // 1. Calculate center index directly using pure function from scroll_calculations.dart
@@ -417,14 +419,15 @@ class _Timeline extends State<Timeline> {
     // Dispose ValueNotifiers
     _centerItemIndexNotifier.dispose();
     // On enlève les écoutes du scroll de la timeline et vertical
-    _controllerTimeline.removeListener(() {});
+    _controllerHorizontal.removeListener(() {});
+    _controllerVertical.dispose();
     super.dispose();
   }
 
   // Scroll à une date
   void scrollTo(int dateIndex, {bool animated = false}) {
     // Early return if timeline is empty or controller not ready
-    if (days.isEmpty || !_controllerTimeline.hasClients) {
+    if (days.isEmpty || !_controllerHorizontal.hasClients) {
       return;
     }
 
@@ -439,18 +442,18 @@ class _Timeline extends State<Timeline> {
       double scroll = targetPosition;
 
       // Clamp scroll offset to valid range using ScrollController's maxScrollExtent
-      final maxScroll = _controllerTimeline.position.maxScrollExtent;
+      final maxScroll = _controllerHorizontal.position.maxScrollExtent;
       scroll = TimelineErrorHandler.clampScrollOffset(scroll, maxScroll);
 
       // Scroll using ScrollController directly
       if (animated) {
-        _controllerTimeline.animateTo(
+        _controllerHorizontal.animateTo(
           scroll,
           duration: _config.animationDuration,
           curve: Curves.easeInOut,
         );
       } else {
-        _controllerTimeline.jumpTo(scroll);
+        _controllerHorizontal.jumpTo(scroll);
       }
     }
   }
@@ -535,29 +538,11 @@ class _Timeline extends State<Timeline> {
               ),
             ),
             // CONTENEUR UNIQUE AVEC SCROLL HORIZONTAL
-            SizedBox(
-              width: _viewportWidth,
-              child: Listener(
-                onPointerSignal: (event) {
-                  if (event is PointerScrollEvent) {
-                    // Scroll horizontal avec Shift+molette ou trackpad horizontal
-                    final delta = event.scrollDelta;
-                    final scrollDelta = delta.dx != 0 ? delta.dx : delta.dy;
-
-                    // Calcule la nouvelle position
-                    final newOffset = _controllerTimeline.position.pixels + scrollDelta;
-
-                    // Applique le scroll
-                    _controllerTimeline.jumpTo(
-                      newOffset.clamp(
-                        0.0,
-                        _controllerTimeline.position.maxScrollExtent,
-                      ),
-                    );
-                  }
-                },
+            DeferredPointerHandler(
+              child: SizedBox(
+                width: _viewportWidth,
                 child: SingleChildScrollView(
-                  controller: _controllerTimeline,
+                  controller: _controllerHorizontal,
                   scrollDirection: Axis.horizontal,
                   // Padding pour que le 1er element soit au milieu de l'écran
                   padding: EdgeInsets.symmetric(horizontal: _viewportMargin),
@@ -599,28 +584,32 @@ class _Timeline extends State<Timeline> {
                         ),
                         // STAGES/ELEMENTS DYNAMIQUES - Use Expanded to take remaining space
                         Expanded(
-                          child: SizedBox(
-                              child: stagesRows.isNotEmpty
-                                  ? TimelineRowsViewport(
-                                      // Pass calculated visible range directly as parameters
-                                      // This eliminates the need for a controller with ValueNotifiers
-                                      visibleStart: _visibleStart,
-                                      visibleEnd: _visibleEnd,
-                                      centerItemIndex: _centerItemIndex,
-                                      stagesRows: stagesRows,
-                                      rowHeight: rowHeight,
-                                      rowMargin: rowMargin,
-                                      dayWidth: dayWidth,
-                                      dayMargin: dayMargin,
-                                      totalDays: days.length,
-                                      colors: widget.colors,
-                                      isUniqueProject: isUniqueProject,
-                                      viewportWidth: _viewportWidth,
-                                      viewportHeight: _viewportHeight,
-                                      openEditStage: widget.openEditStage,
-                                      openEditElement: widget.openEditElement,
-                                    )
-                                  : const SizedBox.shrink()), // Handle empty stages
+                          child: SingleChildScrollView(
+                            controller: _controllerVertical,
+                            scrollDirection: Axis.vertical,
+                            child: SizedBox(
+                                child: stagesRows.isNotEmpty
+                                    ? TimelineRowsViewport(
+                                        // Pass calculated visible range directly as parameters
+                                        // This eliminates the need for a controller with ValueNotifiers
+                                        visibleStart: _visibleStart,
+                                        visibleEnd: _visibleEnd,
+                                        centerItemIndex: _centerItemIndex,
+                                        stagesRows: stagesRows,
+                                        rowHeight: rowHeight,
+                                        rowMargin: rowMargin,
+                                        dayWidth: dayWidth,
+                                        dayMargin: dayMargin,
+                                        totalDays: days.length,
+                                        colors: widget.colors,
+                                        isUniqueProject: isUniqueProject,
+                                        viewportWidth: _viewportWidth,
+                                        viewportHeight: _viewportHeight,
+                                        openEditStage: widget.openEditStage,
+                                        openEditElement: widget.openEditElement,
+                                      )
+                                    : const SizedBox.shrink()), // Handle empty stages
+                          ),
                         ),
                         // CHARGE DYNAMIQUE
                         SizedBox(

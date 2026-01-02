@@ -60,7 +60,7 @@ This specification defines the requirements for refactoring the Timeline compone
 1. WHEN the horizontal scroll position changes, THE Timeline SHALL update the TimelineController with the new offset
 2. WHEN the horizontal scroll position changes, THE Timeline SHALL calculate the center item index
 3. WHEN the center item changes, THE Timeline SHALL trigger the updateCurrentDate callback if provided
-4. THE Timeline SHALL maintain the existing scroll listener on _controllerTimeline
+4. THE Timeline SHALL maintain the existing scroll listener on _controllerHorizontal
 5. THE Timeline SHALL preserve all scroll-related calculations (center position, visible range, buffer zones)
 
 ### Requirement 5: Maintain ScrollTo Functionality

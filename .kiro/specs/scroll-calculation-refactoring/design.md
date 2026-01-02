@@ -23,7 +23,7 @@ User Gesture (scroll)
     ↓
 Listener onPointerSignal
     ↓
-_controllerTimeline.jumpTo() [DÉPLACEMENT]
+_controllerHorizontal.jumpTo() [DÉPLACEMENT]
     ↓
 ScrollController Listener
     ↓
@@ -289,11 +289,11 @@ class ScrollState {
 Le listener du ScrollController devient beaucoup plus simple :
 
 ```dart
-_controllerTimeline.addListener(() {
+_controllerHorizontal.addListener(() {
   _performanceMonitor.startOperation('scroll_update');
   
-  final currentOffset = _controllerTimeline.offset;
-  final maxScrollExtent = _controllerTimeline.position.maxScrollExtent;
+  final currentOffset = _controllerHorizontal.offset;
+  final maxScrollExtent = _controllerHorizontal.position.maxScrollExtent;
   
   if (currentOffset >= 0 && currentOffset < maxScrollExtent) {
     // 1. Mise à jour du TimelineController (throttled)
@@ -570,7 +570,7 @@ Configuration : Minimum 100 itérations par test, tag format: **Feature: scroll-
 
 **Avant (dans le listener) :**
 ```dart
-_controllerTimeline.addListener(() {
+_controllerHorizontal.addListener(() {
   // ... code complexe mêlant calcul et action ...
   _performAutoScroll(centerItemIndex, oldScrollOffset); // CALCUL + ACTION
 });
@@ -578,7 +578,7 @@ _controllerTimeline.addListener(() {
 
 **Après (dans le listener) :**
 ```dart
-_controllerTimeline.addListener(() {
+_controllerHorizontal.addListener(() {
   // CALCUL (pur, testable)
   final scrollState = _calculateScrollState(
     currentScrollOffset: currentOffset,
