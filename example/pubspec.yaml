@@ -1,4 +1,4 @@
-name: swiip_pubdev_timeline_example
+name: swiip_pubdev_timeline
 description: Example app for swiip_pubdev_timeline package
 publish_to: 'none'
 
