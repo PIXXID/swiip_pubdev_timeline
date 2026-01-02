@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:swiip_pubdev_timeline/src/timeline/scroll_calculations.dart';
 import 'helpers/test_helpers.dart';
-import 'helpers/test_fixtures.dart';
 
 void main() {
   group('calculateCenterDateIndex', () {

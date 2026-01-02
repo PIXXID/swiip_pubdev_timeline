@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:swiip_pubdev_timeline/src/timeline/models/timeline_data_manager.dart';
-import 'helpers/test_helpers_all.dart';
 
 void main() {
   group('TimelineDataManager - getFormattedDays', () {

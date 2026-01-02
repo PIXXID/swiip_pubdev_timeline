@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'models/visible_range.dart';
 
 /// Optimized version of TimelineItem using ValueListenableBuilder and RepaintBoundary.
 ///
@@ -10,8 +9,8 @@ import 'models/visible_range.dart';
 class TimelineBarItem extends StatefulWidget {
   final Map<String, Color> colors;
   final int index;
+  final int centerItemIndex;
   final ValueNotifier<int> centerItemIndexNotifier;
-  final ValueNotifier<VisibleRange>? visibleRangeNotifier;
   final int nowIndex;
   final Map<String, dynamic> day;
   final List elements;
@@ -24,8 +23,8 @@ class TimelineBarItem extends StatefulWidget {
     super.key,
     required this.colors,
     required this.index,
+    required this.centerItemIndex,
     required this.centerItemIndexNotifier,
-    this.visibleRangeNotifier,
     required this.nowIndex,
     required this.day,
     required this.elements,
@@ -59,8 +58,7 @@ class _TimelineBarItemState extends State<TimelineBarItem> with SingleTickerProv
   }
 
   void _onCenterIndexChanged() {
-    final centerIndex = widget.centerItemIndexNotifier.value;
-    final idxCenter = centerIndex - widget.index;
+    final idxCenter = widget.centerItemIndex - widget.index;
     _isInCenter = (idxCenter == 0) ? true : false;
   }
 
@@ -90,6 +88,7 @@ class _TimelineBarItemState extends State<TimelineBarItem> with SingleTickerProv
       if (heightCompeff >= heightLmax) {
         heightCompeff = heightLmax;
         dayIsCompleted = true;
+        completeColor = widget.colors['primaryBackground']!.withValues(alpha: 0.0);
       }
     }
     // Réduit la hauteur en cas de dépassement excessif
@@ -143,7 +142,7 @@ class _TimelineBarItemState extends State<TimelineBarItem> with SingleTickerProv
           decoration: BoxDecoration(
             color: widget.colors['primaryBackground']!.withValues(alpha: 0.8),
           ),
-          margin: const EdgeInsets.only(top: 5.0),
+          margin: EdgeInsets.only(top: 5.0, left: widget.dayWidth / 4),
           child: Column(
             children: <Widget>[
               Expanded(
@@ -166,11 +165,15 @@ class _TimelineBarItemState extends State<TimelineBarItem> with SingleTickerProv
                       bottom: 0,
                       left: 0,
                       right: 0,
-                      child: Container(
-                        height: (heightBuseff > 0) ? heightBuseff : 0,
-                        decoration: BoxDecoration(
-                          borderRadius: borderRadius,
-                          color: busyColor.withValues(alpha: alphaColor),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Container(
+                          width: widget.dayWidth / 2,
+                          height: (heightBuseff > 0) ? heightBuseff : 0,
+                          decoration: BoxDecoration(
+                            borderRadius: borderRadius,
+                            color: busyColor.withValues(alpha: alphaColor),
+                          ),
                         ),
                       ),
                     ),
@@ -179,22 +182,25 @@ class _TimelineBarItemState extends State<TimelineBarItem> with SingleTickerProv
                       bottom: 0,
                       left: 0,
                       right: 0,
-                      child: Container(
-                        width: widget.dayWidth / 2,
-                        height: heightCompeff,
-                        decoration: BoxDecoration(
-                          borderRadius: borderRadius,
-                          color: completeColor.withValues(alpha: 0.7),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Container(
+                          width: widget.dayWidth / 2,
+                          height: heightCompeff,
+                          decoration: BoxDecoration(
+                            borderRadius: borderRadius,
+                            color: completeColor.withValues(alpha: 0.7),
+                          ),
+                          child: (dayIsCompleted && heightCompeff > 0)
+                              ? Center(
+                                  child: Icon(
+                                    Icons.check,
+                                    color: widget.colors['primaryText'],
+                                    size: 16,
+                                  ),
+                                )
+                              : null,
                         ),
-                        child: (dayIsCompleted && heightCompeff > 0)
-                            ? Center(
-                                child: Icon(
-                                  Icons.check,
-                                  color: widget.colors['primaryText'],
-                                  size: 16,
-                                ),
-                              )
-                            : null,
                       ),
                     ),
                     // ALERTES

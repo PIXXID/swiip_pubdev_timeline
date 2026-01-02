@@ -4,7 +4,6 @@ import 'package:swiip_pubdev_timeline/src/timeline/models/timeline_configuration
 import 'package:swiip_pubdev_timeline/src/timeline/models/configuration_logger.dart';
 
 import 'helpers/test_fixtures.dart';
-import 'helpers/test_helpers.dart';
 
 void main() {
   // Reset the singleton before each test to ensure test isolation

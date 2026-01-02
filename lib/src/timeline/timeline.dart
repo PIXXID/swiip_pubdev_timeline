@@ -529,6 +529,15 @@ class _Timeline extends State<Timeline> {
 
             return Stack(
               children: <Widget>[
+                Positioned(
+                  left: _viewportMargin + (dayWidth / 2),
+                  top: 0,
+                  child: Container(
+                    height: _viewportHeight,
+                    width: 1,
+                    decoration: BoxDecoration(color: widget.colors['error']),
+                  ),
+                ),
                 // CONTENEUR UNIQUE AVEC SCROLL HORIZONTAL
                 Expanded(
                   child: SizedBox(
@@ -633,6 +642,7 @@ class _Timeline extends State<Timeline> {
                                           return TimelineBarItem(
                                             colors: widget.colors,
                                             index: index,
+                                            centerItemIndex: _centerItemIndex,
                                             centerItemIndexNotifier: _centerItemIndexNotifier,
                                             nowIndex: nowIndex,
                                             day: days[index],
