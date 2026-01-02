@@ -27,6 +27,12 @@ class TimelineConfiguration {
   /// Duration for animations (e.g., auto-scroll, transitions).
   final Duration animationDuration;
 
+  /// Height of timeline bars in pixels.
+  ///
+  /// Controls the vertical space allocated for timeline bar items.
+  /// Valid range: 40.0 - 150.0 pixels.
+  final double barHeight;
+
   /// Creates a [TimelineConfiguration] with the given parameters.
   ///
   /// All parameters have sensible defaults optimized for typical use cases.
@@ -38,6 +44,7 @@ class TimelineConfiguration {
     this.rowMargin = 3.0,
     this.bufferDays = 5,
     this.animationDuration = const Duration(milliseconds: 220),
+    this.barHeight = 70.0,
   });
 
   /// Creates a [TimelineConfiguration] from a map.
@@ -61,6 +68,7 @@ class TimelineConfiguration {
       rowMargin: (map['rowMargin'] as num?)?.toDouble() ?? 3.0,
       bufferDays: (map['bufferDays'] as num?)?.toInt() ?? 5,
       animationDuration: animationDuration,
+      barHeight: (map['barHeight'] as num?)?.toDouble() ?? 70.0,
     );
   }
 
@@ -76,6 +84,7 @@ class TimelineConfiguration {
       'rowMargin': rowMargin,
       'bufferDays': bufferDays,
       'animationDurationMs': animationDuration.inMilliseconds,
+      'barHeight': barHeight,
     };
   }
 
@@ -91,6 +100,7 @@ class TimelineConfiguration {
     double? rowMargin,
     int? bufferDays,
     Duration? animationDuration,
+    double? barHeight,
   }) {
     return TimelineConfiguration(
       dayWidth: dayWidth ?? this.dayWidth,
@@ -100,6 +110,7 @@ class TimelineConfiguration {
       rowMargin: rowMargin ?? this.rowMargin,
       bufferDays: bufferDays ?? this.bufferDays,
       animationDuration: animationDuration ?? this.animationDuration,
+      barHeight: barHeight ?? this.barHeight,
     );
   }
 
@@ -114,7 +125,8 @@ class TimelineConfiguration {
           rowHeight == other.rowHeight &&
           rowMargin == other.rowMargin &&
           bufferDays == other.bufferDays &&
-          animationDuration == other.animationDuration;
+          animationDuration == other.animationDuration &&
+          barHeight == other.barHeight;
 
   @override
   int get hashCode => Object.hash(
@@ -125,6 +137,7 @@ class TimelineConfiguration {
         rowMargin,
         bufferDays,
         animationDuration,
+        barHeight,
       );
 
   @override
@@ -136,7 +149,8 @@ class TimelineConfiguration {
         '  rowHeight: $rowHeight,\n'
         '  rowMargin: $rowMargin,\n'
         '  bufferDays: $bufferDays,\n'
-        '  animationDuration: $animationDuration\n'
+        '  animationDuration: $animationDuration,\n'
+        '  barHeight: $barHeight\n'
         ')';
   }
 }

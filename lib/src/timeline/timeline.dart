@@ -120,6 +120,8 @@ class _Timeline extends State<Timeline> {
   double rowHeight = 30.0;
   // Marges d'une ligne d'étapes
   double rowMargin = 3.0;
+  // Hauteur des barres de la timeline
+  double barHeight = 70.0;
 
   // Diamètre des pins d'alertes
   double alertWidth = 6;
@@ -240,6 +242,7 @@ class _Timeline extends State<Timeline> {
     datesHeight = _config.datesHeight;
     rowHeight = _config.rowHeight;
     rowMargin = _config.rowMargin;
+    barHeight = _config.barHeight;
 
     // Parse dates from infos if provided
     if (widget.infos['startDate'] != null) {
@@ -621,7 +624,7 @@ class _Timeline extends State<Timeline> {
                         ),
                         // CHARGE DYNAMIQUE
                         SizedBox(
-                          height: 70,
+                          height: barHeight,
                           child: days.isNotEmpty
                               ? TimelineViewport(
                                   visibleStart: _visibleStart,
@@ -641,7 +644,7 @@ class _Timeline extends State<Timeline> {
                                       elements: widget.elements,
                                       dayWidth: dayWidth,
                                       dayMargin: dayMargin,
-                                      height: 70,
+                                      height: barHeight,
                                       openDayDetail: widget.openDayDetail,
                                     );
                                   },

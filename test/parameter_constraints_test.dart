@@ -355,9 +355,10 @@ void main() {
       expect(allConstraints.containsKey('rowMargin'), isTrue);
       expect(allConstraints.containsKey('bufferDays'), isTrue);
       expect(allConstraints.containsKey('animationDurationMs'), isTrue);
+      expect(allConstraints.containsKey('barHeight'), isTrue);
 
       // Verify count
-      expect(allConstraints.length, equals(7));
+      expect(allConstraints.length, equals(8));
     });
 
     test('all dayWidth constraint has correct values', () {
@@ -442,6 +443,18 @@ void main() {
       expect(animationDurationMs.min, equals(100));
       expect(animationDurationMs.max, equals(500));
       expect(animationDurationMs.defaultValue, equals(220));
+    });
+
+    test('all barHeight constraint has correct values', () {
+      // Act
+      final barHeight = ParameterConstraints.all['barHeight'];
+
+      // Assert
+      expect(barHeight, isNotNull);
+      expect(barHeight!.type, equals('double'));
+      expect(barHeight.min, equals(40.0));
+      expect(barHeight.max, equals(150.0));
+      expect(barHeight.defaultValue, equals(70.0));
     });
   });
 }

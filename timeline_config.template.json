@@ -44,6 +44,16 @@
     "note": "This affects programmatic scrolling and auto-scroll behaviors"
   },
   
+  "barHeight": 70.0,
+  "_barHeight_info": {
+    "type": "double",
+    "range": "40.0 - 150.0",
+    "default": 70.0,
+    "description": "Height of timeline bars in pixels",
+    "visual_impact": "Larger values provide more vertical space for bar content and make bars more prominent. Smaller values create a more compact timeline with more rows visible at once.",
+    "recommendation": "Use 70.0 for balanced appearance (default), 100.0 for more spacious bars with better content visibility, 40.0 for compact layouts"
+  },
+  
   "rowHeight": 30.0,
   "_rowHeight_info": {
     "type": "double",

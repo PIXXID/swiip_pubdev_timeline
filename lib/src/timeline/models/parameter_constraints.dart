@@ -107,5 +107,11 @@ class ParameterConstraints {
       max: 500,
       defaultValue: 220,
     ),
+    'barHeight': const ParameterConstraints(
+      type: 'double',
+      min: 40.0,
+      max: 150.0,
+      defaultValue: 70.0,
+    ),
   };
 }

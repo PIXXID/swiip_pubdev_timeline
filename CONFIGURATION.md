@@ -166,6 +166,36 @@ Height of the date header row in pixels.
 
 **Recommendations**: `65.0` for standard layouts, adjust based on your date formatting needs.
 
+### barHeight
+
+**Type**: `double`  
+**Range**: `40.0 - 150.0`  
+**Default**: `70.0`
+
+Controls the height of timeline bars in pixels.
+
+**Visual Impact**:
+- **Larger values** (100.0 - 150.0): Provide more vertical space for bar content, creating a more spacious timeline. Fewer rows are visible at once, but individual bars are easier to read and interact with.
+- **Default value** (70.0): Balanced height that works well for most use cases, providing good readability without excessive vertical space.
+- **Smaller values** (40.0 - 60.0): Create a more compact timeline with more rows visible at once. Useful when you need to see many rows simultaneously, though individual bars have less space for content.
+
+**Performance Impact**: Minimal. Affects visual layout but not rendering performance.
+
+**Recommendations**:
+- Spacious layout: `100.0 - 120.0`
+- Standard: `70.0` (default)
+- Compact (fit more rows): `50.0 - 60.0`
+- Minimal (maximum rows visible): `40.0`
+
+**Example Configuration**:
+```json
+{
+  "barHeight": 70.0,
+  "dayWidth": 65.0,
+  "bufferDays": 8
+}
+```
+
 ## Using Configuration in Code
 
 ### Automatic Loading
@@ -338,7 +368,8 @@ Recommended configuration:
 {
   "dayWidth": 70.0,
   "bufferDays": 5,
-  "animationDurationMs": 200
+  "animationDurationMs": 200,
+  "barHeight": 80.0
 }
 ```
 
@@ -351,7 +382,8 @@ Use default values or customize as needed:
 {
   "dayWidth": 65.0,
   "bufferDays": 8,
-  "animationDurationMs": 250
+  "animationDurationMs": 250,
+  "barHeight": 70.0
 }
 ```
 
@@ -365,7 +397,8 @@ Recommended configuration:
   "dayWidth": 50.0,
   "dayMargin": 4.0,
   "bufferDays": 10,
-  "animationDurationMs": 300
+  "animationDurationMs": 300,
+  "barHeight": 60.0
 }
 ```
 
@@ -378,7 +411,8 @@ Recommended configuration:
 {
   "dayWidth": 50.0,
   "bufferDays": 5,
-  "animationDurationMs": 300
+  "animationDurationMs": 300,
+  "barHeight": 60.0
 }
 ```
 
@@ -391,7 +425,8 @@ Recommended configuration:
 {
   "dayWidth": 65.0,
   "bufferDays": 12,
-  "animationDurationMs": 250
+  "animationDurationMs": 250,
+  "barHeight": 80.0
 }
 ```
 
@@ -420,7 +455,8 @@ Recommended configuration:
 ```json
 {
   "dayWidth": 50.0,
-  "bufferDays": 10
+  "bufferDays": 10,
+  "barHeight": 70.0
 }
 ```
 
@@ -431,7 +467,8 @@ Recommended configuration:
   "dayWidth": 50.0,
   "dayMargin": 4.0,
   "bufferDays": 10,
-  "animationDurationMs": 300
+  "animationDurationMs": 300,
+  "barHeight": 60.0
 }
 ```
 
@@ -445,7 +482,8 @@ Recommended configuration:
   "animationDurationMs": 230,
   "rowHeight": 28.0,
   "rowMargin": 2.5,
-  "datesHeight": 60.0
+  "datesHeight": 60.0,
+  "barHeight": 80.0
 }
 ```
 
@@ -453,7 +491,7 @@ Recommended configuration:
 
 ```json
 {
-  "bufferDays": 10,
+  "bufferDays": 10
 }
 ```
 
