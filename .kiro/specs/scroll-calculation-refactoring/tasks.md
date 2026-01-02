@@ -25,7 +25,7 @@ Ce plan d'implémentation décompose la refactorisation du mécanisme de scroll 
   - [x] 2.2 Créer calculateTargetVerticalOffset()
     - Implémenter la fonction pure dans `scroll_calculations.dart`
     - Gérer la détection de direction (scrollingLeft)
-    - Utiliser getHigherStageRowIndexOptimized() et getLowerStageRowIndexOptimized()
+    - Utiliser getHigherTimelineRowIndexOptimized() et getLowerTimelineRowIndexOptimized()
     - Calculer l'offset avec la formule: rowIndex * (rowHeight + rowMargin * 2)
     - Retourner null si aucun stage trouvé
     - Documenter la fonction avec des commentaires détaillés

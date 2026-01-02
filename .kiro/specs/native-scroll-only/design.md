@@ -160,12 +160,12 @@ _controllerTimeline.addListener(() {
 - Update LayoutBuilder to capture viewport width: `_viewportWidth = constraints.maxWidth`
 - Pass visible range directly to LazyViewports instead of TimelineController
 
-#### LazyTimelineViewport (lib/src/timeline/lazy_timeline_viewport.dart)
+#### TimelineViewport (lib/src/timeline/lazy_timeline_viewport.dart)
 
 **Modified Constructor:**
 ```dart
 // Before:
-LazyTimelineViewport({
+TimelineViewport({
   required TimelineController controller,
   required List items,
   required double itemWidth,
@@ -174,7 +174,7 @@ LazyTimelineViewport({
 })
 
 // After:
-LazyTimelineViewport({
+TimelineViewport({
   required int visibleStart,
   required int visibleEnd,
   required int centerItemIndex,
@@ -191,19 +191,19 @@ LazyTimelineViewport({
 - Remove dependency on TimelineController
 - Pass centerItemIndex directly to itemBuilder
 
-#### StageRowsViewport (lib/src/timeline/lazy_stage_rows_viewport.dart)
+#### TimelineRowsViewport (lib/src/timeline/lazy_stage_rows_viewport.dart)
 
 **Modified Constructor:**
 ```dart
 // Before:
-StageRowsViewport({
+TimelineRowsViewport({
   required TimelineController controller,
   required List stagesRows,
   // ... other parameters
 })
 
 // After:
-StageRowsViewport({
+TimelineRowsViewport({
   required int visibleStart,
   required int visibleEnd,
   required List stagesRows,
@@ -232,8 +232,8 @@ StageRowsViewport({
 - Continues to provide configuration values including bufferDays
 
 #### All Other Widgets
-- OptimizedTimelineItem
-- OptimizedStageRow
+- TimelineBarItem
+- TimelineRow
 - TimelineDayDate
 - LoadingIndicatorOverlay
 - All remain unchanged
@@ -398,8 +398,8 @@ Property-based testing will verify the correctness properties defined above usin
 
 5. **Property 5: Lazy Viewport Rendering**
    - Generate random visible ranges
-   - Verify LazyTimelineViewport renders only items in range
-   - Verify StageRowsViewport renders only rows in range
+   - Verify TimelineViewport renders only items in range
+   - Verify TimelineRowsViewport renders only rows in range
    - Verify correct center item index passed for highlighting
 
 6. **Property 6: Auto-Scroll Behavior**
@@ -564,10 +564,10 @@ LayoutBuilder(
 )
 ```
 
-**build() Method - LazyTimelineViewport:**
+**build() Method - TimelineViewport:**
 ```dart
 // Before:
-LazyTimelineViewport(
+TimelineViewport(
   controller: _timelineController,
   items: days,
   itemWidth: dayWidth,
@@ -581,7 +581,7 @@ LazyTimelineViewport(
 )
 
 // After:
-LazyTimelineViewport(
+TimelineViewport(
   visibleStart: _visibleStart,
   visibleEnd: _visibleEnd,
   centerItemIndex: _centerItemIndex,
@@ -597,17 +597,17 @@ LazyTimelineViewport(
 )
 ```
 
-**build() Method - StageRowsViewport:**
+**build() Method - TimelineRowsViewport:**
 ```dart
 // Before:
-StageRowsViewport(
+TimelineRowsViewport(
   controller: _timelineController,
   stagesRows: stagesRows,
   // ...
 )
 
 // After:
-StageRowsViewport(
+TimelineRowsViewport(
   visibleStart: _visibleStart,
   visibleEnd: _visibleEnd,
   stagesRows: stagesRows,
@@ -615,12 +615,12 @@ StageRowsViewport(
 )
 ```
 
-### LazyTimelineViewport Modifications
+### TimelineViewport Modifications
 
 **Constructor:**
 ```dart
 // Before:
-const LazyTimelineViewport({
+const TimelineViewport({
   super.key,
   required this.controller,
   required this.items,
@@ -632,7 +632,7 @@ const LazyTimelineViewport({
 final TimelineController controller;
 
 // After:
-const LazyTimelineViewport({
+const TimelineViewport({
   super.key,
   required this.visibleStart,
   required this.visibleEnd,
@@ -678,9 +678,9 @@ Widget build(BuildContext context) {
 }
 ```
 
-### StageRowsViewport Modifications
+### TimelineRowsViewport Modifications
 
-Similar changes to LazyTimelineViewport:
+Similar changes to TimelineViewport:
 - Replace `controller` parameter with `visibleStart` and `visibleEnd`
 - Remove ValueListenableBuilder
 - Use parameters directly in build method

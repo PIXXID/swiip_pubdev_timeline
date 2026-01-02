@@ -7,14 +7,14 @@ This implementation plan breaks down the removal of the `TimelineController` cla
 ## Tasks
 
 - [x] 1. Update LazyViewport widgets to accept visible range parameters
-  - [x] 1.1 Update LazyTimelineViewport constructor and implementation
+  - [x] 1.1 Update TimelineViewport constructor and implementation
     - Replace `controller` parameter with `visibleStart`, `visibleEnd`, and `centerItemIndex`
     - Remove ValueListenableBuilder from build() method
     - Use parameters directly to render items in range
     - Update itemBuilder calls to pass centerItemIndex directly
     - _Requirements: 5.1, 5.3_
 
-  - [x] 1.2 Write property test for LazyTimelineViewport rendering
+  - [x] 1.2 Write property test for TimelineViewport rendering
     - **Property 5: Lazy Viewport Rendering**
     - **Validates: Requirements 5.5**
     - Generate random visible ranges (start, end, centerIndex)
@@ -22,13 +22,13 @@ This implementation plan breaks down the removal of the `TimelineController` cla
     - Verify correct center item index passed to itemBuilder
     - Run 100 iterations
 
-  - [x] 1.3 Update StageRowsViewport constructor and implementation
+  - [x] 1.3 Update TimelineRowsViewport constructor and implementation
     - Replace `controller` parameter with `visibleStart` and `visibleEnd`
     - Remove ValueListenableBuilder from build() method
     - Use parameters directly to render stage rows in range
     - _Requirements: 5.2, 5.4_
 
-  - [x] 1.4 Write property test for StageRowsViewport rendering
+  - [x] 1.4 Write property test for TimelineRowsViewport rendering
     - **Property 5: Lazy Viewport Rendering**
     - **Validates: Requirements 5.5**
     - Generate random visible ranges for stage rows
@@ -46,8 +46,8 @@ This implementation plan breaks down the removal of the `TimelineController` cla
 
   - [x] 2.2 Update build() method to capture viewport width
     - In LayoutBuilder, set `_viewportWidth = constraints.maxWidth`
-    - Pass visible range parameters to LazyTimelineViewport
-    - Pass visible range parameters to StageRowsViewport
+    - Pass visible range parameters to TimelineViewport
+    - Pass visible range parameters to TimelineRowsViewport
     - Pass centerItemIndex directly instead of from controller
     - _Requirements: 4.2, 5.5_
 

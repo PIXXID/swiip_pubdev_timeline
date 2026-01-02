@@ -29,7 +29,7 @@ Timeline (StatefulWidget)
 │   └── CenterItemIndex (ValueNotifier)
 ├── TimelineDataManager
 │   ├── FormattedDays (cached)
-│   ├── FormattedStageRows (cached)
+│   ├── FormattedTimelineRows (cached)
 │   └── VisibilityCalculator
 ├── TimelineViewport (Lazy Rendering)
 │   ├── DatesSection
@@ -136,7 +136,7 @@ Gère le formatage et le cache des données.
 class TimelineDataManager {
   // Cache des données formatées
   List<Map<String, dynamic>>? _cachedDays;
-  List<List<Map<String, dynamic>>>? _cachedStageRows;
+  List<List<Map<String, dynamic>>>? _cachedTimelineRows;
   
   // Hash des données d'entrée pour détecter les changements
   int? _lastDataHash;
@@ -181,7 +181,7 @@ class TimelineDataManager {
     return _cachedDays!;
   }
   
-  List<List<Map<String, dynamic>>> getFormattedStageRows({
+  List<List<Map<String, dynamic>>> getFormattedTimelineRows({
     required DateTime startDate,
     required DateTime endDate,
     required List days,
@@ -189,12 +189,12 @@ class TimelineDataManager {
     required List elements,
   }) {
     // Retourne le cache si disponible
-    if (_cachedStageRows != null) {
-      return _cachedStageRows!;
+    if (_cachedTimelineRows != null) {
+      return _cachedTimelineRows!;
     }
     
     // Sinon, calcule et met en cache
-    _cachedStageRows = _formatStagesRowsOptimized(
+    _cachedTimelineRows = _formatStagesRowsOptimized(
       startDate,
       endDate,
       days,
@@ -202,7 +202,7 @@ class TimelineDataManager {
       elements,
     );
     
-    return _cachedStageRows!;
+    return _cachedTimelineRows!;
   }
   
   // Version optimisée de formatElements
@@ -401,7 +401,7 @@ class TimelineDataManager {
     DateTime startDate,
   ) {
     final rows = <List<Map<String, dynamic>>>[];
-    var lastStageRowIndex = 0;
+    var lastTimelineRowIndex = 0;
     
     for (final item in items) {
       final stageStartDate = DateTime.parse(item['sdate']);
@@ -433,12 +433,12 @@ class TimelineDataManager {
       } else {
         var placed = false;
         
-        for (var j = lastStageRowIndex; j < rows.length; j++) {
+        for (var j = lastTimelineRowIndex; j < rows.length; j++) {
           final hasOverlap = rows[j].any((r) =>
               r['endDateIndex'] + 1 > startDateIndex);
           
           if (!hasOverlap) {
-            if (isStage) lastStageRowIndex = j;
+            if (isStage) lastTimelineRowIndex = j;
             rows[j].add(itemWithIndices);
             placed = true;
             break;
@@ -447,7 +447,7 @@ class TimelineDataManager {
         
         if (!placed) {
           rows.add([itemWithIndices]);
-          if (isStage) lastStageRowIndex = rows.length - 1;
+          if (isStage) lastTimelineRowIndex = rows.length - 1;
         }
       }
     }
@@ -457,25 +457,25 @@ class TimelineDataManager {
   
   void clearCache() {
     _cachedDays = null;
-    _cachedStageRows = null;
+    _cachedTimelineRows = null;
     _lastDataHash = null;
   }
 }
 ```
 
-### 3. LazyTimelineViewport
+### 3. TimelineViewport
 
 Rend uniquement les éléments visibles avec un buffer.
 
 ```dart
-class LazyTimelineViewport extends StatelessWidget {
+class TimelineViewport extends StatelessWidget {
   final TimelineController controller;
   final List<Map<String, dynamic>> days;
   final double dayWidth;
   final double dayMargin;
   final Widget Function(BuildContext, int) itemBuilder;
   
-  const LazyTimelineViewport({
+  const TimelineViewport({
     Key? key,
     required this.controller,
     required this.days,
@@ -516,12 +516,12 @@ class LazyTimelineViewport extends StatelessWidget {
 }
 ```
 
-### 4. OptimizedStageRow
+### 4. TimelineRow
 
-Version optimisée de StageRow avec rebuild conditionnel.
+Version optimisée de TimelineRow avec rebuild conditionnel.
 
 ```dart
-class OptimizedStageRow extends StatefulWidget {
+class TimelineRow extends StatefulWidget {
   final Map<String, Color> colors;
   final List stagesList;
   final ValueNotifier<int> centerItemIndexNotifier;
@@ -533,7 +533,7 @@ class OptimizedStageRow extends StatefulWidget {
   final Function? openEditStage;
   final Function? openEditElement;
   
-  const OptimizedStageRow({
+  const TimelineRow({
     Key? key,
     required this.colors,
     required this.stagesList,
@@ -548,11 +548,11 @@ class OptimizedStageRow extends StatefulWidget {
   }) : super(key: key);
   
   @override
-  State<OptimizedStageRow> createState() => _OptimizedStageRowState();
+  State<TimelineRow> createState() => _TimelineRowState();
 }
 
-class _OptimizedStageRowState extends State<OptimizedStageRow> {
-  late List<Widget> _cachedStageItems;
+class _TimelineRowState extends State<TimelineRow> {
+  late List<Widget> _cachedTimelineRowItems;
   late List<Widget> _cachedLabels;
   int? _lastCenterIndex;
   VisibleRange? _lastVisibleRange;
@@ -617,7 +617,7 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
   }
   
   void _buildStageWidgets() {
-    _cachedStageItems = [];
+    _cachedTimelineRowItems = [];
     _cachedLabels = [];
     
     final visibleRange = widget.visibleRangeNotifier.value;
@@ -632,7 +632,7 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
       }
       
       // Créer le widget du stage
-      _cachedStageItems.add(_buildStageItem(stage));
+      _cachedTimelineRowItems.add(_buildTimelineRowItem(stage));
       
       // Créer le label si nécessaire
       if (_shouldShowLabel(stage)) {
@@ -641,8 +641,8 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
     }
   }
   
-  Widget _buildStageItem(Map<String, dynamic> stage) {
-    // Construction du StageItem (code existant adapté)
+  Widget _buildTimelineRowItem(Map<String, dynamic> stage) {
+    // Construction du TimelineRowItem (code existant adapté)
     // ...
     return Container(); // Placeholder
   }
@@ -682,7 +682,7 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          ..._cachedStageItems,
+          ..._cachedTimelineRowItems,
           ..._cachedLabels,
         ],
       ),
@@ -691,12 +691,12 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
 }
 ```
 
-### 5. OptimizedTimelineItem
+### 5. TimelineBarItem
 
 Version optimisée avec const constructors et RepaintBoundary.
 
 ```dart
-class OptimizedTimelineItem extends StatelessWidget {
+class TimelineBarItem extends StatelessWidget {
   final Map<String, Color> colors;
   final int index;
   final ValueNotifier<int> centerItemIndexNotifier;
@@ -708,7 +708,7 @@ class OptimizedTimelineItem extends StatelessWidget {
   final double height;
   final Function? openDayDetail;
   
-  const OptimizedTimelineItem({
+  const TimelineBarItem({
     Key? key,
     required this.colors,
     required this.index,

@@ -121,8 +121,8 @@ double? calculateTargetVerticalOffset({
   
   // Trouve la ligne appropriée
   final rowIndex = scrollingLeft
-      ? getLowerStageRowIndexOptimized(stagesRows, searchIndex)
-      : getHigherStageRowIndexOptimized(stagesRows, searchIndex);
+      ? getLowerTimelineRowIndexOptimized(stagesRows, searchIndex)
+      : getHigherTimelineRowIndexOptimized(stagesRows, searchIndex);
   
   if (rowIndex == -1) return null;
   

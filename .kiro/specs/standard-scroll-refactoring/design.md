@@ -80,11 +80,11 @@ The new architecture is simpler because:
 - Continues to receive scroll offset updates
 - Continues to calculate visible range and center item
 
-#### LazyTimelineViewport (lib/src/timeline/lazy_timeline_viewport.dart)
+#### TimelineViewport (lib/src/timeline/lazy_timeline_viewport.dart)
 - No changes required
 - Continues to render visible items based on TimelineController
 
-#### StageRowsViewport (lib/src/timeline/lazy_stage_rows_viewport.dart)
+#### TimelineRowsViewport (lib/src/timeline/lazy_stage_rows_viewport.dart)
 - No changes required
 - Continues to render visible stage rows
 

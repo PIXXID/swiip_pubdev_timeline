@@ -36,9 +36,9 @@ Ce plan d'implémentation transforme la conception en tâches concrètes pour op
 
 - [x] 3. Créer TimelineDataManager avec cache
   - [x] 3.1 Implémenter TimelineDataManager
-    - Créer les variables de cache (_cachedDays, _cachedStageRows, _lastDataHash)
+    - Créer les variables de cache (_cachedDays, _cachedTimelineRows, _lastDataHash)
     - Implémenter getFormattedDays avec détection de changement via hash
-    - Implémenter getFormattedStageRows avec cache
+    - Implémenter getFormattedTimelineRows avec cache
     - Ajouter la méthode clearCache
     - _Requirements: 4.1, 4.5_
 
@@ -64,8 +64,8 @@ Ce plan d'implémentation transforme la conception en tâches concrètes pour op
   - Vérifier que les modèles et le controller fonctionnent correctement
   - Demander à l'utilisateur si des questions se posent
 
-- [x] 5. Implémenter LazyTimelineViewport pour le rendu lazy
-  - [x] 5.1 Créer LazyTimelineViewport widget
+- [x] 5. Implémenter TimelineViewport pour le rendu lazy
+  - [x] 5.1 Créer TimelineViewport widget
     - Implémenter le widget avec ValueListenableBuilder sur visibleRange
     - Calculer les widgets visibles basés sur la plage
     - Utiliser Positioned pour placer les widgets
@@ -76,8 +76,8 @@ Ce plan d'implémentation transforme la conception en tâches concrètes pour op
     - **Property 3: Viewport-Based Rendering**
     - **Validates: Requirements 3.2, 8.2**
 
-- [x] 6. Créer OptimizedTimelineItem avec RepaintBoundary
-  - [x] 6.1 Implémenter OptimizedTimelineItem
+- [x] 6. Créer TimelineBarItem avec RepaintBoundary
+  - [x] 6.1 Implémenter TimelineBarItem
     - Convertir TimelineItem en StatelessWidget
     - Utiliser ValueListenableBuilder pour centerItemIndex
     - Ajouter RepaintBoundary autour du contenu
@@ -95,12 +95,12 @@ Ce plan d'implémentation transforme la conception en tâches concrètes pour op
     - Vérifier l'utilisation de ValueListenableBuilder
     - _Requirements: 1.4, 1.5, 2.3_
 
-- [x] 7. Implémenter OptimizedStageRow avec rebuild conditionnel
-  - [x] 7.1 Créer OptimizedStageRow widget
-    - Convertir StageRow pour utiliser ValueNotifiers
+- [x] 7. Implémenter TimelineRow avec rebuild conditionnel
+  - [x] 7.1 Créer TimelineRow widget
+    - Convertir TimelineRow pour utiliser ValueNotifiers
     - Implémenter _shouldRebuildForCenterChange et _shouldRebuildForRangeChange
     - Ajouter des listeners avec rebuild conditionnel
-    - Cacher les widgets de stage (_cachedStageItems, _cachedLabels)
+    - Cacher les widgets de stage (_cachedTimelineRowItems, _cachedLabels)
     - Implémenter _buildStageWidgets et _updateLabelsVisibility
     - _Requirements: 2.2, 2.4_
 
@@ -124,7 +124,7 @@ Ce plan d'implémentation transforme la conception en tâches concrètes pour op
   - [x] 9.1 Utiliser TimelineDataManager pour le formatage
     - Créer une instance de TimelineDataManager dans initState
     - Remplacer les appels à formatElements par dataManager.getFormattedDays
-    - Remplacer les appels à formatStagesRows par dataManager.getFormattedStageRows
+    - Remplacer les appels à formatStagesRows par dataManager.getFormattedTimelineRows
     - Vérifier que le cache fonctionne lors des rebuilds
     - _Requirements: 4.1, 4.5_
 
@@ -138,29 +138,29 @@ Ce plan d'implémentation transforme la conception en tâches concrètes pour op
   - Tester manuellement le scroll et les interactions
   - Demander à l'utilisateur si des questions se posent
 
-- [x] 11. Implémenter LazyTimelineViewport pour les dates et la timeline
-  - [x] 11.1 Intégrer LazyTimelineViewport pour TimelineDayDate
-    - Remplacer List.generate par LazyTimelineViewport
+- [x] 11. Implémenter TimelineViewport pour les dates et la timeline
+  - [x] 11.1 Intégrer TimelineViewport pour TimelineDayDate
+    - Remplacer List.generate par TimelineViewport
     - Passer le controller et les données nécessaires
     - Créer un itemBuilder pour TimelineDayDate
     - _Requirements: 3.1, 3.2_
 
-  - [x] 11.2 Intégrer LazyTimelineViewport pour TimelineItem
-    - Remplacer List.generate par LazyTimelineViewport
-    - Utiliser OptimizedTimelineItem au lieu de TimelineItem
+  - [x] 11.2 Intégrer TimelineViewport pour TimelineItem
+    - Remplacer List.generate par TimelineViewport
+    - Utiliser TimelineBarItem au lieu de TimelineItem
     - Passer le controller et les données nécessaires
     - _Requirements: 3.1, 3.2_
 
 - [x] 12. Implémenter le rendu viewport-based pour Stage_Rows
-  - [x] 12.1 Créer StageRowsViewport
-    - Implémenter un widget similaire à LazyTimelineViewport pour les lignes
+  - [x] 12.1 Créer TimelineRowsViewport
+    - Implémenter un widget similaire à TimelineViewport pour les lignes
     - Calculer quelles lignes sont visibles verticalement
     - Rendre uniquement les lignes visibles + buffer
-    - Utiliser OptimizedStageRow pour chaque ligne
+    - Utiliser TimelineRow pour chaque ligne
     - _Requirements: 8.2_
 
-  - [x] 12.2 Intégrer StageRowsViewport dans Timeline
-    - Remplacer List.generate des Stage_Rows par StageRowsViewport
+  - [x] 12.2 Intégrer TimelineRowsViewport dans Timeline
+    - Remplacer List.generate des Stage_Rows par TimelineRowsViewport
     - Passer le controller vertical et les données
     - Ajuster le scroll vertical pour fonctionner avec le lazy loading
     - _Requirements: 8.2_
@@ -169,7 +169,7 @@ Ce plan d'implémentation transforme la conception en tâches concrètes pour op
   - [x] 13.1 Implémenter le debouncing dans le scroll listener
     - Ajouter un Timer pour debouncer les calculs de scroll vertical
     - Implémenter la logique de désactivation/réactivation de l'auto-scroll
-    - Optimiser getHigherStageRowIndex et getLowerStageRowIndex
+    - Optimiser getHigherTimelineRowIndex et getLowerTimelineRowIndex
     - _Requirements: 5.1, 5.3_
 
   - [x] 13.2 Écrire le test de propriété pour la gestion de l'auto-scroll
