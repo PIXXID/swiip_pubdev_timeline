@@ -103,12 +103,12 @@ void main() {
 
       // Note: We cannot directly access private _viewportWidth variable
       // but we can verify that the widget builds correctly with the given width
-      // and that LazyTimelineViewport receives the correct visible range
+      // and that TimelineViewport receives the correct visible range
       // (which depends on viewport width being captured correctly)
 
       // The viewport width capture is validated indirectly through:
       // 1. Widget builds without errors
-      // 2. LazyTimelineViewport renders items (depends on visible range calculation)
+      // 2. TimelineViewport renders items (depends on visible range calculation)
       // 3. Visible range calculation depends on viewport width
 
       expect(find.byType(Timeline), findsOneWidget);

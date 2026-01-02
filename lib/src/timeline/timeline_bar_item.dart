@@ -7,7 +7,7 @@ import 'models/visible_range.dart';
 /// This widget is optimized for performance by:
 /// - Using StatelessWidget instead of StatefulWidget
 /// - Using ValueListenableBuilder for selective rebuilds
-class OptimizedTimelineItem extends StatefulWidget {
+class TimelineBarItem extends StatefulWidget {
   final Map<String, Color> colors;
   final int index;
   final ValueNotifier<int> centerItemIndexNotifier;
@@ -20,7 +20,7 @@ class OptimizedTimelineItem extends StatefulWidget {
   final double height;
   final Function(String, double?, List<String>?, List<dynamic>, dynamic)? openDayDetail;
 
-  const OptimizedTimelineItem({
+  const TimelineBarItem({
     super.key,
     required this.colors,
     required this.index,
@@ -36,10 +36,10 @@ class OptimizedTimelineItem extends StatefulWidget {
   });
 
   @override
-  State<OptimizedTimelineItem> createState() => _OptimizedTimelineItemState();
+  State<TimelineBarItem> createState() => _TimelineBarItemState();
 }
 
-class _OptimizedTimelineItemState extends State<OptimizedTimelineItem> with SingleTickerProviderStateMixin {
+class _TimelineBarItemState extends State<TimelineBarItem> with SingleTickerProviderStateMixin {
   bool _isInCenter = false;
 
   @override

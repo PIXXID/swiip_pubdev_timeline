@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'models/visible_range.dart';
-import 'optimized_stage_row.dart';
+import 'timeline_row.dart';
 
 /// This widget renders stage rows
-class StageRowsViewport extends StatefulWidget {
+class TimelineRowsViewport extends StatefulWidget {
   /// Start index of the visible horizontal range (inclusive).
   final int visibleStart;
 
@@ -50,8 +50,8 @@ class StageRowsViewport extends StatefulWidget {
   /// Number of rows to render as buffer above and below visible area.
   final int bufferRows;
 
-  /// Creates a [StageRowsViewport] with the specified configuration.
-  const StageRowsViewport({
+  /// Creates a [TimelineRowsViewport] with the specified configuration.
+  const TimelineRowsViewport({
     super.key,
     required this.visibleStart,
     required this.visibleEnd,
@@ -72,15 +72,15 @@ class StageRowsViewport extends StatefulWidget {
   });
 
   @override
-  State<StageRowsViewport> createState() => _StageRowsViewportState();
+  State<TimelineRowsViewport> createState() => _TimelineRowsViewportState();
 }
 
-class _StageRowsViewportState extends State<StageRowsViewport> {
-  /// ValueNotifier for horizontal visible range (for OptimizedStageRow compatibility).
+class _TimelineRowsViewportState extends State<TimelineRowsViewport> {
+  /// ValueNotifier for horizontal visible range (for TimelineRow compatibility).
   late final ValueNotifier<VisibleRange> _visibleRangeNotifier;
 
-  /// ValueNotifier for center item index (for OptimizedStageRow compatibility).
-  /// Note: centerItemIndex is not provided to StageRowsViewport, so we use 0 as default.
+  /// ValueNotifier for center item index (for TimelineRow compatibility).
+  /// Note: centerItemIndex is not provided to TimelineRowsViewport, so we use 0 as default.
   late final ValueNotifier<int> _centerItemIndexNotifier;
 
   @override
@@ -95,7 +95,7 @@ class _StageRowsViewportState extends State<StageRowsViewport> {
   }
 
   @override
-  void didUpdateWidget(StageRowsViewport oldWidget) {
+  void didUpdateWidget(TimelineRowsViewport oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     // Update ValueNotifiers when widget parameters change
@@ -138,7 +138,7 @@ class _StageRowsViewportState extends State<StageRowsViewport> {
           child: Container(
             margin: EdgeInsets.symmetric(vertical: widget.rowMargin),
             height: widget.rowHeight,
-            child: OptimizedStageRow(
+            child: TimelineRow(
               colors: widget.colors,
               stagesList: widget.stagesRows[i],
               centerItemIndexNotifier: _centerItemIndexNotifier,

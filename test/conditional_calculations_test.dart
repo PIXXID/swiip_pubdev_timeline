@@ -129,7 +129,7 @@ void main() {
       final elements = <Map<String, dynamic>>[];
 
       // First call - should compute
-      final result1 = dataManager.getFormattedStageRows(
+      final result1 = dataManager.getFormattedTimelineRows(
         startDate: startDate,
         endDate: endDate,
         days: days,
@@ -138,7 +138,7 @@ void main() {
       );
 
       // Second call with same data - should return cached result
-      final result2 = dataManager.getFormattedStageRows(
+      final result2 = dataManager.getFormattedTimelineRows(
         startDate: startDate,
         endDate: endDate,
         days: days,

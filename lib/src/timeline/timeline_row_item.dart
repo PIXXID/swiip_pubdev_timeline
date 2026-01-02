@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class StageItem extends StatelessWidget {
-  const StageItem(
+class TimelineRowItem extends StatelessWidget {
+  const TimelineRowItem(
       {super.key,
       required this.colors,
       required this.dayWidth,

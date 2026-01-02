@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 ///
 /// The widget receives visible range parameters directly and renders only
 /// items within that range, ensuring minimal rebuilds.
-class LazyTimelineViewport extends StatelessWidget {
+class TimelineViewport extends StatelessWidget {
   /// Start index of the visible range (inclusive).
   final int visibleStart;
 
@@ -33,13 +33,13 @@ class LazyTimelineViewport extends StatelessWidget {
   /// This function is called only for items within the visible range.
   final Widget Function(BuildContext context, int index) itemBuilder;
 
-  /// Creates a [LazyTimelineViewport] with the specified configuration.
+  /// Creates a [TimelineViewport] with the specified configuration.
   ///
   /// The [visibleStart] and [visibleEnd] define the range of items to render.
   /// The [centerItemIndex] is passed to the itemBuilder for highlighting.
   /// The [items] list contains all data to be rendered.
   /// The [itemBuilder] creates widgets for visible items.
-  const LazyTimelineViewport({
+  const TimelineViewport({
     super.key,
     required this.visibleStart,
     required this.visibleEnd,

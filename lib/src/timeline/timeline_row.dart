@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
-import 'stage_item.dart';
+import 'timeline_row_item.dart';
 import 'models/visible_range.dart';
 // Tools
 import 'package:swiip_pubdev_timeline/src/tools/tools.dart';
 
-/// Optimized version of StageRow with conditional rebuilds.
+/// Optimized version of TimelineRow with conditional rebuilds.
 ///
 /// This widget uses ValueNotifiers to listen to state changes and only rebuilds
 /// when necessary. It caches stage widgets and labels to avoid unnecessary
 /// reconstructions during scroll operations.
-class OptimizedStageRow extends StatefulWidget {
-  const OptimizedStageRow({
+class TimelineRow extends StatefulWidget {
+  const TimelineRow({
     super.key,
     required this.colors,
     required this.stagesList,
@@ -37,12 +37,12 @@ class OptimizedStageRow extends StatefulWidget {
   final Function(String?, String?, String?, String?, String?, double?, String?)? openEditElement;
 
   @override
-  State<OptimizedStageRow> createState() => _OptimizedStageRowState();
+  State<TimelineRow> createState() => _TimelineRowState();
 }
 
-class _OptimizedStageRowState extends State<OptimizedStageRow> {
+class _TimelineRowState extends State<TimelineRow> {
   // Cached stage items with their positions (calculated once)
-  List<_StageItemData> _stageItemsData = [];
+  List<_TimelineRowItemData> _TimelineRowItemsData = [];
 
   // Cached widgets for each stage (built once, reused)
   Map<int, Widget> _cachedStageWidgets = {};
@@ -52,7 +52,7 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
 
   // Track last values to detect changes
   int? _lastCenterIndex;
-  VisibleRange? _lastVisibleRange;
+  // VisibleRange? _lastVisibleRange;
 
   // Total width for layout
   double _totalWidth = 0;
@@ -90,7 +90,7 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
   /// Calculates and caches the positions of all stage items.
   /// This is called ONCE during initialization and positions never change.
   void _calculateStagePositions() {
-    _stageItemsData = [];
+    _TimelineRowItemsData = [];
     _cachedStageWidgets = {};
     double currentPosition = 0;
 
@@ -122,7 +122,7 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
       currentPosition += spacerWidth;
 
       // Store the stage data with its fixed position
-      _stageItemsData.add(_StageItemData(
+      _TimelineRowItemsData.add(_TimelineRowItemData(
         stage: stage,
         position: currentPosition,
         itemWidth: itemWidth,
@@ -133,7 +133,7 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
       ));
 
       // Build and cache the stage widget once
-      _cachedStageWidgets[index] = _buildStageItem(
+      _cachedStageWidgets[index] = _buildTimelineRowItem(
         stage,
         currentPosition,
         itemWidth,
@@ -148,7 +148,7 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
   }
 
   /// Builds a single stage item widget.
-  Widget _buildStageItem(
+  Widget _buildTimelineRowItem(
     Map<String, dynamic> stage,
     double position,
     double itemWidth,
@@ -179,7 +179,7 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
 
     return Positioned(
       left: position,
-      child: StageItem(
+      child: TimelineRowItem(
         colors: stageColors,
         dayWidth: widget.dayWidth,
         dayMargin: widget.dayMargin,
@@ -280,7 +280,7 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
 
     final centerIndex = widget.centerItemIndexNotifier.value;
 
-    for (final itemData in _stageItemsData) {
+    for (final itemData in _TimelineRowItemsData) {
       // Add label if needed
       if (_shouldShowLabel(itemData.stage, centerIndex, itemData.daysWidth)) {
         _cachedLabels.add(_buildLabel(itemData.stage, itemData.position));
@@ -294,9 +294,9 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
 
     // Build only visible stage items based on current visible range
     // Use cached widgets instead of rebuilding them
-    final visibleStageItems = <Widget>[];
+    final visibleTimelineRowItems = <Widget>[];
 
-    for (final itemData in _stageItemsData) {
+    for (final itemData in _TimelineRowItemsData) {
       // Check if stage overlaps with visible range (with buffer for smooth scrolling)
       bool isVisible = !(itemData.endIndex < visibleRange.start - 2 || itemData.startIndex > visibleRange.end + 2);
 
@@ -304,7 +304,7 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
         // Use the cached widget
         final cachedWidget = _cachedStageWidgets[itemData.index];
         if (cachedWidget != null) {
-          visibleStageItems.add(cachedWidget);
+          visibleTimelineRowItems.add(cachedWidget);
         }
       }
     }
@@ -318,7 +318,7 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
           child: Stack(
             clipBehavior: Clip.none,
             children: [
-              ...visibleStageItems,
+              ...visibleTimelineRowItems,
               ..._cachedLabels,
             ],
           ),
@@ -329,7 +329,7 @@ class _OptimizedStageRowState extends State<OptimizedStageRow> {
 }
 
 /// Data class to store stage item information with fixed position
-class _StageItemData {
+class _TimelineRowItemData {
   final Map<String, dynamic> stage;
   final double position;
   final double itemWidth;
@@ -338,7 +338,7 @@ class _StageItemData {
   final int endIndex;
   final int index;
 
-  _StageItemData({
+  _TimelineRowItemData({
     required this.stage,
     required this.position,
     required this.itemWidth,

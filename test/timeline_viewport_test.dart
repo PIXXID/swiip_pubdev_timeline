@@ -1,10 +1,10 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:swiip_pubdev_timeline/src/timeline/lazy_timeline_viewport.dart';
+import 'package:swiip_pubdev_timeline/src/timeline/timeline_viewport.dart';
 
 void main() {
-  group('LazyTimelineViewport Property Tests', () {
+  group('TimelineViewport Property Tests', () {
     testWidgets('Property 3: Viewport-Based Rendering - renders only visible items plus buffer',
         (WidgetTester tester) async {
       // Feature: timeline-performance-optimization, Property 3: Viewport-based rendering
@@ -41,7 +41,7 @@ void main() {
 
         // Track how many widgets were built
         var builtWidgetCount = 0;
-        // Build the LazyTimelineViewport
+        // Build the TimelineViewport
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
@@ -50,7 +50,7 @@ void main() {
                 height: 400,
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  child: LazyTimelineViewport(
+                  child: TimelineViewport(
                     visibleStart: visibleStart,
                     visibleEnd: visibleEnd,
                     centerItemIndex: centerItemIndex,
@@ -141,7 +141,7 @@ void main() {
                 height: 400,
                 child: StatefulBuilder(
                   builder: (context, setState) {
-                    return LazyTimelineViewport(
+                    return TimelineViewport(
                       visibleStart: visibleStart,
                       visibleEnd: visibleEnd,
                       centerItemIndex: centerItemIndex,
@@ -185,7 +185,7 @@ void main() {
               body: SizedBox(
                 width: viewportWidth,
                 height: 400,
-                child: LazyTimelineViewport(
+                child: TimelineViewport(
                   visibleStart: visibleStart,
                   visibleEnd: visibleEnd,
                   centerItemIndex: centerItemIndex,
@@ -254,7 +254,7 @@ void main() {
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
-              body: LazyTimelineViewport(
+              body: TimelineViewport(
                 visibleStart: visibleStart,
                 visibleEnd: visibleEnd,
                 centerItemIndex: centerItemIndex,
@@ -283,7 +283,7 @@ void main() {
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
-              body: LazyTimelineViewport(
+              body: TimelineViewport(
                 visibleStart: visibleStart,
                 visibleEnd: visibleEnd,
                 centerItemIndex: centerItemIndex,
@@ -314,7 +314,7 @@ void main() {
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
-              body: LazyTimelineViewport(
+              body: TimelineViewport(
                 visibleStart: visibleStart,
                 visibleEnd: visibleEnd,
                 centerItemIndex: centerItemIndex,
@@ -343,7 +343,7 @@ void main() {
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
-              body: LazyTimelineViewport(
+              body: TimelineViewport(
                 visibleStart: visibleStart,
                 visibleEnd: visibleEnd,
                 centerItemIndex: centerItemIndex,
@@ -367,12 +367,12 @@ void main() {
     }, timeout: const Timeout(Duration(minutes: 5)));
   });
 
-  group('LazyTimelineViewport Unit Tests', () {
+  group('TimelineViewport Unit Tests', () {
     testWidgets('renders empty timeline without errors', (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: LazyTimelineViewport(
+            body: TimelineViewport(
               visibleStart: 0,
               visibleEnd: 0,
               centerItemIndex: 0,
@@ -400,7 +400,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: LazyTimelineViewport(
+            body: TimelineViewport(
               visibleStart: 0,
               visibleEnd: 1,
               centerItemIndex: 0,
@@ -435,7 +435,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: LazyTimelineViewport(
+            body: TimelineViewport(
               visibleStart: 0,
               visibleEnd: 10,
               centerItemIndex: 5,
@@ -456,9 +456,9 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      // Verify Stack is used within LazyTimelineViewport
+      // Verify Stack is used within TimelineViewport
       final stackFinder = find.descendant(
-        of: find.byType(LazyTimelineViewport),
+        of: find.byType(TimelineViewport),
         matching: find.byType(Stack),
       );
       expect(stackFinder, findsOneWidget);
@@ -479,7 +479,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: LazyTimelineViewport(
+            body: TimelineViewport(
               visibleStart: 0,
               visibleEnd: 20,
               centerItemIndex: 10,
@@ -502,7 +502,7 @@ void main() {
 
       // Find the outer SizedBox that contains the Stack (the first one)
       final sizedBoxFinder = find.descendant(
-        of: find.byType(LazyTimelineViewport),
+        of: find.byType(TimelineViewport),
         matching: find.byType(SizedBox),
       );
 
@@ -529,7 +529,7 @@ void main() {
             body: SizedBox(
               width: 800,
               height: 400,
-              child: LazyTimelineViewport(
+              child: TimelineViewport(
                 visibleStart: 0,
                 visibleEnd: 25, // Only render first 25 items
                 centerItemIndex: 12,

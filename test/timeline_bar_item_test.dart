@@ -1,10 +1,10 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:swiip_pubdev_timeline/src/timeline/optimized_timeline_item.dart';
+import 'package:swiip_pubdev_timeline/src/timeline/timeline_bar_item.dart';
 
 void main() {
-  group('OptimizedTimelineItem Property Tests', () {
+  group('TimelineBarItem Property Tests', () {
     // Property 2: Selective Widget Rebuilds
     // Feature: timeline-performance-optimization, Property 2: Selective widget rebuilds
     // Validates: Requirements 1.3, 2.1, 3.1
@@ -56,7 +56,7 @@ void main() {
                     totalDays,
                     (i) => Positioned(
                       left: i * 40.0,
-                      child: OptimizedTimelineItem(
+                      child: TimelineBarItem(
                         colors: testColors,
                         index: i,
                         centerItemIndexNotifier: centerItemIndexNotifier,
@@ -96,7 +96,7 @@ void main() {
         expect(
           valueListenableBuilders,
           findsWidgets,
-          reason: 'OptimizedTimelineItem should use ValueListenableBuilder for selective rebuilds',
+          reason: 'TimelineBarItem should use ValueListenableBuilder for selective rebuilds',
         );
 
         // Verify that RepaintBoundary is present to isolate repaints
@@ -104,7 +104,7 @@ void main() {
         expect(
           repaintBoundaries,
           findsWidgets,
-          reason: 'OptimizedTimelineItem should use RepaintBoundary to isolate repaints',
+          reason: 'TimelineBarItem should use RepaintBoundary to isolate repaints',
         );
 
         centerItemIndexNotifier.dispose();
@@ -143,7 +143,7 @@ void main() {
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
-              body: OptimizedTimelineItem(
+              body: TimelineBarItem(
                 colors: testColors,
                 index: 0,
                 centerItemIndexNotifier: centerItemIndexNotifier,
@@ -166,7 +166,7 @@ void main() {
         expect(
           repaintBoundary,
           findsAtLeastNWidgets(1),
-          reason: 'OptimizedTimelineItem should have RepaintBoundary',
+          reason: 'TimelineBarItem should have RepaintBoundary',
         );
 
         // Verify ValueListenableBuilder is present
@@ -174,7 +174,7 @@ void main() {
         expect(
           valueListenableBuilder,
           findsOneWidget,
-          reason: 'OptimizedTimelineItem should use ValueListenableBuilder',
+          reason: 'TimelineBarItem should use ValueListenableBuilder',
         );
 
         centerItemIndexNotifier.dispose();
@@ -184,7 +184,7 @@ void main() {
     // Run 100 iterations testing visible range optimization
     for (var iteration = 0; iteration < 100; iteration++) {
       testWidgets('Property 2: Widgets outside visible range optimization - iteration $iteration', (tester) async {
-        // This property will be fully validated when LazyTimelineViewport is implemented
+        // This property will be fully validated when TimelineViewport is implemented
         // For now, we verify that the widget structure supports this optimization
 
         final random = Random(iteration);
@@ -216,7 +216,7 @@ void main() {
           },
         );
 
-        // Create only a subset of items (simulating LazyTimelineViewport behavior)
+        // Create only a subset of items (simulating TimelineViewport behavior)
         final visibleStart = 20;
         final visibleEnd = 30;
 
@@ -233,7 +233,7 @@ void main() {
                       final actualIndex = visibleStart + i;
                       return Positioned(
                         left: actualIndex * 40.0,
-                        child: OptimizedTimelineItem(
+                        child: TimelineBarItem(
                           colors: testColors,
                           index: actualIndex,
                           centerItemIndexNotifier: centerItemIndexNotifier,
@@ -257,7 +257,7 @@ void main() {
         await tester.pump();
 
         // Verify that only visible items are created
-        final timelineItems = find.byType(OptimizedTimelineItem);
+        final timelineItems = find.byType(TimelineBarItem);
         expect(
           timelineItems,
           findsNWidgets(visibleEnd - visibleStart),
@@ -270,7 +270,7 @@ void main() {
 
         // Items should still be the same count
         expect(
-          find.byType(OptimizedTimelineItem),
+          find.byType(TimelineBarItem),
           findsNWidgets(visibleEnd - visibleStart),
           reason: 'Item count should remain the same after center index change',
         );
@@ -280,7 +280,7 @@ void main() {
     }
   });
 
-  group('OptimizedTimelineItem Unit Tests - Widget Structure', () {
+  group('TimelineBarItem Unit Tests - Widget Structure', () {
     testWidgets('uses RepaintBoundary to isolate repaints', (tester) async {
       // Validates: Requirements 1.4, 1.5
 
@@ -310,7 +310,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: OptimizedTimelineItem(
+            body: TimelineBarItem(
               colors: testColors,
               index: 0,
               centerItemIndexNotifier: centerItemIndexNotifier,
@@ -333,7 +333,7 @@ void main() {
       expect(
         repaintBoundary,
         findsAtLeastNWidgets(1),
-        reason: 'OptimizedTimelineItem must have RepaintBoundary for paint isolation',
+        reason: 'TimelineBarItem must have RepaintBoundary for paint isolation',
       );
 
       centerItemIndexNotifier.dispose();
@@ -368,7 +368,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: OptimizedTimelineItem(
+            body: TimelineBarItem(
               colors: testColors,
               index: 0,
               centerItemIndexNotifier: centerItemIndexNotifier,
@@ -391,7 +391,7 @@ void main() {
       expect(
         valueListenableBuilder,
         findsOneWidget,
-        reason: 'OptimizedTimelineItem must use ValueListenableBuilder for selective rebuilds',
+        reason: 'TimelineBarItem must use ValueListenableBuilder for selective rebuilds',
       );
 
       centerItemIndexNotifier.dispose();
@@ -423,7 +423,7 @@ void main() {
         'alertLevel': 0,
       };
 
-      final widget = OptimizedTimelineItem(
+      final widget = TimelineBarItem(
         colors: testColors,
         index: 0,
         centerItemIndexNotifier: centerItemIndexNotifier,
@@ -478,7 +478,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: OptimizedTimelineItem(
+            body: TimelineBarItem(
               colors: testColors,
               index: 0,
               centerItemIndexNotifier: centerItemIndexNotifier,
@@ -536,7 +536,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: OptimizedTimelineItem(
+            body: TimelineBarItem(
               colors: testColors,
               index: 5, // Same as center
               centerItemIndexNotifier: centerItemIndexNotifier,
@@ -555,13 +555,13 @@ void main() {
       await tester.pump();
 
       // Widget should render without errors
-      expect(find.byType(OptimizedTimelineItem), findsOneWidget);
+      expect(find.byType(TimelineBarItem), findsOneWidget);
 
       // Change center to test different distances
       centerItemIndexNotifier.value = 3; // Distance of 2
       await tester.pump();
 
-      expect(find.byType(OptimizedTimelineItem), findsOneWidget);
+      expect(find.byType(TimelineBarItem), findsOneWidget);
 
       centerItemIndexNotifier.dispose();
     });
@@ -601,7 +601,7 @@ void main() {
               child: SizedBox(
                 width: 45.0,
                 height: 320.0, // Slightly larger to avoid overflow
-                child: OptimizedTimelineItem(
+                child: TimelineBarItem(
                   colors: testColors,
                   index: 0,
                   centerItemIndexNotifier: centerItemIndexNotifier,

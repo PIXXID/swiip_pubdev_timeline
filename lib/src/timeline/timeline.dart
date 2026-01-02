@@ -5,9 +5,9 @@ import 'package:intl/intl.dart';
 
 // Widgets
 import 'timeline_day_date.dart';
-import 'lazy_timeline_viewport.dart';
-import 'stage_rows_viewport.dart';
-import 'optimized_timeline_item.dart';
+import 'timeline_viewport.dart';
+import 'timeline_rows_viewport.dart';
+import 'timeline_bar_item.dart';
 import 'loading_indicator_overlay.dart';
 
 // Models
@@ -165,7 +165,7 @@ class _Timeline extends State<Timeline> {
   double _viewportHeight = 0.0;
   double _viewportMargin = 0.0;
 
-  // ValueNotifier for center item index (used by OptimizedTimelineItem)
+  // ValueNotifier for center item index (used by TimelineBarItem)
   final ValueNotifier<int> _centerItemIndexNotifier = ValueNotifier<int>(0);
 
   // ValueNotifier for loading state (used by LoadingIndicatorOverlay)
@@ -287,8 +287,8 @@ class _Timeline extends State<Timeline> {
     // Use TimelineDataManager for formatting stage rows with caching and error handling
     _performanceMonitor.startOperation('format_stage_rows');
     stagesRows = TimelineErrorHandler.withErrorHandling(
-      'getFormattedStageRows',
-      () => _dataManager.getFormattedStageRows(
+      'getFormattedTimelineRows',
+      () => _dataManager.getFormattedTimelineRows(
         startDate: startDate,
         endDate: endDate,
         days: days,
@@ -365,7 +365,7 @@ class _Timeline extends State<Timeline> {
             _visibleEnd = newVisibleEnd;
           });
 
-          // Update ValueNotifier for OptimizedTimelineItem
+          // Update ValueNotifier for TimelineBarItem
           _centerItemIndexNotifier.value = newCenterIndex;
 
           // 4. Trigger callbacks and auto-scroll when center changes
@@ -567,7 +567,7 @@ class _Timeline extends State<Timeline> {
                                 width: days.length * (dayWidth),
                                 height: 70,
                                 child: days.isNotEmpty
-                                    ? LazyTimelineViewport(
+                                    ? TimelineViewport(
                                         // Pass calculated visible range directly as parameters
                                         // instead of using a controller with ValueNotifiers
                                         visibleStart: _visibleStart,
@@ -597,7 +597,7 @@ class _Timeline extends State<Timeline> {
                               Expanded(
                                 child: SizedBox(
                                     child: stagesRows.isNotEmpty
-                                        ? StageRowsViewport(
+                                        ? TimelineRowsViewport(
                                             // Pass calculated visible range directly as parameters
                                             // This eliminates the need for a controller with ValueNotifiers
                                             visibleStart: _visibleStart,
@@ -622,7 +622,7 @@ class _Timeline extends State<Timeline> {
                               SizedBox(
                                 height: 70,
                                 child: days.isNotEmpty
-                                    ? LazyTimelineViewport(
+                                    ? TimelineViewport(
                                         visibleStart: _visibleStart,
                                         visibleEnd: _visibleEnd,
                                         centerItemIndex: _centerItemIndex,
@@ -630,7 +630,7 @@ class _Timeline extends State<Timeline> {
                                         itemWidth: dayWidth,
                                         itemMargin: dayMargin,
                                         itemBuilder: (context, index) {
-                                          return OptimizedTimelineItem(
+                                          return TimelineBarItem(
                                             colors: widget.colors,
                                             index: index,
                                             centerItemIndexNotifier: _centerItemIndexNotifier,

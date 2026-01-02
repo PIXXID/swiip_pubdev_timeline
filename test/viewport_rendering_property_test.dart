@@ -1,10 +1,10 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:swiip_pubdev_timeline/src/timeline/lazy_timeline_viewport.dart';
+import 'package:swiip_pubdev_timeline/src/timeline/timeline_viewport.dart';
 
 void main() {
-  group('LazyTimelineViewport Rendering Property Tests', () {
+  group('TimelineViewport Rendering Property Tests', () {
     testWidgets('Property 5: Lazy Viewport Rendering - renders only items in visible range',
         (WidgetTester tester) async {
       // Feature: native-scroll-only, Property 5: Lazy Viewport Rendering
@@ -40,13 +40,13 @@ void main() {
         // Track which items were built
         final builtIndices = <int>[];
 
-        // Build the LazyTimelineViewport with random parameters
+        // Build the TimelineViewport with random parameters
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
               body: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                child: LazyTimelineViewport(
+                child: TimelineViewport(
                   visibleStart: visibleStart,
                   visibleEnd: visibleEnd,
                   centerItemIndex: centerItemIndex,
@@ -140,7 +140,7 @@ void main() {
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
-              body: LazyTimelineViewport(
+              body: TimelineViewport(
                 visibleStart: visibleStart,
                 visibleEnd: visibleEnd,
                 centerItemIndex: centerItemIndex,
@@ -222,7 +222,7 @@ void main() {
           await tester.pumpWidget(
             MaterialApp(
               home: Scaffold(
-                body: LazyTimelineViewport(
+                body: TimelineViewport(
                   visibleStart: visibleStart,
                   visibleEnd: visibleEnd,
                   centerItemIndex: centerItemIndex,

@@ -229,8 +229,8 @@ void main() {
             maxCapacity: 8,
           );
 
-          // First call to getFormattedStageRows - should compute and cache
-          final firstStageRows = dataManager.getFormattedStageRows(
+          // First call to getFormattedTimelineRows - should compute and cache
+          final firstTimelineRows = dataManager.getFormattedTimelineRows(
             startDate: startDate,
             endDate: endDate,
             days: days,
@@ -239,7 +239,7 @@ void main() {
           );
 
           // Second call - should return cached result
-          final secondStageRows = dataManager.getFormattedStageRows(
+          final secondTimelineRows = dataManager.getFormattedTimelineRows(
             startDate: startDate,
             endDate: endDate,
             days: days,
@@ -248,7 +248,7 @@ void main() {
           );
 
           // Property: The cached result should be identical
-          expect(identical(firstStageRows, secondStageRows), isTrue,
+          expect(identical(firstTimelineRows, secondTimelineRows), isTrue,
               reason: 'Iteration $iteration: Second call should return the exact same cached stage rows instance');
 
           // Clear cache for next iteration

@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:swiip_pubdev_timeline/src/timeline/optimized_timeline_item.dart';
+import 'package:swiip_pubdev_timeline/src/timeline/timeline_bar_item.dart';
 import 'package:swiip_pubdev_timeline/src/timeline/models/visible_range.dart';
 
 void main() {
@@ -60,7 +60,7 @@ void main() {
                     totalDays,
                     (i) => Positioned(
                       left: i * 40.0,
-                      child: OptimizedTimelineItem(
+                      child: TimelineBarItem(
                         colors: testColors,
                         index: i,
                         centerItemIndexNotifier: centerItemIndexNotifier,
@@ -90,7 +90,7 @@ void main() {
         await tester.pump();
 
         // Verify widgets are still present (they don't get removed, just stop animating)
-        final timelineItems = find.byType(OptimizedTimelineItem);
+        final timelineItems = find.byType(TimelineBarItem);
         expect(
           timelineItems,
           findsNWidgets(totalDays),
@@ -115,7 +115,7 @@ void main() {
                       totalDays,
                       (i) => Positioned(
                         left: i * 40.0,
-                        child: OptimizedTimelineItem(
+                        child: TimelineBarItem(
                           colors: testColors,
                           index: i,
                           centerItemIndexNotifier: centerItemIndexNotifier,
@@ -140,7 +140,7 @@ void main() {
 
           // The widget should not animate since it's outside viewport
           // We verify this by checking that the widget structure is correct
-          expect(find.byType(OptimizedTimelineItem), findsNWidgets(totalDays));
+          expect(find.byType(TimelineBarItem), findsNWidgets(totalDays));
         }
 
         // Test 3: Update completion data for items inside viewport
@@ -159,7 +159,7 @@ void main() {
                     totalDays,
                     (i) => Positioned(
                       left: i * 40.0,
-                      child: OptimizedTimelineItem(
+                      child: TimelineBarItem(
                         colors: testColors,
                         index: i,
                         centerItemIndexNotifier: centerItemIndexNotifier,
@@ -202,7 +202,7 @@ void main() {
           await tester.pump();
 
           // Verify widgets are still present
-          expect(find.byType(OptimizedTimelineItem), findsNWidgets(totalDays));
+          expect(find.byType(TimelineBarItem), findsNWidgets(totalDays));
         }
 
         centerItemIndexNotifier.dispose();
@@ -245,7 +245,7 @@ void main() {
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
-              body: OptimizedTimelineItem(
+              body: TimelineBarItem(
                 colors: testColors,
                 index: 0,
                 centerItemIndexNotifier: centerItemIndexNotifier,
@@ -265,7 +265,7 @@ void main() {
         await tester.pump();
 
         // Verify widget is present
-        expect(find.byType(OptimizedTimelineItem), findsOneWidget);
+        expect(find.byType(TimelineBarItem), findsOneWidget);
 
         // Remove widget (triggers dispose)
         await tester.pumpWidget(
@@ -279,7 +279,7 @@ void main() {
         await tester.pump();
 
         // Verify widget is removed
-        expect(find.byType(OptimizedTimelineItem), findsNothing);
+        expect(find.byType(TimelineBarItem), findsNothing);
 
         // If disposal wasn't proper, this would cause issues
         // The test passing means disposal is working correctly
@@ -325,7 +325,7 @@ void main() {
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
-              body: OptimizedTimelineItem(
+              body: TimelineBarItem(
                 colors: testColors,
                 index: 5, // Inside viewport (0-10)
                 centerItemIndexNotifier: centerItemIndexNotifier,
@@ -345,14 +345,14 @@ void main() {
         await tester.pump();
 
         // Verify widget is present
-        expect(find.byType(OptimizedTimelineItem), findsOneWidget);
+        expect(find.byType(TimelineBarItem), findsOneWidget);
 
         // Move visible range so widget is outside
         visibleRangeNotifier.value = VisibleRange(10, 20);
         await tester.pump();
 
         // Widget should still be present but not animating
-        expect(find.byType(OptimizedTimelineItem), findsOneWidget);
+        expect(find.byType(TimelineBarItem), findsOneWidget);
 
         // Update completion to trigger potential animation
         testDay['compeff'] = 7;
@@ -360,7 +360,7 @@ void main() {
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
-              body: OptimizedTimelineItem(
+              body: TimelineBarItem(
                 colors: testColors,
                 index: 5, // Outside viewport (10-20)
                 centerItemIndexNotifier: centerItemIndexNotifier,
@@ -380,7 +380,7 @@ void main() {
         await tester.pump();
 
         // Widget should not crash and should handle being outside viewport
-        expect(find.byType(OptimizedTimelineItem), findsOneWidget);
+        expect(find.byType(TimelineBarItem), findsOneWidget);
 
         centerItemIndexNotifier.dispose();
         visibleRangeNotifier.dispose();
@@ -421,7 +421,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: OptimizedTimelineItem(
+            body: TimelineBarItem(
               colors: testColors,
               index: 0,
               centerItemIndexNotifier: centerItemIndexNotifier,
@@ -445,7 +445,7 @@ void main() {
       expect(
         animatedBuilder,
         findsAtLeastNWidgets(1),
-        reason: 'OptimizedTimelineItem must use AnimatedBuilder for animations',
+        reason: 'TimelineBarItem must use AnimatedBuilder for animations',
       );
 
       centerItemIndexNotifier.dispose();
@@ -484,7 +484,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: OptimizedTimelineItem(
+            body: TimelineBarItem(
               colors: testColors,
               index: 0,
               centerItemIndexNotifier: centerItemIndexNotifier,
@@ -508,7 +508,7 @@ void main() {
       expect(
         transform,
         findsAtLeastNWidgets(1),
-        reason: 'OptimizedTimelineItem must use Transform for efficient animations',
+        reason: 'TimelineBarItem must use Transform for efficient animations',
       );
 
       centerItemIndexNotifier.dispose();
@@ -548,7 +548,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: OptimizedTimelineItem(
+            body: TimelineBarItem(
               colors: testColors,
               index: 0,
               centerItemIndexNotifier: centerItemIndexNotifier,
@@ -568,7 +568,7 @@ void main() {
       await tester.pump();
 
       // Verify widget is present
-      expect(find.byType(OptimizedTimelineItem), findsOneWidget);
+      expect(find.byType(TimelineBarItem), findsOneWidget);
 
       // Remove widget (triggers dispose)
       await tester.pumpWidget(
@@ -582,7 +582,7 @@ void main() {
       await tester.pump();
 
       // Verify widget is removed without errors
-      expect(find.byType(OptimizedTimelineItem), findsNothing);
+      expect(find.byType(TimelineBarItem), findsNothing);
 
       // If AnimationController wasn't disposed properly, this would cause memory leaks
       // The test passing means disposal is working correctly
@@ -623,7 +623,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: OptimizedTimelineItem(
+            body: TimelineBarItem(
               colors: testColors,
               index: 0,
               centerItemIndexNotifier: centerItemIndexNotifier,
@@ -647,7 +647,7 @@ void main() {
       expect(
         repaintBoundaries,
         findsAtLeastNWidgets(2),
-        reason: 'OptimizedTimelineItem must have RepaintBoundary around animated content',
+        reason: 'TimelineBarItem must have RepaintBoundary around animated content',
       );
 
       centerItemIndexNotifier.dispose();

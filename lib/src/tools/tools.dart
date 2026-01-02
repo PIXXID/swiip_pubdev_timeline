@@ -60,7 +60,7 @@ List getStageByDay(List days, List stages) {
 /// [stagesRows]        Tableau des séquences et étapes associés aux élements
 /// [centerItemIndex]   Idex de l'item à centrer
 /// ------
-int getHigherStageRowIndexOptimized(List stagesRows, int centerItemIndex) {
+int getHigherTimelineRowIndexOptimized(List stagesRows, int centerItemIndex) {
   final int rowCount = stagesRows.length;
   int nearestRowIndex = -1;
   int nearestDistance = double.maxFinite.toInt();
@@ -105,7 +105,7 @@ int getHigherStageRowIndexOptimized(List stagesRows, int centerItemIndex) {
 /// [stagesRows]        Tableau des séquences et étapes associés aux élements
 /// [centerItemIndex]   Idex de l'item à centrer
 /// ------
-int getLowerStageRowIndexOptimized(List stagesRows, int centerItemIndex) {
+int getLowerTimelineRowIndexOptimized(List stagesRows, int centerItemIndex) {
   final int rowCount = stagesRows.length;
   int nearestRowIndex = -1;
   int nearestDistance = double.maxFinite.toInt();

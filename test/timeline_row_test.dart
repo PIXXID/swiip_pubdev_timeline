@@ -1,11 +1,11 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:swiip_pubdev_timeline/src/timeline/optimized_stage_row.dart';
+import 'package:swiip_pubdev_timeline/src/timeline/timeline_row.dart';
 import 'package:swiip_pubdev_timeline/src/timeline/models/visible_range.dart';
 
 void main() {
-  group('OptimizedStageRow Property Tests', () {
+  group('TimelineRow Property Tests', () {
     // Property 9: Stage Row Conditional Rebuild
     // Feature: timeline-performance-optimization, Property 9: Stage row conditional rebuild
     // Validates: Requirements 2.2
@@ -65,7 +65,7 @@ void main() {
               body: SizedBox(
                 width: 800,
                 height: 50,
-                child: OptimizedStageRow(
+                child: TimelineRow(
                   colors: testColors,
                   stagesList: stagesList,
                   centerItemIndexNotifier: centerItemIndexNotifier,
@@ -85,7 +85,7 @@ void main() {
         await tester.pump();
 
         // Test 1: Verify widget renders correctly with initial state
-        expect(find.byType(OptimizedStageRow), findsOneWidget);
+        expect(find.byType(TimelineRow), findsOneWidget);
         expect(tester.takeException(), isNull);
 
         // Test 2: Change centerItemIndex to a value that DOES affect this row
@@ -97,7 +97,7 @@ void main() {
         await tester.pump();
 
         // Verify widget still renders correctly after state change
-        expect(find.byType(OptimizedStageRow), findsOneWidget);
+        expect(find.byType(TimelineRow), findsOneWidget);
         expect(tester.takeException(), isNull);
 
         // Test 3: Change centerItemIndex to a value that DOES NOT affect this row
@@ -120,7 +120,7 @@ void main() {
           await tester.pump();
 
           // Verify widget still renders correctly
-          expect(find.byType(OptimizedStageRow), findsOneWidget);
+          expect(find.byType(TimelineRow), findsOneWidget);
           expect(tester.takeException(), isNull);
         }
 
@@ -135,7 +135,7 @@ void main() {
         await tester.pump();
 
         // Verify widget renders correctly with new visible range
-        expect(find.byType(OptimizedStageRow), findsOneWidget);
+        expect(find.byType(TimelineRow), findsOneWidget);
         expect(tester.takeException(), isNull);
 
         // Test 5: Change visibleRange to NOT overlap with any stages
@@ -150,7 +150,7 @@ void main() {
         await tester.pump();
 
         // Verify widget renders correctly (should show no stages)
-        expect(find.byType(OptimizedStageRow), findsOneWidget);
+        expect(find.byType(TimelineRow), findsOneWidget);
         expect(tester.takeException(), isNull);
 
         centerItemIndexNotifier.dispose();
@@ -223,7 +223,7 @@ void main() {
                   SizedBox(
                     width: 800,
                     height: 50,
-                    child: OptimizedStageRow(
+                    child: TimelineRow(
                       colors: testColors,
                       stagesList: row1Stages,
                       centerItemIndexNotifier: centerItemIndexNotifier,
@@ -239,7 +239,7 @@ void main() {
                   SizedBox(
                     width: 800,
                     height: 50,
-                    child: OptimizedStageRow(
+                    child: TimelineRow(
                       colors: testColors,
                       stagesList: row2Stages,
                       centerItemIndexNotifier: centerItemIndexNotifier,
@@ -265,7 +265,7 @@ void main() {
         await tester.pump();
 
         // Verify both rows still render correctly
-        expect(find.byType(OptimizedStageRow), findsNWidgets(2));
+        expect(find.byType(TimelineRow), findsNWidgets(2));
         expect(tester.takeException(), isNull);
 
         // Change centerIndex to affect only row2 (index 25 is in stage 20-30)
@@ -273,7 +273,7 @@ void main() {
         await tester.pump();
 
         // Verify both rows still render correctly
-        expect(find.byType(OptimizedStageRow), findsNWidgets(2));
+        expect(find.byType(TimelineRow), findsNWidgets(2));
         expect(tester.takeException(), isNull);
 
         centerItemIndexNotifier.dispose();
@@ -342,7 +342,7 @@ void main() {
               body: SizedBox(
                 width: 800,
                 height: 50,
-                child: OptimizedStageRow(
+                child: TimelineRow(
                   colors: testColors,
                   stagesList: stagesList,
                   centerItemIndexNotifier: centerItemIndexNotifier,
@@ -366,7 +366,7 @@ void main() {
         await tester.pump();
 
         // Verify widget renders correctly
-        expect(find.byType(OptimizedStageRow), findsOneWidget);
+        expect(find.byType(TimelineRow), findsOneWidget);
         expect(tester.takeException(), isNull);
 
         // Change visible range to overlap with second stage (20-30)
@@ -374,7 +374,7 @@ void main() {
         await tester.pump();
 
         // Verify widget renders correctly
-        expect(find.byType(OptimizedStageRow), findsOneWidget);
+        expect(find.byType(TimelineRow), findsOneWidget);
         expect(tester.takeException(), isNull);
 
         // Change visible range to NOT overlap with any stage
@@ -382,7 +382,7 @@ void main() {
         await tester.pump();
 
         // Verify widget renders correctly (should show no stages)
-        expect(find.byType(OptimizedStageRow), findsOneWidget);
+        expect(find.byType(TimelineRow), findsOneWidget);
         expect(tester.takeException(), isNull);
 
         centerItemIndexNotifier.dispose();
@@ -391,7 +391,7 @@ void main() {
     }
   });
 
-  group('OptimizedStageRow Unit Tests', () {
+  group('TimelineRow Unit Tests', () {
     testWidgets('uses RepaintBoundary to isolate repaints', (tester) async {
       // Validates: Requirements 2.2
 
@@ -433,7 +433,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: OptimizedStageRow(
+            body: TimelineRow(
               colors: testColors,
               stagesList: stagesList,
               centerItemIndexNotifier: centerItemIndexNotifier,
@@ -456,7 +456,7 @@ void main() {
       expect(
         repaintBoundary,
         findsAtLeastNWidgets(1),
-        reason: 'OptimizedStageRow must have RepaintBoundary for paint isolation',
+        reason: 'TimelineRow must have RepaintBoundary for paint isolation',
       );
 
       centerItemIndexNotifier.dispose();
@@ -504,7 +504,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: OptimizedStageRow(
+            body: TimelineRow(
               colors: testColors,
               stagesList: stagesList,
               centerItemIndexNotifier: centerItemIndexNotifier,
@@ -523,7 +523,7 @@ void main() {
       await tester.pump();
 
       // Verify widget rendered without errors
-      expect(find.byType(OptimizedStageRow), findsOneWidget);
+      expect(find.byType(TimelineRow), findsOneWidget);
       expect(tester.takeException(), isNull);
 
       // Remove the widget
@@ -538,7 +538,7 @@ void main() {
       await tester.pump();
 
       // Verify widget was removed and no errors occurred during disposal
-      expect(find.byType(OptimizedStageRow), findsNothing);
+      expect(find.byType(TimelineRow), findsNothing);
       expect(tester.takeException(), isNull);
 
       centerItemIndexNotifier.dispose();
@@ -568,7 +568,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: OptimizedStageRow(
+            body: TimelineRow(
               colors: testColors,
               stagesList: const [], // Empty list
               centerItemIndexNotifier: centerItemIndexNotifier,
@@ -587,7 +587,7 @@ void main() {
       await tester.pump();
 
       // Should render without errors
-      expect(find.byType(OptimizedStageRow), findsOneWidget);
+      expect(find.byType(TimelineRow), findsOneWidget);
       expect(tester.takeException(), isNull);
 
       centerItemIndexNotifier.dispose();
@@ -641,7 +641,7 @@ void main() {
             body: SizedBox(
               width: 800,
               height: 50,
-              child: OptimizedStageRow(
+              child: TimelineRow(
                 colors: testColors,
                 stagesList: stagesList,
                 centerItemIndexNotifier: centerItemIndexNotifier,
@@ -661,9 +661,9 @@ void main() {
       await tester.pump();
 
       // Should render without errors
-      expect(find.byType(OptimizedStageRow), findsOneWidget);
+      expect(find.byType(TimelineRow), findsOneWidget);
 
-      // Label should be visible (appears in both StageItem and as a separate label)
+      // Label should be visible (appears in both TimelineRowItem and as a separate label)
       // We just need to verify it's present at least once
       expect(find.text('Small Activity'), findsWidgets);
 
@@ -718,7 +718,7 @@ void main() {
             body: SizedBox(
               width: 800,
               height: 50,
-              child: OptimizedStageRow(
+              child: TimelineRow(
                 colors: testColors,
                 stagesList: stagesList,
                 centerItemIndexNotifier: centerItemIndexNotifier,
@@ -738,7 +738,7 @@ void main() {
       await tester.pump();
 
       // Label should be visible initially (center at 5, element at 4-6)
-      // Appears in both StageItem and as a separate label
+      // Appears in both TimelineRowItem and as a separate label
       final initialLabels = find.text('Small Activity');
       final initialCount = initialLabels.evaluate().length;
       expect(initialCount, greaterThan(0), reason: 'Label should be visible initially');
@@ -748,7 +748,7 @@ void main() {
       await tester.pump();
 
       // The widget should still render correctly after state change
-      expect(find.byType(OptimizedStageRow), findsOneWidget);
+      expect(find.byType(TimelineRow), findsOneWidget);
       expect(tester.takeException(), isNull);
 
       centerItemIndexNotifier.dispose();

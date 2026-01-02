@@ -15,7 +15,7 @@ class TimelineDataManager {
   List<Map<String, dynamic>>? _cachedDays;
 
   /// Cached list of formatted stage rows.
-  List<List<Map<String, dynamic>>>? _cachedStageRows;
+  List<List<Map<String, dynamic>>>? _cachedTimelineRows;
 
   /// Hash of the last input data used to generate cached days.
   ///
@@ -107,7 +107,7 @@ class TimelineDataManager {
   /// - [elements]: List of timeline elements
   ///
   /// Returns a list of stage row lists.
-  List<List<Map<String, dynamic>>> getFormattedStageRows({
+  List<List<Map<String, dynamic>>> getFormattedTimelineRows({
     required DateTime startDate,
     required DateTime endDate,
     required List days,
@@ -115,12 +115,12 @@ class TimelineDataManager {
     required List elements,
   }) {
     // Return cached result if available
-    if (_cachedStageRows != null) {
-      return _cachedStageRows!;
+    if (_cachedTimelineRows != null) {
+      return _cachedTimelineRows!;
     }
 
     // Otherwise, compute and cache with error handling
-    _cachedStageRows = TimelineErrorHandler.withErrorHandling(
+    _cachedTimelineRows = TimelineErrorHandler.withErrorHandling(
       'formatStagesRowsOptimized',
       () => _formatStagesRowsOptimized(
         startDate,
@@ -132,17 +132,17 @@ class TimelineDataManager {
       [], // Fallback to empty list on error
     );
 
-    return _cachedStageRows!;
+    return _cachedTimelineRows!;
   }
 
   /// Clears all cached data.
   ///
   /// This should be called when you want to force a recomputation on the
-  /// next call to getFormattedDays or getFormattedStageRows, regardless
+  /// next call to getFormattedDays or getFormattedTimelineRows, regardless
   /// of whether the input data has changed.
   void clearCache() {
     _cachedDays = null;
-    _cachedStageRows = null;
+    _cachedTimelineRows = null;
     _lastDataHash = null;
   }
 
@@ -384,7 +384,7 @@ class TimelineDataManager {
     DateTime startDate,
   ) {
     final rows = <List<Map<String, dynamic>>>[];
-    var lastStageRowIndex = 0;
+    var lastTimelineRowIndex = 0;
 
     for (final item in items) {
       // Safely access date fields with error handling
@@ -432,19 +432,19 @@ class TimelineDataManager {
 
       if (rows.isEmpty) {
         rows.add([itemWithIndices]);
-        if (isStage) lastStageRowIndex = 0;
+        if (isStage) lastTimelineRowIndex = 0;
       } else {
         var placed = false;
 
-        // Try to place in existing rows starting from lastStageRowIndex
-        // Clamp lastStageRowIndex to valid range
-        lastStageRowIndex = TimelineErrorHandler.clampIndex(lastStageRowIndex, 0, rows.length - 1);
+        // Try to place in existing rows starting from lastTimelineRowIndex
+        // Clamp lastTimelineRowIndex to valid range
+        lastTimelineRowIndex = TimelineErrorHandler.clampIndex(lastTimelineRowIndex, 0, rows.length - 1);
 
-        for (var j = lastStageRowIndex; j < rows.length; j++) {
+        for (var j = lastTimelineRowIndex; j < rows.length; j++) {
           final hasOverlap = rows[j].any((r) => (r['endDateIndex'] ?? -1) + 1 > startDateIndex);
 
           if (!hasOverlap) {
-            if (isStage) lastStageRowIndex = j;
+            if (isStage) lastTimelineRowIndex = j;
             rows[j].add(itemWithIndices);
             placed = true;
             break;
@@ -454,7 +454,7 @@ class TimelineDataManager {
         // Create new row if no suitable row found
         if (!placed) {
           rows.add([itemWithIndices]);
-          if (isStage) lastStageRowIndex = rows.length - 1;
+          if (isStage) lastTimelineRowIndex = rows.length - 1;
         }
       }
     }
