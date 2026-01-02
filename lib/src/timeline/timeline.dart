@@ -168,9 +168,6 @@ class _Timeline extends State<Timeline> {
   // ValueNotifier for center item index (used by TimelineBarItem)
   final ValueNotifier<int> _centerItemIndexNotifier = ValueNotifier<int>(0);
 
-  // ValueNotifier for loading state (used by LoadingIndicatorOverlay)
-  final ValueNotifier<bool> _isLoadingNotifier = ValueNotifier<bool>(false);
-
   bool isUniqueProject = false;
 
   // Track initialization state
@@ -218,7 +215,6 @@ class _Timeline extends State<Timeline> {
     if (mounted) {
       setState(() {
         _initializeTimeline();
-        _isInitialized = true;
       });
     }
   } // End of _initializeConfiguration()
@@ -237,7 +233,6 @@ class _Timeline extends State<Timeline> {
 
     // Reset them to initial values
     _centerItemIndexNotifier.value = 0;
-    _isLoadingNotifier.value = false;
 
     // Apply configuration values to instance variables
     dayWidth = _config.dayWidth;
@@ -394,16 +389,22 @@ class _Timeline extends State<Timeline> {
       isUniqueProject = uniquePrjIds.length > 1 ? false : true;
     }
 
-    // Exécuter une seule fois après la construction du widget
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      // Complete initial render tracking
-      _performanceMonitor.endOperation('timeline_init');
+    // Affiche l'overlay pendant 100ms minimum
+    Future.delayed(const Duration(milliseconds: 100), () {
+      // Initialisation OK
+      setState(() => _isInitialized = true);
 
-      // Log metrics in debug mode
-      _performanceMonitor.logMetrics();
+      // Exécuter une seule fois après la construction du widget
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        // Complete initial render tracking
+        _performanceMonitor.endOperation('timeline_init');
 
-      // On scroll sur la date du jour par défaut
-      scrollTo(widget.defaultDate != null ? defaultDateIndex : nowIndex, animated: true);
+        // Log metrics in debug mode
+        _performanceMonitor.logMetrics();
+
+        // On scroll sur la date du jour par défaut
+        scrollTo(widget.defaultDate != null ? defaultDateIndex : nowIndex, animated: true);
+      });
     });
   } // End of _initializeTimeline()
 
@@ -412,7 +413,6 @@ class _Timeline extends State<Timeline> {
   void dispose() {
     // Dispose ValueNotifiers
     _centerItemIndexNotifier.dispose();
-    _isLoadingNotifier.dispose();
     // On enlève les écoutes du scroll de la timeline et vertical
     _controllerTimeline.removeListener(() {});
     super.dispose();
@@ -490,184 +490,173 @@ class _Timeline extends State<Timeline> {
 
   @override
   Widget build(BuildContext context) {
-    // If not initialized yet, show loading indicator
-    if (!_isInitialized) {
-      return Scaffold(
-        backgroundColor: widget.colors['primaryBackground'],
-        body: Center(
-          child: CircularProgressIndicator(
-            color: widget.colors['primary'],
-          ),
-        ),
-      );
-    }
-
     // Track rebuild
-    _performanceMonitor.trackRebuild();
+    if (_isInitialized) {
+      _performanceMonitor.trackRebuild();
+    }
 
     // Langue et locale
     final String lang = platformLanguage();
 
-    // Overlay de chargement
-    return LoadingIndicatorOverlay(
-      isLoadingNotifier: _isLoadingNotifier,
-      overlayColor: widget.colors['primaryBackground']?.withValues(alpha: 0.7),
-      indicatorColor: widget.colors['primary'],
-      child: Scaffold(
-        backgroundColor: widget.colors['primaryBackground'],
-        body: LayoutBuilder(
-          builder: (context, constraints) {
-            // Capture viewport width for scroll calculations
-            // This value is used by the scroll listener to calculate:
-            // - Center item index (which day is at the center)
-            // - Visible range (which days should be rendered)
-            // The width is captured here because LayoutBuilder provides the actual
-            // available space, which may differ from MediaQuery.of(context).size.width
-            _viewportWidth = constraints.maxWidth;
-            _viewportHeight = constraints.maxHeight;
-            _viewportMargin = (_viewportWidth / 2) - (dayWidth / 2);
+    // Overlay de chargement - always wrap to handle both initial load and runtime loading
+    return Scaffold(
+      backgroundColor: widget.colors['primaryBackground'],
+      // If not initialized yet, show empty body (overlay will show loading indicator)
+      body: !_isInitialized ? LoadingOverlay() : _buildTimelineContent(context, lang),
+    );
+  }
 
-            return Stack(
-              children: <Widget>[
-                Positioned(
-                  left: _viewportMargin + (dayWidth / 2),
-                  top: 0,
-                  child: Container(
-                    height: _viewportHeight,
-                    width: 1,
-                    decoration: BoxDecoration(color: widget.colors['error']),
-                  ),
-                ),
-                // CONTENEUR UNIQUE AVEC SCROLL HORIZONTAL
-                Expanded(
-                  child: SizedBox(
-                    width: _viewportWidth,
-                    child: Listener(
-                      onPointerSignal: (event) {
-                        if (event is PointerScrollEvent) {
-                          // Scroll horizontal avec Shift+molette ou trackpad horizontal
-                          final delta = event.scrollDelta;
-                          final scrollDelta = delta.dx != 0 ? delta.dx : delta.dy;
+  /// Builds the timeline content (extracted for clarity)
+  Widget _buildTimelineContent(BuildContext context, String lang) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Capture viewport width for scroll calculations
+        // This value is used by the scroll listener to calculate:
+        // - Center item index (which day is at the center)
+        // - Visible range (which days should be rendered)
+        // The width is captured here because LayoutBuilder provides the actual
+        // available space, which may differ from MediaQuery.of(context).size.width
+        _viewportWidth = constraints.maxWidth;
+        _viewportHeight = constraints.maxHeight;
+        _viewportMargin = (_viewportWidth / 2) - (dayWidth / 2);
 
-                          // Calcule la nouvelle position
-                          final newOffset = _controllerTimeline.position.pixels + scrollDelta;
+        return Stack(
+          children: <Widget>[
+            Positioned(
+              left: _viewportMargin + (dayWidth / 2),
+              top: 0,
+              child: Container(
+                height: _viewportHeight,
+                width: 1,
+                decoration: BoxDecoration(color: widget.colors['error']),
+              ),
+            ),
+            // CONTENEUR UNIQUE AVEC SCROLL HORIZONTAL
+            SizedBox(
+              width: _viewportWidth,
+              child: Listener(
+                onPointerSignal: (event) {
+                  if (event is PointerScrollEvent) {
+                    // Scroll horizontal avec Shift+molette ou trackpad horizontal
+                    final delta = event.scrollDelta;
+                    final scrollDelta = delta.dx != 0 ? delta.dx : delta.dy;
 
-                          // Applique le scroll
-                          _controllerTimeline.jumpTo(
-                            newOffset.clamp(
-                              0.0,
-                              _controllerTimeline.position.maxScrollExtent,
-                            ),
-                          );
-                        }
-                      },
-                      child: SingleChildScrollView(
-                        controller: _controllerTimeline,
-                        scrollDirection: Axis.horizontal,
-                        // Padding pour que le 1er element soit au milieu de l'écran
-                        padding: EdgeInsets.symmetric(horizontal: _viewportMargin),
-                        child: SizedBox(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min, // Prevent Column from expanding infinitely
-                            children: [
-                              // DATES
-                              SizedBox(
-                                width: days.length * (dayWidth),
-                                height: 70,
-                                child: days.isNotEmpty
-                                    ? TimelineViewport(
-                                        // Pass calculated visible range directly as parameters
-                                        // instead of using a controller with ValueNotifiers
-                                        visibleStart: _visibleStart,
-                                        visibleEnd: _visibleEnd,
-                                        // Pass center index for highlighting
-                                        centerItemIndex: _centerItemIndex,
-                                        items: days,
-                                        itemWidth: dayWidth,
-                                        itemMargin: dayMargin,
-                                        itemBuilder: (context, index) {
-                                          return TimelineDayDate(
-                                            lang: lang,
-                                            colors: widget.colors,
-                                            nowIndex: nowIndex,
-                                            index: index,
-                                            centerItemIndex: _centerItemIndex,
-                                            days: days,
-                                            dayWidth: dayWidth,
-                                            dayMargin: dayMargin,
-                                            height: datesHeight,
-                                          );
-                                        },
-                                      )
-                                    : const SizedBox.shrink(), // Handle empty days
-                              ),
-                              // STAGES/ELEMENTS DYNAMIQUES - Use Expanded to take remaining space
-                              Expanded(
-                                child: SizedBox(
-                                    child: stagesRows.isNotEmpty
-                                        ? TimelineRowsViewport(
-                                            // Pass calculated visible range directly as parameters
-                                            // This eliminates the need for a controller with ValueNotifiers
-                                            visibleStart: _visibleStart,
-                                            visibleEnd: _visibleEnd,
-                                            centerItemIndex: _centerItemIndex,
-                                            stagesRows: stagesRows,
-                                            rowHeight: rowHeight,
-                                            rowMargin: rowMargin,
-                                            dayWidth: dayWidth,
-                                            dayMargin: dayMargin,
-                                            totalDays: days.length,
-                                            colors: widget.colors,
-                                            isUniqueProject: isUniqueProject,
-                                            viewportWidth: _viewportWidth,
-                                            viewportHeight: _viewportHeight,
-                                            openEditStage: widget.openEditStage,
-                                            openEditElement: widget.openEditElement,
-                                          )
-                                        : const SizedBox.shrink()), // Handle empty stages
-                              ),
-                              // CHARGE DYNAMIQUE
-                              SizedBox(
-                                height: 70,
-                                child: days.isNotEmpty
-                                    ? TimelineViewport(
-                                        visibleStart: _visibleStart,
-                                        visibleEnd: _visibleEnd,
-                                        centerItemIndex: _centerItemIndex,
-                                        items: days,
-                                        itemWidth: dayWidth,
-                                        itemMargin: dayMargin,
-                                        itemBuilder: (context, index) {
-                                          return TimelineBarItem(
-                                            colors: widget.colors,
-                                            index: index,
-                                            centerItemIndex: _centerItemIndex,
-                                            centerItemIndexNotifier: _centerItemIndexNotifier,
-                                            nowIndex: nowIndex,
-                                            day: days[index],
-                                            elements: widget.elements,
-                                            dayWidth: dayWidth,
-                                            dayMargin: dayMargin,
-                                            height: 70,
-                                            openDayDetail: widget.openDayDetail,
-                                          );
-                                        },
-                                      )
-                                    : const SizedBox.shrink(), // Handle empty days
-                              ),
-                            ],
-                          ),
-                        ),
+                    // Calcule la nouvelle position
+                    final newOffset = _controllerTimeline.position.pixels + scrollDelta;
+
+                    // Applique le scroll
+                    _controllerTimeline.jumpTo(
+                      newOffset.clamp(
+                        0.0,
+                        _controllerTimeline.position.maxScrollExtent,
                       ),
+                    );
+                  }
+                },
+                child: SingleChildScrollView(
+                  controller: _controllerTimeline,
+                  scrollDirection: Axis.horizontal,
+                  // Padding pour que le 1er element soit au milieu de l'écran
+                  padding: EdgeInsets.symmetric(horizontal: _viewportMargin),
+                  child: SizedBox(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min, // Prevent Column from expanding infinitely
+                      children: [
+                        // DATES
+                        SizedBox(
+                          width: days.length * (dayWidth),
+                          height: 70,
+                          child: days.isNotEmpty
+                              ? TimelineViewport(
+                                  // Pass calculated visible range directly as parameters
+                                  // instead of using a controller with ValueNotifiers
+                                  visibleStart: _visibleStart,
+                                  visibleEnd: _visibleEnd,
+                                  // Pass center index for highlighting
+                                  centerItemIndex: _centerItemIndex,
+                                  items: days,
+                                  itemWidth: dayWidth,
+                                  itemMargin: dayMargin,
+                                  itemBuilder: (context, index) {
+                                    return TimelineDayDate(
+                                      lang: lang,
+                                      colors: widget.colors,
+                                      nowIndex: nowIndex,
+                                      index: index,
+                                      centerItemIndex: _centerItemIndex,
+                                      days: days,
+                                      dayWidth: dayWidth,
+                                      dayMargin: dayMargin,
+                                      height: datesHeight,
+                                    );
+                                  },
+                                )
+                              : const SizedBox.shrink(), // Handle empty days
+                        ),
+                        // STAGES/ELEMENTS DYNAMIQUES - Use Expanded to take remaining space
+                        Expanded(
+                          child: SizedBox(
+                              child: stagesRows.isNotEmpty
+                                  ? TimelineRowsViewport(
+                                      // Pass calculated visible range directly as parameters
+                                      // This eliminates the need for a controller with ValueNotifiers
+                                      visibleStart: _visibleStart,
+                                      visibleEnd: _visibleEnd,
+                                      centerItemIndex: _centerItemIndex,
+                                      stagesRows: stagesRows,
+                                      rowHeight: rowHeight,
+                                      rowMargin: rowMargin,
+                                      dayWidth: dayWidth,
+                                      dayMargin: dayMargin,
+                                      totalDays: days.length,
+                                      colors: widget.colors,
+                                      isUniqueProject: isUniqueProject,
+                                      viewportWidth: _viewportWidth,
+                                      viewportHeight: _viewportHeight,
+                                      openEditStage: widget.openEditStage,
+                                      openEditElement: widget.openEditElement,
+                                    )
+                                  : const SizedBox.shrink()), // Handle empty stages
+                        ),
+                        // CHARGE DYNAMIQUE
+                        SizedBox(
+                          height: 70,
+                          child: days.isNotEmpty
+                              ? TimelineViewport(
+                                  visibleStart: _visibleStart,
+                                  visibleEnd: _visibleEnd,
+                                  centerItemIndex: _centerItemIndex,
+                                  items: days,
+                                  itemWidth: dayWidth,
+                                  itemMargin: dayMargin,
+                                  itemBuilder: (context, index) {
+                                    return TimelineBarItem(
+                                      colors: widget.colors,
+                                      index: index,
+                                      centerItemIndex: _centerItemIndex,
+                                      centerItemIndexNotifier: _centerItemIndexNotifier,
+                                      nowIndex: nowIndex,
+                                      day: days[index],
+                                      elements: widget.elements,
+                                      dayWidth: dayWidth,
+                                      dayMargin: dayMargin,
+                                      height: 70,
+                                      openDayDetail: widget.openDayDetail,
+                                    );
+                                  },
+                                )
+                              : const SizedBox.shrink(), // Handle empty days
+                        ),
+                      ],
                     ),
                   ),
                 ),
-              ],
-            );
-          },
-        ),
-      ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

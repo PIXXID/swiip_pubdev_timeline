@@ -123,8 +123,8 @@ class TimelineRowItem extends StatelessWidget {
                         children: [
                           // Affiche le badge seulement en multi-projet
                           if (!isUniqueProject)
-                            Expanded(
-                              flex: 0,
+                            Flexible(
+                              fit: FlexFit.loose,
                               child: Text(
                                 pname != null ? '$pname | ' : '',
                                 overflow: TextOverflow.ellipsis,
