@@ -1,3 +1,24 @@
+## 1.5.0 - 02/01/2025
+
+### New Features
+
+* **Independent Vertical and Horizontal Scrolling**: Added independent scroll management for better user experience across all platforms.
+  
+  **Changes**:
+  - Added dedicated `_controllerVertical` ScrollController for vertical scrolling through stage rows
+  - Implemented intelligent scroll event handling with `Listener` and `PointerScrollEvent`
+  - Added keyboard modifier support (Shift + mouse wheel) for horizontal scrolling on desktop
+  - Integrated `DeferredPointerHandler` for proper pointer event propagation between scroll areas
+  
+  **Benefits**:
+  - **Desktop**: Shift + mouse wheel for horizontal scroll, normal wheel for vertical scroll
+  - **Trackpad**: Native horizontal and vertical gestures work independently
+  - **Mobile**: Touch swipes work naturally in both directions without conflicts
+  - Improved user experience with intuitive scroll controls across all platforms
+  - No breaking changes - existing functionality preserved
+  
+  **Migration**: No code changes required. The scrolling behavior is now more intuitive and platform-aware.
+
 ## 1.4.0 - 30/12/2024
 
 ### Refactoring
