@@ -16,13 +16,13 @@ inclusion: always
 - `defer_pointer: ^0.0.2` - Pointer event handling
 - `font_awesome_flutter: ^10.7.0` - Icon library
 - `http: ^1.6.0` - HTTP requests
-- `flutter_dotenv: ^6.0.0` - Environment configuration
 - `web: ^1.1.1` - Web platform support
 
 ## Dev Dependencies
 
 - `flutter_test` - Testing framework
 - `flutter_lints: ^6.0.0` - Linting rules
+- `flutter_dotenv: ^6.0.0` - Environment configuration (example app only)
 
 ## Coding Standards
 
@@ -71,5 +71,8 @@ flutter run
 ## Assets
 
 Assets must be declared in `pubspec.yaml`:
-- `.env` file for environment variables
-- `timeline_config.json` for performance tuning
+- `timeline_config.json` - Runtime performance configuration (optional)
+
+Example app assets (in `example/pubspec.yaml`):
+- `.env` - Environment variables for local testing
+- `timelineResults.json` - Sample data for development

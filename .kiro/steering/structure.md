@@ -9,11 +9,14 @@ inclusion: always
 ```
 lib/
 ├── main.dart                    # Package entry point (exports timeline.dart)
-├── run.dart                     # Application runner
 └── src/
     ├── platform/                # Platform-specific code
     ├── timeline/                # Core timeline widgets
     └── tools/                   # Utility functions
+
+example/
+└── lib/
+    └── main.dart                # Example application (for local testing)
 ```
 
 ## Core Timeline Components

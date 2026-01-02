@@ -1,3 +1,10 @@
+## 1.5.1 - 02/01/2025
+
+### Fix
+
+* Move .env for Sample
+ 
+
 ## 1.5.0 - 02/01/2025
 
 ### New Features

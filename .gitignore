@@ -135,3 +135,9 @@ macos/
 windows/
 .metadata
 .env
+
+# Example app
+example/.env
+example/pubspec.lock
+example/.dart_tool/
+example/build/

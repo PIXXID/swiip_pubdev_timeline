@@ -1,0 +1,20 @@
+name: swiip_pubdev_timeline_example
+description: Example app for swiip_pubdev_timeline package
+publish_to: 'none'
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  swiip_pubdev_timeline:
+    path: ../
+  flutter_dotenv: ^6.0.0
+  http: ^1.6.0
+  intl: ^0.20.2
+
+flutter:
+  uses-material-design: true
+  assets:
+    - .env

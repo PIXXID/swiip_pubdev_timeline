@@ -1,6 +1,6 @@
 name: swiip_pubdev_timeline
 description: "This package provides a customizable timeline to display events or milestones in a linear or vertical layout"
-version: 1.5.0
+version: 1.5.1
 homepage: https://github.com/PIXXID/swiip_pubdev_timeline
 repository: https://github.com/PIXXID/swiip_pubdev_timeline
 
@@ -15,13 +15,13 @@ dependencies:
   defer_pointer: ^0.0.2
   font_awesome_flutter: ^10.7.0
   http: ^1.6.0
-  flutter_dotenv: ^6.0.0
   web: ^1.1.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  flutter_dotenv: ^6.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -30,7 +30,6 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - .env
     - timeline_config.json
 
   # To add assets to your package, add an assets section, like this:
