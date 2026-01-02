@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:http/http.dart' as http;
-import 'package:swiip_pubdev_timeline/main.dart';
+import 'package:swiip_pubdev_timeline/swiip_pubdev_timeline.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 /// Example application demonstrating the usage of the Timeline widget.

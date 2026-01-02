@@ -8,7 +8,7 @@ inclusion: always
 
 ```
 lib/
-├── main.dart                    # Package entry point (exports timeline.dart)
+├── swiip_pubdev_timeline.dart   # Package entry point (exports timeline.dart)
 └── src/
     ├── platform/                # Platform-specific code
     ├── timeline/                # Core timeline widgets
