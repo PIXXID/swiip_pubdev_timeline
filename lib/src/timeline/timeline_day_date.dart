@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 class TimelineDayDate extends StatefulWidget {
   final String lang;
   final Map<String, Color> colors;
+  final int nowIndex;
   final int index;
   final int centerItemIndex;
   final List days;
@@ -15,6 +16,7 @@ class TimelineDayDate extends StatefulWidget {
       {super.key,
       required this.lang,
       required this.colors,
+      required this.nowIndex,
       required this.index,
       required this.centerItemIndex,
       required this.days,
@@ -36,6 +38,16 @@ class _TimelineDayDate extends State<TimelineDayDate> with SingleTickerProviderS
     final DateTime date = day['date'];
     final int idxCenter = widget.centerItemIndex - widget.index;
 
+    // Couleur par défaut
+    Color color = colors['secondaryText'];
+    if (widget.index == widget.nowIndex) {
+      // Aujourd'hui
+      color = colors['primary'];
+    } else if (idxCenter == 0) {
+      // Centre de l'écran
+      color = colors['primaryText'];
+    }
+
     return Align(
         alignment: Alignment.bottomCenter,
         child: GestureDetector(
@@ -51,7 +63,7 @@ class _TimelineDayDate extends State<TimelineDayDate> with SingleTickerProviderS
                       child: Text(
                         DateFormat.E(widget.lang).format(date).toUpperCase().substring(0, 1),
                         style: TextStyle(
-                            color: (idxCenter == 0) ? colors['primaryText'] : colors['secondaryText'],
+                            color: color,
                             fontSize: (idxCenter == 0) ? 14 : 12,
                             fontWeight: (idxCenter == 0) ? FontWeight.w800 : FontWeight.w200),
                         overflow: TextOverflow.clip,
@@ -61,7 +73,7 @@ class _TimelineDayDate extends State<TimelineDayDate> with SingleTickerProviderS
                       child: Text(
                         DateFormat.Md(widget.lang).format(date),
                         style: TextStyle(
-                            color: (idxCenter == 0) ? colors['primaryText'] : colors['secondaryText'],
+                            color: color,
                             fontSize: 12,
                             fontWeight: (idxCenter == 0) ? FontWeight.w800 : FontWeight.w200),
                         overflow: TextOverflow.clip,

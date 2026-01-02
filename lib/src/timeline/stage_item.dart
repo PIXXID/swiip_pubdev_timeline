@@ -115,35 +115,40 @@ class StageItem extends StatelessWidget {
                 Align(
                   alignment: Alignment.topLeft,
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 8.0, left: 8.0),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min, // Ajuste la largeur à son contenu
-                      children: [
-                        // Affiche le badge seulement en multi-projet
-                        if (!isUniqueProject)
-                          Flexible(
+                    padding: const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
+                    child: SizedBox(
+                      width: itemSize - 16,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // Affiche le badge seulement en multi-projet
+                          if (!isUniqueProject)
+                            Expanded(
+                              flex: 0,
                               child: Text(
-                            pname != null ? '$pname | ' : '',
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: completeColor,
-                              fontWeight: fontWeight,
-                              fontSize: fontSize - 2,
+                                pname != null ? '$pname | ' : '',
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  color: completeColor,
+                                  fontWeight: fontWeight,
+                                  fontSize: fontSize - 2,
+                                ),
+                              ),
                             ),
-                          )),
-                        // Nom du stage
-                        Flexible(
-                          child: Text(
-                            label,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: colors['primaryText'],
-                              fontWeight: fontWeight,
-                              fontSize: fontSize - 2,
+                          // Nom du stage
+                          Expanded(
+                            child: Text(
+                              label,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: colors['primaryText'],
+                                fontWeight: fontWeight,
+                                fontSize: fontSize - 2,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),

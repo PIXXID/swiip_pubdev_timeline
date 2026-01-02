@@ -7,10 +7,6 @@ import 'models/visible_range.dart';
 /// This widget is optimized for performance by:
 /// - Using StatelessWidget instead of StatefulWidget
 /// - Using ValueListenableBuilder for selective rebuilds
-/// - Wrapping content in RepaintBoundary to isolate repaints
-/// - Using const constructors where possible
-/// - Extracting calculation methods to reduce build complexity
-/// - Using AnimatedBuilder with Transform for efficient animations
 class OptimizedTimelineItem extends StatefulWidget {
   final Map<String, Color> colors;
   final int index;
@@ -44,157 +40,40 @@ class OptimizedTimelineItem extends StatefulWidget {
 }
 
 class _OptimizedTimelineItemState extends State<OptimizedTimelineItem> with SingleTickerProviderStateMixin {
-  late AnimationController _progressAnimationController;
-  late Animation<double> _progressAnimation;
-  double _targetHeight = 0.0;
-  bool _isVisible = false;
-  bool _isInViewport = true;
+  bool _isInCenter = false;
 
   @override
   void initState() {
     super.initState();
-    _progressAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 400),
-      vsync: this,
-    );
-
-    // Initialize animation with current height
-    final initialHeight = _calculateCompletedHeight();
-    _targetHeight = initialHeight;
-    _progressAnimation = Tween<double>(begin: initialHeight, end: initialHeight).animate(
-      CurvedAnimation(
-        parent: _progressAnimationController,
-        curve: Curves.easeInOut,
-      ),
-    );
 
     // Listen to centerItemIndex changes to control animation
     widget.centerItemIndexNotifier.addListener(_onCenterIndexChanged);
 
-    // Listen to visibleRange changes to control animation based on viewport
-    widget.visibleRangeNotifier?.addListener(_onVisibleRangeChanged);
-
-    _onCenterIndexChanged(); // Initialize visibility
-    _onVisibleRangeChanged(); // Initialize viewport visibility
+    _onCenterIndexChanged();
   }
 
   @override
   void dispose() {
     widget.centerItemIndexNotifier.removeListener(_onCenterIndexChanged);
-    widget.visibleRangeNotifier?.removeListener(_onVisibleRangeChanged);
-    _progressAnimationController.dispose();
     super.dispose();
   }
 
   void _onCenterIndexChanged() {
     final centerIndex = widget.centerItemIndexNotifier.value;
-    final dayTextColor = _calculateDayTextColor(centerIndex);
-    final newIsVisible = dayTextColor != Colors.transparent;
-
-    if (newIsVisible != _isVisible) {
-      setState(() {
-        _isVisible = newIsVisible;
-      });
-    }
-  }
-
-  void _onVisibleRangeChanged() {
-    if (widget.visibleRangeNotifier == null) {
-      _isInViewport = true;
-      return;
-    }
-
-    final visibleRange = widget.visibleRangeNotifier!.value;
-    final newIsInViewport = visibleRange.contains(widget.index);
-
-    if (newIsInViewport != _isInViewport) {
-      setState(() {
-        _isInViewport = newIsInViewport;
-      });
-
-      // Stop animation if widget is outside viewport
-      if (!_isInViewport && _progressAnimationController.isAnimating) {
-        _progressAnimationController.stop();
-      }
-    }
-  }
-
-  @override
-  void didUpdateWidget(OptimizedTimelineItem oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    // Update animation if day data changed
-    if (oldWidget.day != widget.day) {
-      // Schedule animation update after the current frame
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
-          _updateProgressAnimation();
-        }
-      });
-    }
-  }
-
-  void _updateProgressAnimation() {
-    // Don't animate if widget is outside viewport
-    if (!_isInViewport) {
-      return;
-    }
-
-    final heightCompeff = _calculateCompletedHeight();
-
-    if (_targetHeight != heightCompeff) {
-      _progressAnimation = Tween<double>(
-        begin: _progressAnimation.value,
-        end: heightCompeff,
-      ).animate(
-        CurvedAnimation(
-          parent: _progressAnimationController,
-          curve: Curves.easeInOut,
-        ),
-      );
-
-      _targetHeight = heightCompeff;
-      _progressAnimationController.forward(from: 0.0);
-    }
-  }
-
-  double _calculateCompletedHeight() {
-    final heightLmax = widget.height;
-    double heightCompeff = 0;
-
-    if (widget.day['compeff'] > 0) {
-      heightCompeff = (heightLmax * widget.day['compeff']) / ((widget.day['lmax'] > 0) ? widget.day['lmax'] : 1);
-      if (heightCompeff >= heightLmax) {
-        heightCompeff = heightLmax;
-      }
-    }
-
-    return heightCompeff;
-  }
-
-  /// Calculates the day text color based on distance from center.
-  Color _calculateDayTextColor(int centerIndex) {
     final idxCenter = centerIndex - widget.index;
-
-    if (idxCenter == 0) {
-      return widget.colors['primaryText'] ?? Colors.white;
-    } else if ((idxCenter >= 1 && idxCenter < 4) || (idxCenter <= -1 && idxCenter > -4)) {
-      return widget.colors['secondaryText'] ?? Colors.grey;
-    } else if ((idxCenter >= 4 && idxCenter < 6) || (idxCenter <= -4 && idxCenter > -6)) {
-      return widget.colors['accent1'] ?? Colors.blue;
-    } else {
-      return Colors.transparent;
-    }
+    _isInCenter = (idxCenter == 0) ? true : false;
   }
 
   /// Builds the day content with bars and indicators.
-  Widget _buildDayContent(Color dayTextColor) {
+  @override
+  Widget build(BuildContext context) {
     final DateTime date = widget.day['date'];
     Color busyColor = widget.colors['secondaryText'] ?? Colors.grey;
-    Color completeColor = widget.colors['secondaryText'] ?? Colors.white;
+    Color completeColor = widget.colors['primaryText'] ?? Colors.white;
+    double alphaColor = (_isInCenter) ? 1 : 0.4;
 
     // Hauteur MAX
-    final double heightLmax = widget.height;
+    final double heightLmax = widget.height - 5;
 
     // On calcule la hauteur de chaque barre
     double heightCapeff = 0, heightBuseff = 0, heightCompeff = 0;
@@ -212,19 +91,16 @@ class _OptimizedTimelineItemState extends State<OptimizedTimelineItem> with Sing
         heightCompeff = heightLmax;
         dayIsCompleted = true;
       }
-      // Met à jour la couleur si progression
-      completeColor = widget.colors['primary'] ?? Colors.white;
     }
-
     // Réduit la hauteur en cas de dépassement excessif
-    if (heightBuseff > heightCapeff) {
-      heightBuseff = heightCapeff - 2;
+    if (heightBuseff >= heightLmax) {
+      heightBuseff = heightLmax;
     }
 
     // Border radius
     const BorderRadius borderRadius = BorderRadius.only(
-      topLeft: Radius.circular(4),
-      topRight: Radius.circular(4),
+      topLeft: Radius.circular(5),
+      topRight: Radius.circular(5),
     );
 
     // Indicateurs de capacité et charges
@@ -261,164 +137,88 @@ class _OptimizedTimelineItemState extends State<OptimizedTimelineItem> with Sing
             dayIndicators,
           );
         },
-        child: SizedBox(
-          width: widget.dayWidth - widget.dayMargin,
+        child: Container(
+          width: widget.dayWidth / 2,
           height: widget.height,
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.red.withValues(alpha: 0.10),
-            ),
-            child: Column(
-              children: <Widget>[
-                // Barre avec données
-                Expanded(
-                  child: SizedBox(
-                    height: heightLmax,
-                    child: Stack(
-                      children: [
-                        // Barre de capacité
-                        Positioned(
-                          bottom: 0,
-                          left: 0,
-                          right: 0,
-                          child: Container(
-                            margin: EdgeInsets.only(
-                              left: widget.dayMargin / 2,
-                              right: widget.dayMargin / 2,
-                              bottom: widget.dayMargin / 3,
-                            ),
-                            width: widget.dayWidth - widget.dayMargin - 15,
-                            height: (heightCapeff > 0) ? heightCapeff - 2 : heightLmax,
-                            decoration: BoxDecoration(
-                              border: Border(
-                                top: BorderSide(
-                                  color: (widget.index == widget.centerItemIndexNotifier.value)
-                                      ? widget.colors['secondaryText'] ?? Colors.grey
-                                      : const Color(0x00000000),
-                                  width: 1,
+          decoration: BoxDecoration(
+            color: widget.colors['primaryBackground']!.withValues(alpha: 0.85),
+          ),
+          margin: const EdgeInsets.only(top: 5.0),
+          child: Column(
+            children: <Widget>[
+              Expanded(
+                child: Stack(
+                  children: [
+                    // 1 - Barre de capacité + Icon jour non travaillé
+                    Center(
+                      child:
+                          // Icon soleil si aucune capacité
+                          (heightCapeff == 0 && heightBuseff == 0 && heightCompeff == 0)
+                              ? Icon(
+                                  Icons.block,
+                                  color: busyColor.withValues(alpha: alphaColor),
+                                  size: 14,
+                                )
+                              : null,
+                    ),
+                    // Barre de travail affecté (busy)
+                    Positioned(
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: Container(
+                        height: (heightBuseff > 0) ? heightBuseff : 0,
+                        decoration: BoxDecoration(
+                          borderRadius: borderRadius,
+                          color: busyColor.withValues(alpha: alphaColor),
+                        ),
+                      ),
+                    ),
+                    // Barre de travail terminé - Using AnimatedBuilder with Transform
+                    Positioned(
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: Container(
+                        width: widget.dayWidth / 2,
+                        height: heightCompeff,
+                        decoration: BoxDecoration(
+                          borderRadius: borderRadius,
+                          color: completeColor.withValues(alpha: 0.7),
+                        ),
+                        child: (dayIsCompleted && heightCompeff > 0)
+                            ? Center(
+                                child: Icon(
+                                  Icons.check,
+                                  color: widget.colors['primaryText'],
+                                  size: 16,
                                 ),
-                              ),
-                            ),
-                            child: Center(
-                              child:
-                                  // Icon soleil si aucune capacité
-                                  (heightCapeff == 0 && heightBuseff == 0 && heightCompeff == 0)
-                                      ? Icon(
-                                          Icons.stop_circle,
-                                          color: widget.colors['secondaryBackground'],
-                                          size: 14,
-                                        )
-                                      : null,
-                            ),
-                          ),
-                        ),
-                        // Barre de travail affecté (busy)
-                        Positioned(
-                          bottom: 0,
-                          left: 0,
-                          right: 0,
-                          child: Container(
-                            margin: EdgeInsets.only(
-                              left: widget.dayMargin / 2,
-                              right: widget.dayMargin / 2,
-                              bottom: widget.dayMargin / 3,
-                            ),
-                            width: widget.dayWidth - widget.dayMargin - 16,
-                            // On affiche 1 pixel pour marquer une journée travaillée
-                            height: (heightBuseff <= 0) ? 0.5 : heightBuseff,
-                            decoration: BoxDecoration(
-                              borderRadius: borderRadius,
-                              color: busyColor,
-                            ),
-                          ),
-                        ),
-                        // Barre de travail terminé - Using AnimatedBuilder with Transform
-                        Positioned(
-                          bottom: 0,
-                          left: 0,
-                          right: 0,
-                          child: RepaintBoundary(
-                            child: AnimatedBuilder(
-                              animation: _progressAnimation,
-                              builder: (context, child) {
-                                final animatedHeight = _isVisible ? _progressAnimation.value : 0.0;
-
-                                return Transform.translate(
-                                  offset: Offset(0, heightLmax - animatedHeight),
-                                  child: Container(
-                                    margin: EdgeInsets.only(
-                                      left: widget.dayMargin / 2,
-                                      right: widget.dayMargin / 2,
-                                      bottom: widget.dayMargin / 3,
-                                    ),
-                                    width: widget.dayWidth - widget.dayMargin - 16,
-                                    height: animatedHeight,
-                                    decoration: BoxDecoration(
-                                      borderRadius: borderRadius,
-                                      color: completeColor,
-                                    ),
-                                    child: (dayIsCompleted && animatedHeight > 0)
-                                        ? Center(
-                                            child: Icon(
-                                              Icons.check,
-                                              color: widget.colors['info'],
-                                              size: 16,
-                                            ),
-                                          )
-                                        : null,
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        ),
-                      ],
+                              )
+                            : null,
+                      ),
                     ),
-                  ),
+                    // ALERTES
+                    if (widget.day['alertLevel'] != 0)
+                      Positioned(
+                        top: 20,
+                        child: SizedBox(
+                          width: widget.dayWidth / 2,
+                          height: heightLmax,
+                          child: Icon(
+                            Icons.circle,
+                            color: widget.day['alertLevel'] == 1
+                                ? widget.colors['warning']
+                                : (widget.day['alertLevel'] == 2 ? widget.colors['error'] : Colors.transparent),
+                            size: 15,
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
-                // Alertes
-                if (widget.index == widget.nowIndex)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 3, bottom: 5),
-                    child: Icon(
-                      Icons.circle_outlined,
-                      size: 12,
-                      color: widget.colors['primaryText'],
-                    ),
-                  )
-                else if (widget.day['alertLevel'] != 0)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 3, bottom: 5),
-                    child: Icon(
-                      Icons.circle_rounded,
-                      size: 12,
-                      color: widget.day['alertLevel'] == 1
-                          ? widget.colors['warning']
-                          : (widget.day['alertLevel'] == 2 ? widget.colors['error'] : Colors.transparent),
-                    ),
-                  )
-                else
-                  const SizedBox(height: 18),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return RepaintBoundary(
-      child: ValueListenableBuilder<int>(
-        valueListenable: widget.centerItemIndexNotifier,
-        builder: (context, centerIndex, child) {
-          // Calculate the day text color based on distance from center
-          final dayTextColor = _calculateDayTextColor(centerIndex);
-
-          // Build the day content with the calculated color
-          return _buildDayContent(dayTextColor);
-        },
       ),
     );
   }
