@@ -623,41 +623,41 @@ class _Timeline extends State<Timeline> {
               ),
             ),
             // CONTENEUR UNIQUE AVEC SCROLL HORIZONTAL
-            DeferredPointerHandler(
-              child: Listener(
-                onPointerSignal: (event) {
-                  if (event is PointerScrollEvent) {
-                    final delta = event.scrollDelta;
+            Listener(
+              onPointerSignal: (event) {
+                if (event is PointerScrollEvent) {
+                  final delta = event.scrollDelta;
 
-                    // Si Shift est pressé, scroll horizontal
-                    if (HardwareKeyboard.instance.isShiftPressed) {
-                      if (_controllerHorizontal.hasClients) {
-                        final newOffset =
-                            _controllerHorizontal.position.pixels + delta.dy;
-                        _controllerHorizontal.jumpTo(
-                          newOffset.clamp(
-                            0.0,
-                            _controllerHorizontal.position.maxScrollExtent,
-                          ),
-                        );
-                      }
+                  // Si Shift est pressé, scroll horizontal
+                  if (HardwareKeyboard.instance.isShiftPressed) {
+                    if (_controllerHorizontal.hasClients) {
+                      final newOffset =
+                          _controllerHorizontal.position.pixels + delta.dy;
+                      _controllerHorizontal.jumpTo(
+                        newOffset.clamp(
+                          0.0,
+                          _controllerHorizontal.position.maxScrollExtent,
+                        ),
+                      );
                     }
-                    // Si scroll horizontal natif (trackpad)
-                    else if (delta.dx != 0) {
-                      if (_controllerHorizontal.hasClients) {
-                        final newOffset =
-                            _controllerHorizontal.position.pixels + delta.dx;
-                        _controllerHorizontal.jumpTo(
-                          newOffset.clamp(
-                            0.0,
-                            _controllerHorizontal.position.maxScrollExtent,
-                          ),
-                        );
-                      }
-                    }
-                    // Sinon, laisser le scroll vertical naturel
                   }
-                },
+                  // Si scroll horizontal natif (trackpad)
+                  else if (delta.dx != 0) {
+                    if (_controllerHorizontal.hasClients) {
+                      final newOffset =
+                          _controllerHorizontal.position.pixels + delta.dx;
+                      _controllerHorizontal.jumpTo(
+                        newOffset.clamp(
+                          0.0,
+                          _controllerHorizontal.position.maxScrollExtent,
+                        ),
+                      );
+                    }
+                  }
+                  // Sinon, laisser le scroll vertical naturel
+                }
+              },
+              child: DeferredPointerHandler(
                 child: SizedBox(
                   width: _viewportWidth,
                   child: SingleChildScrollView(
