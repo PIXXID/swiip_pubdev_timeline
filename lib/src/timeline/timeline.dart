@@ -146,17 +146,20 @@ class Timeline extends StatefulWidget {
   /// - List of stage IDs
   /// - List of elements for that day
   /// - Additional metadata
-  final Function(String, double?, List<String>?, List<dynamic>?, dynamic)? openDayDetail;
+  final Function(String, double?, List<String>?, List<dynamic>?, dynamic)?
+      openDayDetail;
 
   /// Callback invoked when a stage is edited.
   ///
   /// Receives stage details as parameters for editing operations.
-  final Function(String?, String?, String?, String?, String?, double?, String?)? openEditStage;
+  final Function(String?, String?, String?, String?, String?, double?, String?)?
+      openEditStage;
 
   /// Callback invoked when an element is edited.
   ///
   /// Receives element details as parameters for editing operations.
-  final Function(String?, String?, String?, String?, String?, double?, String?)? openEditElement;
+  final Function(String?, String?, String?, String?, String?, double?, String?)?
+      openEditElement;
 
   /// Callback invoked when the center date changes during scrolling.
   ///
@@ -345,7 +348,10 @@ class _Timeline extends State<Timeline> {
         startDate: startDate,
         endDate: endDate,
         elements: widget.elements ?? [],
-        elementsDone: (widget.elementsDone == null || widget.elementsDone.isEmpty) ? List.empty() : widget.elementsDone,
+        elementsDone:
+            (widget.elementsDone == null || widget.elementsDone.isEmpty)
+                ? List.empty()
+                : widget.elementsDone,
         capacities: widget.capacities ?? [],
         stages: widget.stages ?? [],
         maxCapacity: widget.infos['lmax'] ?? 0,
@@ -377,7 +383,8 @@ class _Timeline extends State<Timeline> {
 
     // Calcule l'index de la date positionnée par défaut
     if (widget.defaultDate != null) {
-      defaultDateIndex = DateTime.parse(widget.defaultDate!).difference(startDate).inDays + 1;
+      defaultDateIndex =
+          DateTime.parse(widget.defaultDate!).difference(startDate).inDays + 1;
     }
 
     // Horizontal scroll listener for calculating scroll state and triggering updates
@@ -423,12 +430,16 @@ class _Timeline extends State<Timeline> {
         // This determines which items should be rendered by the lazy viewports
         final visibleDays = (_viewportWidth / (dayWidth - dayMargin)).ceil();
         final buffer = _config.bufferDays;
-        final newVisibleStart = (newCenterIndex - (visibleDays ~/ 2) - buffer).clamp(0, days.length);
-        final newVisibleEnd = (newCenterIndex + (visibleDays ~/ 2) + buffer).clamp(0, days.length);
+        final newVisibleStart = (newCenterIndex - (visibleDays ~/ 2) - buffer)
+            .clamp(0, days.length);
+        final newVisibleEnd = (newCenterIndex + (visibleDays ~/ 2) + buffer)
+            .clamp(0, days.length);
 
         // 3. Update state only when values change (check before setState)
         // This optimization prevents unnecessary rebuilds when scrolling within the same range
-        if (newCenterIndex != _centerItemIndex || newVisibleStart != _visibleStart || newVisibleEnd != _visibleEnd) {
+        if (newCenterIndex != _centerItemIndex ||
+            newVisibleStart != _visibleStart ||
+            newVisibleEnd != _visibleEnd) {
           setState(() {
             _centerItemIndex = newCenterIndex;
             _visibleStart = newVisibleStart;
@@ -478,7 +489,8 @@ class _Timeline extends State<Timeline> {
         _performanceMonitor.logMetrics();
 
         // On scroll sur la date du jour par défaut
-        scrollTo(widget.defaultDate != null ? defaultDateIndex : nowIndex, animated: true);
+        scrollTo(widget.defaultDate != null ? defaultDateIndex : nowIndex,
+            animated: true);
       });
     });
   } // End of _initializeTimeline()
@@ -502,7 +514,8 @@ class _Timeline extends State<Timeline> {
     }
 
     // Clamp the index to valid range
-    final safeIndex = TimelineErrorHandler.clampIndex(dateIndex, 0, days.length - 1);
+    final safeIndex =
+        TimelineErrorHandler.clampIndex(dateIndex, 0, days.length - 1);
 
     if (safeIndex >= 0) {
       // Calculate the scroll offset to center the specified date
@@ -578,7 +591,9 @@ class _Timeline extends State<Timeline> {
     return Scaffold(
       backgroundColor: widget.colors['primaryBackground'],
       // If not initialized yet, show empty body (overlay will show loading indicator)
-      body: !_isInitialized ? LoadingOverlay() : _buildTimelineContent(context, lang),
+      body: !_isInitialized
+          ? LoadingOverlay()
+          : _buildTimelineContent(context, lang),
     );
   }
 
@@ -617,7 +632,8 @@ class _Timeline extends State<Timeline> {
                     // Si Shift est pressé, scroll horizontal
                     if (HardwareKeyboard.instance.isShiftPressed) {
                       if (_controllerHorizontal.hasClients) {
-                        final newOffset = _controllerHorizontal.position.pixels + delta.dy;
+                        final newOffset =
+                            _controllerHorizontal.position.pixels + delta.dy;
                         _controllerHorizontal.jumpTo(
                           newOffset.clamp(
                             0.0,
@@ -629,7 +645,8 @@ class _Timeline extends State<Timeline> {
                     // Si scroll horizontal natif (trackpad)
                     else if (delta.dx != 0) {
                       if (_controllerHorizontal.hasClients) {
-                        final newOffset = _controllerHorizontal.position.pixels + delta.dx;
+                        final newOffset =
+                            _controllerHorizontal.position.pixels + delta.dx;
                         _controllerHorizontal.jumpTo(
                           newOffset.clamp(
                             0.0,
@@ -679,9 +696,11 @@ class _Timeline extends State<Timeline> {
                                           viewportWidth: _viewportWidth,
                                           viewportHeight: _viewportHeight,
                                           openEditStage: widget.openEditStage,
-                                          openEditElement: widget.openEditElement,
+                                          openEditElement:
+                                              widget.openEditElement,
                                         )
-                                      : const SizedBox.shrink()), // Handle empty stages
+                                      : const SizedBox
+                                          .shrink()), // Handle empty stages
                             ),
                           ),
                           // DATES - Positioned at the top
@@ -718,7 +737,8 @@ class _Timeline extends State<Timeline> {
                                         );
                                       },
                                     )
-                                  : const SizedBox.shrink(), // Handle empty days
+                                  : const SizedBox
+                                      .shrink(), // Handle empty days
                             ),
                           ),
                           // CHARGE DYNAMIQUE - Positioned at the bottom
@@ -742,7 +762,8 @@ class _Timeline extends State<Timeline> {
                                           colors: widget.colors,
                                           index: index,
                                           centerItemIndex: _centerItemIndex,
-                                          centerItemIndexNotifier: _centerItemIndexNotifier,
+                                          centerItemIndexNotifier:
+                                              _centerItemIndexNotifier,
                                           nowIndex: nowIndex,
                                           day: days[index],
                                           elements: widget.elements,
@@ -753,7 +774,8 @@ class _Timeline extends State<Timeline> {
                                         );
                                       },
                                     )
-                                  : const SizedBox.shrink(), // Handle empty days
+                                  : const SizedBox
+                                      .shrink(), // Handle empty days
                             ),
                           ),
                         ],

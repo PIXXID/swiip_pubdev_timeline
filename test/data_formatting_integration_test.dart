@@ -242,9 +242,11 @@ void main() {
       // Assert - Verify aggregation on Jan 5 (index 4)
       final jan5 = days[4];
       expect(jan5['activityTotal'], equals(3));
-      expect(jan5['activityCompleted'], equals(1)); // Only 'status' counts as completed
+      expect(jan5['activityCompleted'],
+          equals(1)); // Only 'status' counts as completed
       expect(jan5['delivrableTotal'], equals(2));
-      expect(jan5['delivrableCompleted'], equals(0)); // 'finished' doesn't count for delivrable completion
+      expect(jan5['delivrableCompleted'],
+          equals(0)); // 'finished' doesn't count for delivrable completion
       expect(jan5['taskTotal'], equals(1));
       expect(jan5['taskCompleted'], equals(0));
 
@@ -253,7 +255,8 @@ void main() {
       // 'pending' and 'inprogress' count as elementPending
       // 'status' doesn't count in either category
       expect(jan5['elementCompleted'], equals(2)); // validated + finished
-      expect(jan5['elementPending'], equals(3)); // pending + inprogress + pending (from 3 elements)
+      expect(jan5['elementPending'],
+          equals(3)); // pending + inprogress + pending (from 3 elements)
 
       // Verify all unique pre_ids are tracked
       expect(jan5['preIds'].length, equals(6));
@@ -357,7 +360,8 @@ void main() {
       expect(days[9]['buseff'], equals(55.0));
     });
 
-    test('should organize overlapping and non-overlapping stages correctly', () {
+    test('should organize overlapping and non-overlapping stages correctly',
+        () {
       // Arrange - Mix of overlapping and non-overlapping stages
       final startDate = DateTime(2024, 1, 1);
       final endDate = DateTime(2024, 1, 31);
@@ -440,7 +444,8 @@ void main() {
       for (final stage in allStages) {
         expect(stage['startDateIndex'], isA<int>());
         expect(stage['endDateIndex'], isA<int>());
-        expect(stage['startDateIndex'], lessThanOrEqualTo(stage['endDateIndex']));
+        expect(
+            stage['startDateIndex'], lessThanOrEqualTo(stage['endDateIndex']));
       }
     });
 
@@ -503,8 +508,10 @@ void main() {
 
       // Assert - Elements should have indices too
       final allItems = rows.expand((row) => row).toList();
-      final elementsInRows =
-          allItems.where((item) => item['type'] == 'activity' || item['type'] == 'delivrable').toList();
+      final elementsInRows = allItems
+          .where((item) =>
+              item['type'] == 'activity' || item['type'] == 'delivrable')
+          .toList();
 
       for (final element in elementsInRows) {
         expect(element.containsKey('startDateIndex'), isTrue);
@@ -710,11 +717,14 @@ void main() {
       // This is expected behavior - stages must have both start and end within or at timeline boundaries
 
       // Assert - Verify clamped indices for partial stages
-      final partialBefore = allStages.firstWhere((s) => s['id'] == 'stage_partial_before');
-      expect(partialBefore['startDateIndex'], equals(0)); // Clamped to timeline start
+      final partialBefore =
+          allStages.firstWhere((s) => s['id'] == 'stage_partial_before');
+      expect(partialBefore['startDateIndex'],
+          equals(0)); // Clamped to timeline start
 
       final within = allStages.firstWhere((s) => s['id'] == 'stage_within');
-      expect(within['startDateIndex'], equals(2)); // Jan 12 is index 2 (from Jan 10)
+      expect(within['startDateIndex'],
+          equals(2)); // Jan 12 is index 2 (from Jan 10)
       expect(within['endDateIndex'], equals(8)); // Jan 18 is index 8
     });
   });

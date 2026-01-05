@@ -38,10 +38,12 @@ class TimelineRowsViewport extends StatefulWidget {
   final bool isUniqueProject;
 
   /// Callback for editing a stage.
-  final Function(String?, String?, String?, String?, String?, double?, String?)? openEditStage;
+  final Function(String?, String?, String?, String?, String?, double?, String?)?
+      openEditStage;
 
   /// Callback for editing an element.
-  final Function(String?, String?, String?, String?, String?, double?, String?)? openEditElement;
+  final Function(String?, String?, String?, String?, String?, double?, String?)?
+      openEditElement;
 
   /// Height of the viewport container.
   final double viewportHeight;
@@ -99,8 +101,10 @@ class _TimelineRowsViewportState extends State<TimelineRowsViewport> {
     super.didUpdateWidget(oldWidget);
 
     // Update ValueNotifiers when widget parameters change
-    if (oldWidget.visibleStart != widget.visibleStart || oldWidget.visibleEnd != widget.visibleEnd) {
-      _visibleRangeNotifier.value = VisibleRange(widget.visibleStart, widget.visibleEnd);
+    if (oldWidget.visibleStart != widget.visibleStart ||
+        oldWidget.visibleEnd != widget.visibleEnd) {
+      _visibleRangeNotifier.value =
+          VisibleRange(widget.visibleStart, widget.visibleEnd);
     }
 
     // Update center item index notifier when it changes
@@ -119,7 +123,8 @@ class _TimelineRowsViewportState extends State<TimelineRowsViewport> {
   @override
   Widget build(BuildContext context) {
     // Calculate total height for proper layout
-    final totalHeight = widget.stagesRows.length * (widget.rowHeight + (widget.rowMargin * 2));
+    final totalHeight =
+        widget.stagesRows.length * (widget.rowHeight + (widget.rowMargin * 2));
 
     // Calculate the actual width based on timeline dimensions
     final totalWidth = widget.totalDays * widget.dayWidth;

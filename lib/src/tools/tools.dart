@@ -39,7 +39,8 @@ List getStageByDay(List days, List stages) {
     for (var day in days) {
       // Pour chaque jour, on récupère le stage correspondant du premier niveau
       int stageDate = stages[0].indexWhere((s) {
-        return (s['startDateIndex'].toInt() <= index && s['endDateIndex'].toInt() >= index);
+        return (s['startDateIndex'].toInt() <= index &&
+            s['endDateIndex'].toInt() >= index);
       });
       if (stageDate != -1) {
         day['currentStage'] = stages[0][stageDate];
@@ -140,5 +141,7 @@ int getLowerTimelineRowIndexOptimized(List stagesRows, int centerItemIndex) {
 
   // Si aucun match exact, retourner le stage le plus proche
   // Si aucun stage trouvé du tout, retourner la dernière ligne
-  return nearestRowIndex != -1 ? nearestRowIndex : (rowCount > 0 ? rowCount - 1 : -1);
+  return nearestRowIndex != -1
+      ? nearestRowIndex
+      : (rowCount > 0 ? rowCount - 1 : -1);
 }

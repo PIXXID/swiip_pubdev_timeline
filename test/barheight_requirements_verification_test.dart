@@ -16,7 +16,8 @@ void main() {
         expect(config.barHeight, equals(70.0));
       });
 
-      test('1.3 - barHeight is accessible via TimelineConfiguration instance', () {
+      test('1.3 - barHeight is accessible via TimelineConfiguration instance',
+          () {
         const config = TimelineConfiguration(barHeight: 100.0);
         expect(config.barHeight, equals(100.0));
       });
@@ -53,12 +54,14 @@ void main() {
       test('2.4 - Invalid type uses default and logs warning', () {
         final result = ConfigurationValidator.validate({'barHeight': 'tall'});
         expect(result.validatedConfig['barHeight'], equals(70.0));
-        expect(result.warnings.any((w) => w.parameterName == 'barHeight'), isTrue);
+        expect(
+            result.warnings.any((w) => w.parameterName == 'barHeight'), isTrue);
       });
 
       test('2.5 - Validation errors include barHeight in message', () {
         final result = ConfigurationValidator.validate({'barHeight': 200.0});
-        expect(result.errors.any((e) => e.parameterName == 'barHeight'), isTrue);
+        expect(
+            result.errors.any((e) => e.parameterName == 'barHeight'), isTrue);
       });
     });
 

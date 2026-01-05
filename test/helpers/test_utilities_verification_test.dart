@@ -63,19 +63,27 @@ void main() {
       expect(() => TestHelpers.expectIndexInBounds(5, 0, 10), returnsNormally);
       expect(() => TestHelpers.expectIndexInBounds(0, 0, 10), returnsNormally);
       expect(() => TestHelpers.expectIndexInBounds(10, 0, 10), returnsNormally);
-      expect(() => TestHelpers.expectIndexInBounds(-1, 0, 10), throwsA(isA<TestFailure>()));
-      expect(() => TestHelpers.expectIndexInBounds(11, 0, 10), throwsA(isA<TestFailure>()));
+      expect(() => TestHelpers.expectIndexInBounds(-1, 0, 10),
+          throwsA(isA<TestFailure>()));
+      expect(() => TestHelpers.expectIndexInBounds(11, 0, 10),
+          throwsA(isA<TestFailure>()));
     });
 
     test('expectValidConfiguration validates config structure', () {
-      expect(() => TestHelpers.expectValidConfiguration(TestFixtures.defaultConfig), returnsNormally);
-      expect(() => TestHelpers.expectValidConfiguration({}), throwsA(isA<TestFailure>()));
+      expect(
+          () =>
+              TestHelpers.expectValidConfiguration(TestFixtures.defaultConfig),
+          returnsNormally);
+      expect(() => TestHelpers.expectValidConfiguration({}),
+          throwsA(isA<TestFailure>()));
     });
 
     test('expectInRange validates numeric ranges', () {
       expect(() => TestHelpers.expectInRange(5, 0, 10), returnsNormally);
-      expect(() => TestHelpers.expectInRange(-1, 0, 10), throwsA(isA<TestFailure>()));
-      expect(() => TestHelpers.expectInRange(11, 0, 10), throwsA(isA<TestFailure>()));
+      expect(() => TestHelpers.expectInRange(-1, 0, 10),
+          throwsA(isA<TestFailure>()));
+      expect(() => TestHelpers.expectInRange(11, 0, 10),
+          throwsA(isA<TestFailure>()));
     });
 
     test('expectNoDuplicates detects duplicates', () {
@@ -84,21 +92,27 @@ void main() {
         {'id': 2},
         {'id': 3}
       ];
-      expect(() => TestHelpers.expectNoDuplicates(list, (item) => item['id']), returnsNormally);
+      expect(() => TestHelpers.expectNoDuplicates(list, (item) => item['id']),
+          returnsNormally);
 
       final duplicateList = [
         {'id': 1},
         {'id': 2},
         {'id': 1}
       ];
-      expect(() => TestHelpers.expectNoDuplicates(duplicateList, (item) => item['id']), throwsA(isA<TestFailure>()));
+      expect(
+          () => TestHelpers.expectNoDuplicates(
+              duplicateList, (item) => item['id']),
+          throwsA(isA<TestFailure>()));
     });
 
     test('expectValidDateRange validates date ranges', () {
       final start = DateTime(2024, 1, 1);
       final end = DateTime(2024, 1, 31);
-      expect(() => TestHelpers.expectValidDateRange(start, end), returnsNormally);
-      expect(() => TestHelpers.expectValidDateRange(end, start), throwsA(isA<TestFailure>()));
+      expect(
+          () => TestHelpers.expectValidDateRange(start, end), returnsNormally);
+      expect(() => TestHelpers.expectValidDateRange(end, start),
+          throwsA(isA<TestFailure>()));
     });
   });
 
@@ -115,7 +129,8 @@ void main() {
     test('provides valid date fixtures', () {
       expect(TestFixtures.testStartDate, isA<DateTime>());
       expect(TestFixtures.testEndDate, isA<DateTime>());
-      expect(TestFixtures.testEndDate.isAfter(TestFixtures.testStartDate), isTrue);
+      expect(
+          TestFixtures.testEndDate.isAfter(TestFixtures.testStartDate), isTrue);
     });
 
     test('provides valid element fixtures', () {

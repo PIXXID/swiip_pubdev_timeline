@@ -25,8 +25,8 @@ class TimelineDayIndicators extends StatelessWidget {
     // Données de style
     const fontSize = 14.0;
     // Border radius
-    BorderRadius borderRadius =
-        const BorderRadius.only(topRight: Radius.circular(10), bottomRight: Radius.circular(10));
+    BorderRadius borderRadius = const BorderRadius.only(
+        topRight: Radius.circular(10), bottomRight: Radius.circular(10));
 
     return Column(children: <Widget>[
       Container(
@@ -67,7 +67,9 @@ class TimelineDayIndicators extends StatelessWidget {
           width: badgeWidth,
           height: badgeHeight,
           decoration: BoxDecoration(
-              borderRadius: borderRadius, color: colors['primary'], border: Border.all(color: colors['primary']!)),
+              borderRadius: borderRadius,
+              color: colors['primary'],
+              border: Border.all(color: colors['primary']!)),
           child: Center(
               child: Text(
             "${day['compeff'].toStringAsFixed(1)}h",

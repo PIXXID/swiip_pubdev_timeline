@@ -165,7 +165,8 @@ class ConfigurationLogger {
     error(
       'Validation',
       'Parameter "$parameterName" failed validation',
-      details: '$reason (provided: $providedValue, expected: $expectedType$rangeInfo)',
+      details:
+          '$reason (provided: $providedValue, expected: $expectedType$rangeInfo)',
     );
   }
 
@@ -187,7 +188,8 @@ class ConfigurationLogger {
     warning(
       'Validation',
       'Parameter "$parameterName" has an issue',
-      details: '$reason (provided: $providedValue, expected: $expectedType$rangeInfo)',
+      details:
+          '$reason (provided: $providedValue, expected: $expectedType$rangeInfo)',
     );
   }
 }

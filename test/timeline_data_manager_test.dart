@@ -373,7 +373,8 @@ void main() {
       expect(day['alertLevel'], equals(0));
     });
 
-    test('_processElementsForDay should deduplicate elements with same pre_id', () {
+    test('_processElementsForDay should deduplicate elements with same pre_id',
+        () {
       // Arrange
       // This test verifies that elements with duplicate pre_ids are counted only once.
       // This is important because the same element might appear multiple times in the
@@ -389,7 +390,8 @@ void main() {
           'status': 'pending',
         },
         {
-          'pre_id': 'elem_dup', // Duplicate pre_id - should be counted only once
+          'pre_id':
+              'elem_dup', // Duplicate pre_id - should be counted only once
           'date': '2024-01-01',
           'nat': 'activity',
           'status': 'pending',
@@ -415,14 +417,17 @@ void main() {
 
       // Assert - Should count each unique pre_id only once
       final day = result[0];
-      expect(day['activityTotal'], equals(1)); // Only one activity despite duplicate
+      expect(day['activityTotal'],
+          equals(1)); // Only one activity despite duplicate
       expect(day['taskTotal'], equals(1));
       expect(day['preIds'].length, equals(2)); // Only 2 unique pre_ids
       expect(day['preIds'], contains('elem_dup'));
       expect(day['preIds'], contains('elem_unique'));
     });
 
-    test('_processElementsForDay should count different element types correctly', () {
+    test(
+        '_processElementsForDay should count different element types correctly',
+        () {
       // Arrange
       final startDate = DateTime(2024, 1, 1);
       final endDate = DateTime(2024, 1, 1);
@@ -486,7 +491,8 @@ void main() {
       expect(day['taskCompleted'], equals(1));
     });
 
-    test('_formatElementsOptimized should calculate alert levels correctly', () {
+    test('_formatElementsOptimized should calculate alert levels correctly',
+        () {
       // Arrange
       // Alert levels indicate capacity utilization:
       // - Level 0 (green): buseff/capeff <= 80% (normal capacity)
@@ -513,7 +519,8 @@ void main() {
         {
           'date': '2024-01-03',
           'capeff': 100.0,
-          'buseff': 120.0, // 120% utilization - Alert level 2 (red, over capacity)
+          'buseff':
+              120.0, // 120% utilization - Alert level 2 (red, over capacity)
           'compeff': 0.0,
           'eicon': 'icon3',
         },
@@ -555,7 +562,8 @@ void main() {
       manager = TimelineDataManager();
     });
 
-    test('_organizeIntoRows should place overlapping stages in different rows', () {
+    test('_organizeIntoRows should place overlapping stages in different rows',
+        () {
       // Arrange
       // This test verifies the row organization algorithm that prevents overlapping stages
       // from being placed in the same row. The algorithm should:
@@ -623,12 +631,14 @@ void main() {
 
           // Current stage should end before next stage starts
           // (no overlap means currentEnd < nextStart)
-          expect(currentEnd, lessThan(nextStart), reason: 'Stages should not overlap in same row');
+          expect(currentEnd, lessThan(nextStart),
+              reason: 'Stages should not overlap in same row');
         }
       }
     });
 
-    test('_organizeIntoRows should place non-overlapping stages in same row', () {
+    test('_organizeIntoRows should place non-overlapping stages in same row',
+        () {
       // Arrange
       final startDate = DateTime(2024, 1, 1);
       final endDate = DateTime(2024, 1, 31);

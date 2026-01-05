@@ -44,8 +44,10 @@ class TimelineRowItem extends StatelessWidget {
   final String parentStageId;
   final bool isStage;
   final bool isUniqueProject;
-  final Function(String?, String?, String?, String?, String?, double?, String?)? openEditStage;
-  final Function(String?, String?, String?, String?, String?, double?, String?)? openEditElement;
+  final Function(String?, String?, String?, String?, String?, double?, String?)?
+      openEditStage;
+  final Function(String?, String?, String?, String?, String?, double?, String?)?
+      openEditElement;
 
   @override
   Widget build(BuildContext context) {
@@ -56,11 +58,13 @@ class TimelineRowItem extends StatelessWidget {
     double itemSize = itemWidth - 2;
 
     // Couleur du texte dynamique en fonction de la couleur du projet
-    Color fontColor =
-        ThemeData.estimateBrightnessForColor((colors['pcolor'] ?? colors['primaryText']!)) == Brightness.dark
-            ? Colors.white
-            : Colors.black;
-    Color backgroundColor = (colors['pcolor'] ?? colors['primaryText'])!.withAlpha(150);
+    Color fontColor = ThemeData.estimateBrightnessForColor(
+                (colors['pcolor'] ?? colors['primaryText']!)) ==
+            Brightness.dark
+        ? Colors.white
+        : Colors.black;
+    Color backgroundColor =
+        (colors['pcolor'] ?? colors['primaryText'])!.withAlpha(150);
     Color completeColor = colors['pcolor'] ?? colors['primaryText']!;
 
     List<String> usersList = [];
@@ -72,9 +76,11 @@ class TimelineRowItem extends StatelessWidget {
       // Call back lors du clic
       onTap: () {
         if (isStage) {
-          openEditStage?.call(entityId, label, type, startDate, endDate, progress, prjId);
+          openEditStage?.call(
+              entityId, label, type, startDate, endDate, progress, prjId);
         } else {
-          openEditElement?.call(entityId, label, type, startDate, endDate, progress, prjId);
+          openEditElement?.call(
+              entityId, label, type, startDate, endDate, progress, prjId);
         }
       },
       child: Stack(children: [
@@ -84,14 +90,17 @@ class TimelineRowItem extends StatelessWidget {
             height: height,
             decoration: BoxDecoration(
               color: backgroundColor,
-              borderRadius: !isStage ? borderRadius : const BorderRadius.all(Radius.zero),
+              borderRadius:
+                  !isStage ? borderRadius : const BorderRadius.all(Radius.zero),
             ),
             child: Stack(children: [
               // Progression
               Container(
                   width: itemSize * progress / 100,
                   decoration: BoxDecoration(
-                    borderRadius: !isStage ? borderRadius : const BorderRadius.all(Radius.zero),
+                    borderRadius: !isStage
+                        ? borderRadius
+                        : const BorderRadius.all(Radius.zero),
                     color: completeColor,
                   )),
               // Bloc qui masque une partie du fond pour effet
@@ -115,7 +124,8 @@ class TimelineRowItem extends StatelessWidget {
                 Align(
                   alignment: Alignment.topLeft,
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
+                    padding:
+                        const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
                     child: SizedBox(
                       width: itemSize - 16,
                       child: Row(
@@ -166,11 +176,15 @@ class TimelineRowItem extends StatelessWidget {
                               Container(
                                 width: 22,
                                 height: 22,
-                                decoration: BoxDecoration(color: Colors.white.withAlpha(150), shape: BoxShape.circle),
+                                decoration: BoxDecoration(
+                                    color: Colors.white.withAlpha(150),
+                                    shape: BoxShape.circle),
                                 child: Center(
                                     child: Text(
                                   // Initiale ou Initiale +
-                                  (usersList.length > 1) ? '${usersList[0]}+' : usersList[0],
+                                  (usersList.length > 1)
+                                      ? '${usersList[0]}+'
+                                      : usersList[0],
                                   overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(
                                     color: Colors.black,
@@ -186,7 +200,9 @@ class TimelineRowItem extends StatelessWidget {
                               Container(
                                 width: 22,
                                 height: 22,
-                                decoration: BoxDecoration(color: Colors.white.withAlpha(150), shape: BoxShape.circle),
+                                decoration: BoxDecoration(
+                                    color: Colors.white.withAlpha(150),
+                                    shape: BoxShape.circle),
                                 child: const Center(
                                     child: Text(
                                   '?',

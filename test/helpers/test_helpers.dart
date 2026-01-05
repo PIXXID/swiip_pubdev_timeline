@@ -34,8 +34,10 @@ import 'package:flutter_test/flutter_test.dart';
 /// - Self-documenting test intent
 class TestHelpers {
   /// Verifies that an index is within the specified bounds [min, max]
-  static void expectIndexInBounds(int index, int min, int max, {String? reason}) {
-    final message = reason != null ? 'Index out of bounds: $reason' : 'Index out of bounds';
+  static void expectIndexInBounds(int index, int min, int max,
+      {String? reason}) {
+    final message =
+        reason != null ? 'Index out of bounds: $reason' : 'Index out of bounds';
     expect(
       index >= min && index <= max,
       isTrue,
@@ -73,8 +75,10 @@ class TestHelpers {
     for (int i = 0; i < days.length; i++) {
       final day = days[i];
       expect(day, isNotNull, reason: 'Day at index $i should not be null');
-      expect(day.containsKey('date'), isTrue, reason: 'Day $i missing date field');
-      expect(day.containsKey('dayIndex'), isTrue, reason: 'Day $i missing dayIndex field');
+      expect(day.containsKey('date'), isTrue,
+          reason: 'Day $i missing date field');
+      expect(day.containsKey('dayIndex'), isTrue,
+          reason: 'Day $i missing dayIndex field');
     }
   }
 
@@ -84,7 +88,8 @@ class TestHelpers {
 
     // Sort by start index
     final sorted = List<Map<String, dynamic>>.from(row)
-      ..sort((a, b) => (a['startDateIndex'] as int).compareTo(b['startDateIndex'] as int));
+      ..sort((a, b) =>
+          (a['startDateIndex'] as int).compareTo(b['startDateIndex'] as int));
 
     for (int i = 0; i < sorted.length - 1; i++) {
       final current = sorted[i];
@@ -104,7 +109,8 @@ class TestHelpers {
 
   /// Verifies that a value is within a specified range
   static void expectInRange(num value, num min, num max, {String? reason}) {
-    final message = reason != null ? 'Value out of range: $reason' : 'Value out of range';
+    final message =
+        reason != null ? 'Value out of range: $reason' : 'Value out of range';
     expect(
       value >= min && value <= max,
       isTrue,
@@ -113,17 +119,23 @@ class TestHelpers {
   }
 
   /// Verifies that two maps are deeply equal
-  static void expectDeepEquals(Map<String, dynamic> actual, Map<String, dynamic> expected) {
-    expect(actual.keys.length, equals(expected.keys.length), reason: 'Maps have different number of keys');
+  static void expectDeepEquals(
+      Map<String, dynamic> actual, Map<String, dynamic> expected) {
+    expect(actual.keys.length, equals(expected.keys.length),
+        reason: 'Maps have different number of keys');
 
     for (final key in expected.keys) {
-      expect(actual.containsKey(key), isTrue, reason: 'Actual map missing key: $key');
-      expect(actual[key], equals(expected[key]), reason: 'Values differ for key: $key');
+      expect(actual.containsKey(key), isTrue,
+          reason: 'Actual map missing key: $key');
+      expect(actual[key], equals(expected[key]),
+          reason: 'Values differ for key: $key');
     }
   }
 
   /// Verifies that a list contains no duplicate elements based on a key extractor
-  static void expectNoDuplicates<T>(List<T> list, dynamic Function(T) keyExtractor, {String? reason}) {
+  static void expectNoDuplicates<T>(
+      List<T> list, dynamic Function(T) keyExtractor,
+      {String? reason}) {
     final seen = <dynamic>{};
     final duplicates = <dynamic>[];
 
@@ -147,18 +159,21 @@ class TestHelpers {
     expect(
       endDate.isAfter(startDate) || endDate.isAtSameMomentAs(startDate),
       isTrue,
-      reason: 'Invalid date range: endDate ($endDate) must be >= startDate ($startDate)',
+      reason:
+          'Invalid date range: endDate ($endDate) must be >= startDate ($startDate)',
     );
   }
 
   /// Verifies that a list is sorted according to a comparator
-  static void expectSorted<T>(List<T> list, int Function(T, T) compare, {String? reason}) {
+  static void expectSorted<T>(List<T> list, int Function(T, T) compare,
+      {String? reason}) {
     for (int i = 0; i < list.length - 1; i++) {
       final comparison = compare(list[i], list[i + 1]);
       expect(
         comparison <= 0,
         isTrue,
-        reason: reason ?? 'List not sorted at index $i: ${list[i]} > ${list[i + 1]}',
+        reason: reason ??
+            'List not sorted at index $i: ${list[i]} > ${list[i + 1]}',
       );
     }
   }
@@ -173,21 +188,25 @@ class TestHelpers {
   }
 
   /// Verifies that a list has the expected length
-  static void expectLength(List<dynamic> list, int expectedLength, {String? reason}) {
+  static void expectLength(List<dynamic> list, int expectedLength,
+      {String? reason}) {
     expect(
       list.length,
       equals(expectedLength),
-      reason: reason ?? 'Expected length $expectedLength but got ${list.length}',
+      reason:
+          reason ?? 'Expected length $expectedLength but got ${list.length}',
     );
   }
 
   /// Verifies that all elements in a list satisfy a predicate
-  static void expectAll<T>(List<T> list, bool Function(T) predicate, {String? reason}) {
+  static void expectAll<T>(List<T> list, bool Function(T) predicate,
+      {String? reason}) {
     for (int i = 0; i < list.length; i++) {
       expect(
         predicate(list[i]),
         isTrue,
-        reason: reason ?? 'Element at index $i does not satisfy predicate: ${list[i]}',
+        reason: reason ??
+            'Element at index $i does not satisfy predicate: ${list[i]}',
       );
     }
   }

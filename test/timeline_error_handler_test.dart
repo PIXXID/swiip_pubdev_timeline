@@ -16,7 +16,8 @@ void main() {
         );
 
         final result = TimelineErrorHandler.validateDateRange(start, end);
-        expect(result, equals(end), reason: 'Should return the end date when valid');
+        expect(result, equals(end),
+            reason: 'Should return the end date when valid');
       });
 
       test('does not throw exception when start equals end', () {
@@ -26,7 +27,8 @@ void main() {
         expect(
           () => TimelineErrorHandler.validateDateRange(date, date),
           returnsNormally,
-          reason: 'Date range with equal start and end should not throw exception',
+          reason:
+              'Date range with equal start and end should not throw exception',
         );
       });
 
@@ -38,7 +40,8 @@ void main() {
         expect(
           () => TimelineErrorHandler.validateDateRange(start, end),
           throwsA(isA<ArgumentError>()),
-          reason: 'Should throw ArgumentError when end date is before start date',
+          reason:
+              'Should throw ArgumentError when end date is before start date',
         );
       });
 
@@ -72,7 +75,8 @@ void main() {
 
         final result = TimelineErrorHandler.validateDays(days);
 
-        expect(result.length, equals(2), reason: 'Should filter out day without date field');
+        expect(result.length, equals(2),
+            reason: 'Should filter out day without date field');
         expect(result[0]['date'], equals(DateTime(2024, 1, 1)));
         expect(result[1]['date'], equals(DateTime(2024, 1, 2)));
       });
@@ -87,7 +91,8 @@ void main() {
 
         final result = TimelineErrorHandler.validateDays(days);
 
-        expect(result.length, equals(2), reason: 'Should filter out day without lmax field');
+        expect(result.length, equals(2),
+            reason: 'Should filter out day without lmax field');
         expect(result[0]['date'], equals(DateTime(2024, 1, 1)));
         expect(result[1]['date'], equals(DateTime(2024, 1, 3)));
       });
@@ -102,7 +107,8 @@ void main() {
 
         final result = TimelineErrorHandler.validateDays(days);
 
-        expect(result.length, equals(2), reason: 'Should filter out day with invalid date type');
+        expect(result.length, equals(2),
+            reason: 'Should filter out day with invalid date type');
         expect(result[0]['date'], equals(DateTime(2024, 1, 1)));
         expect(result[1]['date'], equals(DateTime(2024, 1, 3)));
       });
@@ -111,7 +117,8 @@ void main() {
         // Requirements: 6.2
         final result = TimelineErrorHandler.validateDays(null);
 
-        expect(result, isEmpty, reason: 'Should return empty list for null input');
+        expect(result, isEmpty,
+            reason: 'Should return empty list for null input');
       });
 
       test('returns empty list when all days are invalid', () {
@@ -123,7 +130,8 @@ void main() {
 
         final result = TimelineErrorHandler.validateDays(days);
 
-        expect(result, isEmpty, reason: 'Should return empty list when all days are invalid');
+        expect(result, isEmpty,
+            reason: 'Should return empty list when all days are invalid');
       });
 
       test('returns all days when all are valid', () {
@@ -136,7 +144,8 @@ void main() {
 
         final result = TimelineErrorHandler.validateDays(days);
 
-        expect(result.length, equals(3), reason: 'Should return all valid days');
+        expect(result.length, equals(3),
+            reason: 'Should return all valid days');
       });
     });
 
@@ -151,7 +160,8 @@ void main() {
 
         final result = TimelineErrorHandler.validateStages(stages);
 
-        expect(result.length, equals(2), reason: 'Should filter out stage without sdate field');
+        expect(result.length, equals(2),
+            reason: 'Should filter out stage without sdate field');
         expect(result[0]['sdate'], equals('2024-01-01'));
         expect(result[1]['sdate'], equals('2024-01-05'));
       });
@@ -166,7 +176,8 @@ void main() {
 
         final result = TimelineErrorHandler.validateStages(stages);
 
-        expect(result.length, equals(2), reason: 'Should filter out stage without edate field');
+        expect(result.length, equals(2),
+            reason: 'Should filter out stage without edate field');
         expect(result[0]['edate'], equals('2024-01-10'));
         expect(result[1]['edate'], equals('2024-01-20'));
       });
@@ -181,7 +192,8 @@ void main() {
 
         final result = TimelineErrorHandler.validateStages(stages);
 
-        expect(result.length, equals(2), reason: 'Should filter out stage without type field');
+        expect(result.length, equals(2),
+            reason: 'Should filter out stage without type field');
         expect(result[0]['type'], equals('milestone'));
         expect(result[1]['type'], equals('phase'));
       });
@@ -190,7 +202,8 @@ void main() {
         // Requirements: 6.2
         final result = TimelineErrorHandler.validateStages(null);
 
-        expect(result, isEmpty, reason: 'Should return empty list for null input');
+        expect(result, isEmpty,
+            reason: 'Should return empty list for null input');
       });
 
       test('returns empty list when all stages are invalid', () {
@@ -203,7 +216,8 @@ void main() {
 
         final result = TimelineErrorHandler.validateStages(stages);
 
-        expect(result, isEmpty, reason: 'Should return empty list when all stages are invalid');
+        expect(result, isEmpty,
+            reason: 'Should return empty list when all stages are invalid');
       });
 
       test('returns all stages when all are valid', () {
@@ -216,7 +230,8 @@ void main() {
 
         final result = TimelineErrorHandler.validateStages(stages);
 
-        expect(result.length, equals(3), reason: 'Should return all valid stages');
+        expect(result.length, equals(3),
+            reason: 'Should return all valid stages');
       });
     });
 
@@ -231,7 +246,8 @@ void main() {
 
         final result = TimelineErrorHandler.validateElements(elements);
 
-        expect(result.length, equals(2), reason: 'Should filter out element without pre_id field');
+        expect(result.length, equals(2),
+            reason: 'Should filter out element without pre_id field');
         expect(result[0]['pre_id'], equals('elem1'));
         expect(result[1]['pre_id'], equals('elem3'));
       });
@@ -246,7 +262,8 @@ void main() {
 
         final result = TimelineErrorHandler.validateElements(elements);
 
-        expect(result.length, equals(2), reason: 'Should filter out element without date field');
+        expect(result.length, equals(2),
+            reason: 'Should filter out element without date field');
         expect(result[0]['pre_id'], equals('elem1'));
         expect(result[1]['pre_id'], equals('elem3'));
       });
@@ -255,7 +272,8 @@ void main() {
         // Requirements: 6.2
         final result = TimelineErrorHandler.validateElements(null);
 
-        expect(result, isEmpty, reason: 'Should return empty list for null input');
+        expect(result, isEmpty,
+            reason: 'Should return empty list for null input');
       });
 
       test('returns empty list when all elements are invalid', () {
@@ -267,7 +285,8 @@ void main() {
 
         final result = TimelineErrorHandler.validateElements(elements);
 
-        expect(result, isEmpty, reason: 'Should return empty list when all elements are invalid');
+        expect(result, isEmpty,
+            reason: 'Should return empty list when all elements are invalid');
       });
 
       test('returns all elements when all are valid', () {
@@ -280,7 +299,8 @@ void main() {
 
         final result = TimelineErrorHandler.validateElements(elements);
 
-        expect(result.length, equals(3), reason: 'Should return all valid elements');
+        expect(result.length, equals(3),
+            reason: 'Should return all valid elements');
       });
     });
 
@@ -341,49 +361,56 @@ void main() {
         // Requirements: 6.3
         final result = TimelineErrorHandler.clampIndex(5, 0, 10);
 
-        expect(result, equals(5), reason: 'Should return same value when index is within bounds');
+        expect(result, equals(5),
+            reason: 'Should return same value when index is within bounds');
       });
 
       test('returns same value when index equals minimum', () {
         // Requirements: 6.3
         final result = TimelineErrorHandler.clampIndex(0, 0, 10);
 
-        expect(result, equals(0), reason: 'Should return same value when index equals minimum');
+        expect(result, equals(0),
+            reason: 'Should return same value when index equals minimum');
       });
 
       test('returns same value when index equals maximum', () {
         // Requirements: 6.3
         final result = TimelineErrorHandler.clampIndex(10, 0, 10);
 
-        expect(result, equals(10), reason: 'Should return same value when index equals maximum');
+        expect(result, equals(10),
+            reason: 'Should return same value when index equals maximum');
       });
 
       test('returns minimum when index is below minimum', () {
         // Requirements: 6.4
         final result = TimelineErrorHandler.clampIndex(-5, 0, 10);
 
-        expect(result, equals(0), reason: 'Should return minimum when index is below minimum');
+        expect(result, equals(0),
+            reason: 'Should return minimum when index is below minimum');
       });
 
       test('returns minimum when index is negative and min is positive', () {
         // Requirements: 6.4
         final result = TimelineErrorHandler.clampIndex(-1, 5, 10);
 
-        expect(result, equals(5), reason: 'Should return minimum when index is negative');
+        expect(result, equals(5),
+            reason: 'Should return minimum when index is negative');
       });
 
       test('returns maximum when index is above maximum', () {
         // Requirements: 6.5
         final result = TimelineErrorHandler.clampIndex(15, 0, 10);
 
-        expect(result, equals(10), reason: 'Should return maximum when index is above maximum');
+        expect(result, equals(10),
+            reason: 'Should return maximum when index is above maximum');
       });
 
       test('returns maximum when index is much larger than maximum', () {
         // Requirements: 6.5
         final result = TimelineErrorHandler.clampIndex(1000, 0, 10);
 
-        expect(result, equals(10), reason: 'Should return maximum when index is much larger');
+        expect(result, equals(10),
+            reason: 'Should return maximum when index is much larger');
       });
 
       test('works correctly with single-value range', () {
@@ -413,49 +440,56 @@ void main() {
         // Requirements: 6.6
         final result = TimelineErrorHandler.clampScrollOffset(500.0, 1000.0);
 
-        expect(result, equals(500.0), reason: 'Should return same value when offset is within bounds');
+        expect(result, equals(500.0),
+            reason: 'Should return same value when offset is within bounds');
       });
 
       test('returns same value when offset equals zero', () {
         // Requirements: 6.6
         final result = TimelineErrorHandler.clampScrollOffset(0.0, 1000.0);
 
-        expect(result, equals(0.0), reason: 'Should return same value when offset equals zero');
+        expect(result, equals(0.0),
+            reason: 'Should return same value when offset equals zero');
       });
 
       test('returns same value when offset equals maximum', () {
         // Requirements: 6.6
         final result = TimelineErrorHandler.clampScrollOffset(1000.0, 1000.0);
 
-        expect(result, equals(1000.0), reason: 'Should return same value when offset equals maximum');
+        expect(result, equals(1000.0),
+            reason: 'Should return same value when offset equals maximum');
       });
 
       test('returns zero when offset is negative', () {
         // Requirements: 6.6
         final result = TimelineErrorHandler.clampScrollOffset(-50.0, 1000.0);
 
-        expect(result, equals(0.0), reason: 'Should return zero when offset is negative');
+        expect(result, equals(0.0),
+            reason: 'Should return zero when offset is negative');
       });
 
       test('returns zero when offset is very negative', () {
         // Requirements: 6.6
         final result = TimelineErrorHandler.clampScrollOffset(-1000.0, 1000.0);
 
-        expect(result, equals(0.0), reason: 'Should return zero when offset is very negative');
+        expect(result, equals(0.0),
+            reason: 'Should return zero when offset is very negative');
       });
 
       test('returns maximum when offset exceeds maximum', () {
         // Requirements: 6.6
         final result = TimelineErrorHandler.clampScrollOffset(1500.0, 1000.0);
 
-        expect(result, equals(1000.0), reason: 'Should return maximum when offset exceeds maximum');
+        expect(result, equals(1000.0),
+            reason: 'Should return maximum when offset exceeds maximum');
       });
 
       test('returns maximum when offset is much larger than maximum', () {
         // Requirements: 6.6
         final result = TimelineErrorHandler.clampScrollOffset(10000.0, 1000.0);
 
-        expect(result, equals(1000.0), reason: 'Should return maximum when offset is much larger');
+        expect(result, equals(1000.0),
+            reason: 'Should return maximum when offset is much larger');
       });
 
       test('works correctly with zero maximum', () {
@@ -467,17 +501,23 @@ void main() {
 
       test('works correctly with decimal values', () {
         // Requirements: 6.6
-        expect(TimelineErrorHandler.clampScrollOffset(123.45, 1000.0), equals(123.45));
-        expect(TimelineErrorHandler.clampScrollOffset(-0.5, 1000.0), equals(0.0));
-        expect(TimelineErrorHandler.clampScrollOffset(1000.5, 1000.0), equals(1000.0));
+        expect(TimelineErrorHandler.clampScrollOffset(123.45, 1000.0),
+            equals(123.45));
+        expect(
+            TimelineErrorHandler.clampScrollOffset(-0.5, 1000.0), equals(0.0));
+        expect(TimelineErrorHandler.clampScrollOffset(1000.5, 1000.0),
+            equals(1000.0));
       });
 
       test('works correctly with large maximum values', () {
         // Requirements: 6.6
         final maxOffset = 100000.0;
-        expect(TimelineErrorHandler.clampScrollOffset(50000.0, maxOffset), equals(50000.0));
-        expect(TimelineErrorHandler.clampScrollOffset(-100.0, maxOffset), equals(0.0));
-        expect(TimelineErrorHandler.clampScrollOffset(150000.0, maxOffset), equals(maxOffset));
+        expect(TimelineErrorHandler.clampScrollOffset(50000.0, maxOffset),
+            equals(50000.0));
+        expect(TimelineErrorHandler.clampScrollOffset(-100.0, maxOffset),
+            equals(0.0));
+        expect(TimelineErrorHandler.clampScrollOffset(150000.0, maxOffset),
+            equals(maxOffset));
       });
     });
 
@@ -490,7 +530,8 @@ void main() {
           0,
         );
 
-        expect(result, equals(42), reason: 'Should return operation result when successful');
+        expect(result, equals(42),
+            reason: 'Should return operation result when successful');
       });
 
       test('returns result when operation succeeds with string', () {
@@ -501,7 +542,8 @@ void main() {
           'fallback',
         );
 
-        expect(result, equals('success'), reason: 'Should return operation result when successful');
+        expect(result, equals('success'),
+            reason: 'Should return operation result when successful');
       });
 
       test('returns result when operation succeeds with list', () {
@@ -512,7 +554,8 @@ void main() {
           <int>[],
         );
 
-        expect(result, equals([1, 2, 3]), reason: 'Should return operation result when successful');
+        expect(result, equals([1, 2, 3]),
+            reason: 'Should return operation result when successful');
       });
 
       test('returns result when operation succeeds with map', () {
@@ -523,7 +566,8 @@ void main() {
           <String, String>{},
         );
 
-        expect(result, equals({'key': 'value'}), reason: 'Should return operation result when successful');
+        expect(result, equals({'key': 'value'}),
+            reason: 'Should return operation result when successful');
       });
 
       test('returns fallback when operation throws exception', () {
@@ -534,7 +578,8 @@ void main() {
           42,
         );
 
-        expect(result, equals(42), reason: 'Should return fallback when operation throws');
+        expect(result, equals(42),
+            reason: 'Should return fallback when operation throws');
       });
 
       test('returns fallback when operation throws ArgumentError', () {
@@ -545,7 +590,9 @@ void main() {
           'fallback',
         );
 
-        expect(result, equals('fallback'), reason: 'Should return fallback when operation throws ArgumentError');
+        expect(result, equals('fallback'),
+            reason:
+                'Should return fallback when operation throws ArgumentError');
       });
 
       test('returns fallback when operation throws StateError', () {
@@ -556,7 +603,8 @@ void main() {
           100,
         );
 
-        expect(result, equals(100), reason: 'Should return fallback when operation throws StateError');
+        expect(result, equals(100),
+            reason: 'Should return fallback when operation throws StateError');
       });
 
       test('returns fallback when operation throws FormatException', () {
@@ -567,7 +615,9 @@ void main() {
           [],
         );
 
-        expect(result, equals([]), reason: 'Should return fallback when operation throws FormatException');
+        expect(result, equals([]),
+            reason:
+                'Should return fallback when operation throws FormatException');
       });
 
       test('returns fallback when operation throws RangeError', () {
@@ -581,7 +631,8 @@ void main() {
           -1,
         );
 
-        expect(result, equals(-1), reason: 'Should return fallback when operation throws RangeError');
+        expect(result, equals(-1),
+            reason: 'Should return fallback when operation throws RangeError');
       });
 
       test('works with different fallback types - int', () {
@@ -710,7 +761,8 @@ void main() {
         final list = [10, 20, 30, 40, 50];
         final result = TimelineErrorHandler.safeListAccess(list, 2, -1);
 
-        expect(result, equals(30), reason: 'Should return element at valid index');
+        expect(result, equals(30),
+            reason: 'Should return element at valid index');
       });
 
       test('returns element at first index', () {
@@ -718,7 +770,8 @@ void main() {
         final list = [10, 20, 30];
         final result = TimelineErrorHandler.safeListAccess(list, 0, -1);
 
-        expect(result, equals(10), reason: 'Should return element at first index');
+        expect(result, equals(10),
+            reason: 'Should return element at first index');
       });
 
       test('returns element at last index', () {
@@ -726,7 +779,8 @@ void main() {
         final list = [10, 20, 30];
         final result = TimelineErrorHandler.safeListAccess(list, 2, -1);
 
-        expect(result, equals(30), reason: 'Should return element at last index');
+        expect(result, equals(30),
+            reason: 'Should return element at last index');
       });
 
       test('returns fallback when index is negative', () {
@@ -734,7 +788,8 @@ void main() {
         final list = [10, 20, 30];
         final result = TimelineErrorHandler.safeListAccess(list, -1, 999);
 
-        expect(result, equals(999), reason: 'Should return fallback when index is negative');
+        expect(result, equals(999),
+            reason: 'Should return fallback when index is negative');
       });
 
       test('returns fallback when index is very negative', () {
@@ -742,7 +797,8 @@ void main() {
         final list = [10, 20, 30];
         final result = TimelineErrorHandler.safeListAccess(list, -100, 999);
 
-        expect(result, equals(999), reason: 'Should return fallback when index is very negative');
+        expect(result, equals(999),
+            reason: 'Should return fallback when index is very negative');
       });
 
       test('returns fallback when index is out of bounds (too large)', () {
@@ -750,7 +806,8 @@ void main() {
         final list = [10, 20, 30];
         final result = TimelineErrorHandler.safeListAccess(list, 3, 999);
 
-        expect(result, equals(999), reason: 'Should return fallback when index is out of bounds');
+        expect(result, equals(999),
+            reason: 'Should return fallback when index is out of bounds');
       });
 
       test('returns fallback when index is much larger than list length', () {
@@ -758,7 +815,8 @@ void main() {
         final list = [10, 20, 30];
         final result = TimelineErrorHandler.safeListAccess(list, 100, 999);
 
-        expect(result, equals(999), reason: 'Should return fallback when index is much larger');
+        expect(result, equals(999),
+            reason: 'Should return fallback when index is much larger');
       });
 
       test('works with single-element list', () {
@@ -780,9 +838,12 @@ void main() {
       test('works with string list', () {
         // Requirements: 6.3
         final list = ['a', 'b', 'c'];
-        expect(TimelineErrorHandler.safeListAccess(list, 1, 'fallback'), equals('b'));
-        expect(TimelineErrorHandler.safeListAccess(list, -1, 'fallback'), equals('fallback'));
-        expect(TimelineErrorHandler.safeListAccess(list, 5, 'fallback'), equals('fallback'));
+        expect(TimelineErrorHandler.safeListAccess(list, 1, 'fallback'),
+            equals('b'));
+        expect(TimelineErrorHandler.safeListAccess(list, -1, 'fallback'),
+            equals('fallback'));
+        expect(TimelineErrorHandler.safeListAccess(list, 5, 'fallback'),
+            equals('fallback'));
       });
 
       test('works with map list', () {
@@ -794,9 +855,12 @@ void main() {
         ];
         final fallback = {'id': -1};
 
-        expect(TimelineErrorHandler.safeListAccess(list, 1, fallback), equals({'id': 2}));
-        expect(TimelineErrorHandler.safeListAccess(list, -1, fallback), equals(fallback));
-        expect(TimelineErrorHandler.safeListAccess(list, 10, fallback), equals(fallback));
+        expect(TimelineErrorHandler.safeListAccess(list, 1, fallback),
+            equals({'id': 2}));
+        expect(TimelineErrorHandler.safeListAccess(list, -1, fallback),
+            equals(fallback));
+        expect(TimelineErrorHandler.safeListAccess(list, 10, fallback),
+            equals(fallback));
       });
 
       test('works with bool list', () {
@@ -818,9 +882,12 @@ void main() {
       test('works with nullable fallback', () {
         // Requirements: 6.3
         final list = [10, 20, 30];
-        expect(TimelineErrorHandler.safeListAccess<int?>(list, 1, null), equals(20));
-        expect(TimelineErrorHandler.safeListAccess<int?>(list, -1, null), isNull);
-        expect(TimelineErrorHandler.safeListAccess<int?>(list, 10, null), isNull);
+        expect(TimelineErrorHandler.safeListAccess<int?>(list, 1, null),
+            equals(20));
+        expect(
+            TimelineErrorHandler.safeListAccess<int?>(list, -1, null), isNull);
+        expect(
+            TimelineErrorHandler.safeListAccess<int?>(list, 10, null), isNull);
       });
 
       test('boundary test - index equals list length', () {
@@ -828,7 +895,8 @@ void main() {
         final list = [10, 20, 30];
         final result = TimelineErrorHandler.safeListAccess(list, 3, 999);
 
-        expect(result, equals(999), reason: 'Index equal to list length should return fallback');
+        expect(result, equals(999),
+            reason: 'Index equal to list length should return fallback');
       });
 
       test('boundary test - index equals list length minus one', () {
@@ -836,7 +904,9 @@ void main() {
         final list = [10, 20, 30];
         final result = TimelineErrorHandler.safeListAccess(list, 2, 999);
 
-        expect(result, equals(30), reason: 'Index equal to list length minus one should return element');
+        expect(result, equals(30),
+            reason:
+                'Index equal to list length minus one should return element');
       });
     });
   });

@@ -228,7 +228,8 @@ class TimelineDataManager {
           day['eicon'] = dayCapacity['eicon'];
 
           // Calculate alert level
-          final progress = day['capeff'] > 0 ? (day['buseff'] / day['capeff']) * 100 : 0.0;
+          final progress =
+              day['capeff'] > 0 ? (day['buseff'] / day['capeff']) * 100 : 0.0;
           day['alertLevel'] = progress > 100 ? 2 : (progress > 80 ? 1 : 0);
         }
 
@@ -266,7 +267,8 @@ class TimelineDataManager {
   ///
   /// This method counts elements by type and status, avoiding duplicates
   /// by tracking pre_ids that have already been processed.
-  void _processElementsForDay(Map<String, dynamic> day, List<Map<String, dynamic>> elements) {
+  void _processElementsForDay(
+      Map<String, dynamic> day, List<Map<String, dynamic>> elements) {
     final seenPreIds = <String>{};
 
     for (final element in elements) {
@@ -409,15 +411,18 @@ class TimelineDataManager {
       }
 
       // Clamp start date to timeline start
-      final clampedStartDate = stageStartDate.isBefore(startDate) ? startDate : stageStartDate;
+      final clampedStartDate =
+          stageStartDate.isBefore(startDate) ? startDate : stageStartDate;
 
       final startDateIndex = days.indexWhere((d) =>
           d['date'] != null &&
-          DateFormat('yyyy-MM-dd').format(d['date']) == DateFormat('yyyy-MM-dd').format(clampedStartDate));
+          DateFormat('yyyy-MM-dd').format(d['date']) ==
+              DateFormat('yyyy-MM-dd').format(clampedStartDate));
 
       final endDateIndex = days.indexWhere((d) =>
           d['date'] != null &&
-          DateFormat('yyyy-MM-dd').format(d['date']) == DateFormat('yyyy-MM-dd').format(stageEndDate));
+          DateFormat('yyyy-MM-dd').format(d['date']) ==
+              DateFormat('yyyy-MM-dd').format(stageEndDate));
 
       // Skip items outside the date range
       if (startDateIndex == -1 || endDateIndex == -1) continue;
@@ -428,7 +433,8 @@ class TimelineDataManager {
         'endDateIndex': endDateIndex,
       };
 
-      final isStage = ['milestone', 'cycle', 'sequence', 'stage'].contains(item['type']);
+      final isStage =
+          ['milestone', 'cycle', 'sequence', 'stage'].contains(item['type']);
 
       if (rows.isEmpty) {
         rows.add([itemWithIndices]);
@@ -438,10 +444,12 @@ class TimelineDataManager {
 
         // Try to place in existing rows starting from lastTimelineRowIndex
         // Clamp lastTimelineRowIndex to valid range
-        lastTimelineRowIndex = TimelineErrorHandler.clampIndex(lastTimelineRowIndex, 0, rows.length - 1);
+        lastTimelineRowIndex = TimelineErrorHandler.clampIndex(
+            lastTimelineRowIndex, 0, rows.length - 1);
 
         for (var j = lastTimelineRowIndex; j < rows.length; j++) {
-          final hasOverlap = rows[j].any((r) => (r['endDateIndex'] ?? -1) + 1 > startDateIndex);
+          final hasOverlap = rows[j]
+              .any((r) => (r['endDateIndex'] ?? -1) + 1 > startDateIndex);
 
           if (!hasOverlap) {
             if (isStage) lastTimelineRowIndex = j;

@@ -435,7 +435,8 @@ void main() {
 
     test('all animationDurationMs constraint has correct values', () {
       // Act
-      final animationDurationMs = ParameterConstraints.all['animationDurationMs'];
+      final animationDurationMs =
+          ParameterConstraints.all['animationDurationMs'];
 
       // Assert
       expect(animationDurationMs, isNotNull);

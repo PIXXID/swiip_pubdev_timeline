@@ -10,7 +10,8 @@ void main() {
       expect(config.barHeight, equals(70.0));
     });
 
-    test('TimelineConfiguration.fromMap without barHeight uses default 70.0', () {
+    test('TimelineConfiguration.fromMap without barHeight uses default 70.0',
+        () {
       // Load configuration from map without barHeight parameter
       final config = TimelineConfiguration.fromMap({
         'dayWidth': 50.0,
@@ -22,7 +23,8 @@ void main() {
       expect(config.bufferDays, equals(10));
     });
 
-    test('TimelineConfiguration.copyWith without barHeight preserves original', () {
+    test('TimelineConfiguration.copyWith without barHeight preserves original',
+        () {
       const original = TimelineConfiguration(barHeight: 100.0);
 
       final copied = original.copyWith(dayWidth: 60.0);
@@ -31,13 +33,15 @@ void main() {
       expect(copied.dayWidth, equals(60.0));
     });
 
-    test('TimelineConfiguration with explicit barHeight uses provided value', () {
+    test('TimelineConfiguration with explicit barHeight uses provided value',
+        () {
       const config = TimelineConfiguration(barHeight: 120.0);
 
       expect(config.barHeight, equals(120.0));
     });
 
-    test('TimelineConfiguration.fromMap with barHeight uses provided value', () {
+    test('TimelineConfiguration.fromMap with barHeight uses provided value',
+        () {
       final config = TimelineConfiguration.fromMap({
         'barHeight': 90.0,
         'dayWidth': 50.0,

@@ -72,13 +72,15 @@ void main() {
       expect(result.validatedConfig['rowHeight'], equals(30.0)); // Default
 
       // Verify warnings contain correct information
-      final dayWidthWarning = result.warnings.firstWhere((w) => w.parameterName == 'dayWidth');
+      final dayWidthWarning =
+          result.warnings.firstWhere((w) => w.parameterName == 'dayWidth');
       expect(dayWidthWarning.providedValue, equals('not a number'));
       expect(dayWidthWarning.expectedType, equals('double'));
       expect(dayWidthWarning.message, contains('Invalid type'));
     });
 
-    test('validate with negative value for positive parameter uses default', () {
+    test('validate with negative value for positive parameter uses default',
+        () {
       // Arrange - config with negative values
       final config = {
         'dayWidth': -50.0, // Should be >= 20.0
@@ -101,7 +103,8 @@ void main() {
       expect(result.validatedConfig['rowMargin'], equals(3.0)); // Default
 
       // Verify errors contain correct information
-      final dayWidthError = result.errors.firstWhere((e) => e.parameterName == 'dayWidth');
+      final dayWidthError =
+          result.errors.firstWhere((e) => e.parameterName == 'dayWidth');
       expect(dayWidthError.providedValue, equals(-50.0));
       expect(dayWidthError.expectedType, equals('double'));
       expect(dayWidthError.expectedRange, equals('20.0 - 100.0'));
@@ -158,7 +161,8 @@ void main() {
       expect(defaults['animationDurationMs'], equals(220));
     });
 
-    test('validate with all valid parameters returns no errors or warnings', () {
+    test('validate with all valid parameters returns no errors or warnings',
+        () {
       // Arrange - all valid values within ranges
       final config = {
         'dayWidth': 50.0, // Valid: 20.0 - 100.0
@@ -263,7 +267,8 @@ void main() {
       // Invalid values should use defaults
       expect(result.validatedConfig['dayMargin'], equals(5.0)); // Default
       expect(result.validatedConfig['rowHeight'], equals(30.0)); // Default
-      expect(result.validatedConfig['animationDurationMs'], equals(220)); // Default
+      expect(result.validatedConfig['animationDurationMs'],
+          equals(220)); // Default
 
       // Should have both errors and warnings
       expect(result.errors.length, equals(2)); // dayMargin, animationDurationMs
@@ -294,7 +299,8 @@ void main() {
   });
 
   group('ConfigurationValidator - validateParameter', () {
-    test('validateParameter with valid value returns no errors or warnings', () {
+    test('validateParameter with valid value returns no errors or warnings',
+        () {
       // Arrange
       const constraints = ParameterConstraints(
         type: 'double',
@@ -304,7 +310,8 @@ void main() {
       );
 
       // Act
-      final result = ConfigurationValidator.validateParameter('dayWidth', 50.0, constraints);
+      final result = ConfigurationValidator.validateParameter(
+          'dayWidth', 50.0, constraints);
 
       // Assert
       expect(result.errors, isEmpty);
@@ -321,7 +328,8 @@ void main() {
       );
 
       // Act
-      final result = ConfigurationValidator.validateParameter('dayWidth', 'not a number', constraints);
+      final result = ConfigurationValidator.validateParameter(
+          'dayWidth', 'not a number', constraints);
 
       // Assert
       expect(result.errors, isEmpty);
@@ -345,7 +353,8 @@ void main() {
       );
 
       // Act
-      final result = ConfigurationValidator.validateParameter('dayWidth', 10.0, constraints);
+      final result = ConfigurationValidator.validateParameter(
+          'dayWidth', 10.0, constraints);
 
       // Assert
       expect(result.errors, isNotEmpty);
@@ -370,7 +379,8 @@ void main() {
       );
 
       // Act
-      final result = ConfigurationValidator.validateParameter('dayWidth', 150.0, constraints);
+      final result = ConfigurationValidator.validateParameter(
+          'dayWidth', 150.0, constraints);
 
       // Assert
       expect(result.errors, isNotEmpty);
@@ -395,7 +405,8 @@ void main() {
       );
 
       // Act
-      final result = ConfigurationValidator.validateParameter('dayWidth', 20.0, constraints);
+      final result = ConfigurationValidator.validateParameter(
+          'dayWidth', 20.0, constraints);
 
       // Assert
       expect(result.errors, isEmpty);
@@ -412,7 +423,8 @@ void main() {
       );
 
       // Act
-      final result = ConfigurationValidator.validateParameter('dayWidth', 100.0, constraints);
+      final result = ConfigurationValidator.validateParameter(
+          'dayWidth', 100.0, constraints);
 
       // Assert
       expect(result.errors, isEmpty);
@@ -429,14 +441,16 @@ void main() {
       );
 
       // Act
-      final result = ConfigurationValidator.validateParameter('bufferDays', 10, constraints);
+      final result = ConfigurationValidator.validateParameter(
+          'bufferDays', 10, constraints);
 
       // Assert
       expect(result.errors, isEmpty);
       expect(result.warnings, isEmpty);
     });
 
-    test('validateParameter with int type and invalid type generates warning', () {
+    test('validateParameter with int type and invalid type generates warning',
+        () {
       // Arrange
       const constraints = ParameterConstraints(
         type: 'int',
@@ -446,7 +460,8 @@ void main() {
       );
 
       // Act
-      final result = ConfigurationValidator.validateParameter('bufferDays', 'not an int', constraints);
+      final result = ConfigurationValidator.validateParameter(
+          'bufferDays', 'not an int', constraints);
 
       // Assert
       expect(result.errors, isEmpty);
@@ -468,7 +483,8 @@ void main() {
       );
 
       // Act - passing a double that represents an int
-      final result = ConfigurationValidator.validateParameter('bufferDays', 10.0, constraints);
+      final result = ConfigurationValidator.validateParameter(
+          'bufferDays', 10.0, constraints);
 
       // Assert - should be valid since num includes both int and double
       expect(result.errors, isEmpty);
@@ -485,7 +501,8 @@ void main() {
       );
 
       // Act - passing an int
-      final result = ConfigurationValidator.validateParameter('dayWidth', 50, constraints);
+      final result =
+          ConfigurationValidator.validateParameter('dayWidth', 50, constraints);
 
       // Assert - should be valid since int is a num
       expect(result.errors, isEmpty);
@@ -502,7 +519,8 @@ void main() {
       );
 
       // Act
-      final result = ConfigurationValidator.validateParameter('dayWidth', null, constraints);
+      final result = ConfigurationValidator.validateParameter(
+          'dayWidth', null, constraints);
 
       // Assert
       expect(result.errors, isEmpty);
@@ -520,7 +538,8 @@ void main() {
       );
 
       // Act
-      final result = ConfigurationValidator.validateParameter('dayWidth', true, constraints);
+      final result = ConfigurationValidator.validateParameter(
+          'dayWidth', true, constraints);
 
       // Assert
       expect(result.errors, isEmpty);
@@ -528,7 +547,9 @@ void main() {
       expect(result.warnings.first.expectedType, equals('double'));
     });
 
-    test('validateParameter with constraints having only min validates correctly', () {
+    test(
+        'validateParameter with constraints having only min validates correctly',
+        () {
       // Arrange
       const constraints = ParameterConstraints(
         type: 'double',
@@ -537,9 +558,11 @@ void main() {
       );
 
       // Act - value above min
-      final validResult = ConfigurationValidator.validateParameter('param', 50.0, constraints);
+      final validResult =
+          ConfigurationValidator.validateParameter('param', 50.0, constraints);
       // Act - value below min
-      final invalidResult = ConfigurationValidator.validateParameter('param', 10.0, constraints);
+      final invalidResult =
+          ConfigurationValidator.validateParameter('param', 10.0, constraints);
 
       // Assert
       expect(validResult.errors, isEmpty);
@@ -549,7 +572,9 @@ void main() {
       expect(invalidResult.errors.first.expectedRange, equals('>= 20.0'));
     });
 
-    test('validateParameter with constraints having only max validates correctly', () {
+    test(
+        'validateParameter with constraints having only max validates correctly',
+        () {
       // Arrange
       const constraints = ParameterConstraints(
         type: 'double',
@@ -558,9 +583,11 @@ void main() {
       );
 
       // Act - value below max
-      final validResult = ConfigurationValidator.validateParameter('param', 50.0, constraints);
+      final validResult =
+          ConfigurationValidator.validateParameter('param', 50.0, constraints);
       // Act - value above max
-      final invalidResult = ConfigurationValidator.validateParameter('param', 150.0, constraints);
+      final invalidResult =
+          ConfigurationValidator.validateParameter('param', 150.0, constraints);
 
       // Assert
       expect(validResult.errors, isEmpty);
@@ -578,9 +605,12 @@ void main() {
       );
 
       // Act - any numeric value should be valid
-      final result1 = ConfigurationValidator.validateParameter('param', -1000.0, constraints);
-      final result2 = ConfigurationValidator.validateParameter('param', 1000.0, constraints);
-      final result3 = ConfigurationValidator.validateParameter('param', 0.0, constraints);
+      final result1 = ConfigurationValidator.validateParameter(
+          'param', -1000.0, constraints);
+      final result2 = ConfigurationValidator.validateParameter(
+          'param', 1000.0, constraints);
+      final result3 =
+          ConfigurationValidator.validateParameter('param', 0.0, constraints);
 
       // Assert - all should be valid
       expect(result1.errors, isEmpty);

@@ -17,7 +17,8 @@ class TimelineBarItem extends StatefulWidget {
   final double dayWidth;
   final double dayMargin;
   final double height;
-  final Function(String, double?, List<String>?, List<dynamic>, dynamic)? openDayDetail;
+  final Function(String, double?, List<String>?, List<dynamic>, dynamic)?
+      openDayDetail;
 
   const TimelineBarItem({
     super.key,
@@ -38,7 +39,8 @@ class TimelineBarItem extends StatefulWidget {
   State<TimelineBarItem> createState() => _TimelineBarItemState();
 }
 
-class _TimelineBarItemState extends State<TimelineBarItem> with SingleTickerProviderStateMixin {
+class _TimelineBarItemState extends State<TimelineBarItem>
+    with SingleTickerProviderStateMixin {
   bool _isInCenter = false;
 
   @override
@@ -78,17 +80,21 @@ class _TimelineBarItemState extends State<TimelineBarItem> with SingleTickerProv
     bool dayIsCompleted = false;
 
     if (widget.day['capeff'] > 0) {
-      heightCapeff = (heightLmax * widget.day['capeff']) / ((widget.day['lmax'] > 0) ? widget.day['lmax'] : 1);
+      heightCapeff = (heightLmax * widget.day['capeff']) /
+          ((widget.day['lmax'] > 0) ? widget.day['lmax'] : 1);
     }
     if (widget.day['buseff'] > 0) {
-      heightBuseff = (heightLmax * widget.day['buseff']) / ((widget.day['lmax'] > 0) ? widget.day['lmax'] : 1);
+      heightBuseff = (heightLmax * widget.day['buseff']) /
+          ((widget.day['lmax'] > 0) ? widget.day['lmax'] : 1);
     }
     if (widget.day['compeff'] > 0) {
-      heightCompeff = (heightLmax * widget.day['compeff']) / ((widget.day['lmax'] > 0) ? widget.day['lmax'] : 1);
+      heightCompeff = (heightLmax * widget.day['compeff']) /
+          ((widget.day['lmax'] > 0) ? widget.day['lmax'] : 1);
       if (heightCompeff >= heightLmax) {
         heightCompeff = heightLmax;
         dayIsCompleted = true;
-        completeColor = widget.colors['primaryBackground']!.withValues(alpha: 0.0);
+        completeColor =
+            widget.colors['primaryBackground']!.withValues(alpha: 0.0);
       }
     }
     // Réduit la hauteur en cas de dépassement excessif
@@ -123,7 +129,9 @@ class _TimelineBarItemState extends State<TimelineBarItem> with SingleTickerProv
           // Liste des éléments présents sur la journée
           final elementsDay = widget.elements
               .where(
-                (e) => e['date'] == DateFormat('yyyy-MM-dd').format(widget.day['date']),
+                (e) =>
+                    e['date'] ==
+                    DateFormat('yyyy-MM-dd').format(widget.day['date']),
               )
               .toList();
 
@@ -149,10 +157,13 @@ class _TimelineBarItemState extends State<TimelineBarItem> with SingleTickerProv
                     Center(
                       child:
                           // Icon soleil si aucune capacité
-                          (heightCapeff == 0 && heightBuseff == 0 && heightCompeff == 0)
+                          (heightCapeff == 0 &&
+                                  heightBuseff == 0 &&
+                                  heightCompeff == 0)
                               ? Icon(
                                   Icons.block,
-                                  color: busyColor.withValues(alpha: alphaColor),
+                                  color:
+                                      busyColor.withValues(alpha: alphaColor),
                                   size: 14,
                                 )
                               : null,
@@ -211,7 +222,9 @@ class _TimelineBarItemState extends State<TimelineBarItem> with SingleTickerProv
                             Icons.circle,
                             color: widget.day['alertLevel'] == 1
                                 ? widget.colors['warning']
-                                : (widget.day['alertLevel'] == 2 ? widget.colors['error'] : Colors.transparent),
+                                : (widget.day['alertLevel'] == 2
+                                    ? widget.colors['error']
+                                    : Colors.transparent),
                             size: 13,
                           ),
                         ),

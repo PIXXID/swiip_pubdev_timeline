@@ -19,7 +19,8 @@ void main() {
   });
 
   group('TimelineConfigurationManager - initialize', () {
-    test('initialize with valid file config loads configuration successfully', () {
+    test('initialize with valid file config loads configuration successfully',
+        () {
       // Arrange
       final fileConfig = TestFixtures.defaultConfig;
 
@@ -54,11 +55,15 @@ void main() {
       // Assert
       expect(TimelineConfigurationManager.isInitialized, isTrue);
       expect(configAfterFirst.dayWidth, equals(100.0));
-      expect(configAfterSecond.dayWidth, equals(100.0)); // Should still be 100, not 200
-      expect(configAfterFirst, equals(configAfterSecond)); // Should be the same instance
+      expect(configAfterSecond.dayWidth,
+          equals(100.0)); // Should still be 100, not 200
+      expect(configAfterFirst,
+          equals(configAfterSecond)); // Should be the same instance
     });
 
-    test('initialize with programmatic config takes precedence over file config', () {
+    test(
+        'initialize with programmatic config takes precedence over file config',
+        () {
       // Arrange
       final fileConfig = TestFixtures.defaultConfig;
       final programmaticConfig = TimelineConfiguration(
@@ -116,7 +121,8 @@ void main() {
       expect(config.rowHeight, equals(30.0));
       expect(config.rowMargin, equals(3.0));
       expect(config.bufferDays, equals(5));
-      expect(config.animationDuration, equals(const Duration(milliseconds: 220)));
+      expect(
+          config.animationDuration, equals(const Duration(milliseconds: 220)));
     });
 
     test('initialize with only programmatic config works correctly', () {
@@ -129,7 +135,8 @@ void main() {
       );
 
       // Act
-      TimelineConfigurationManager.initialize(programmaticConfig: programmaticConfig);
+      TimelineConfigurationManager.initialize(
+          programmaticConfig: programmaticConfig);
 
       // Assert
       expect(TimelineConfigurationManager.isInitialized, isTrue);
@@ -140,7 +147,9 @@ void main() {
       expect(config.bufferDays, equals(12));
     });
 
-    test('initialize with partial file config fills missing values with defaults', () {
+    test(
+        'initialize with partial file config fills missing values with defaults',
+        () {
       // Arrange
       final partialConfig = {
         'dayWidth': 90.0,
@@ -177,7 +186,8 @@ void main() {
 
     test('isInitialized returns true after initialize', () {
       // Arrange & Act
-      TimelineConfigurationManager.initialize(fileConfig: TestFixtures.defaultConfig);
+      TimelineConfigurationManager.initialize(
+          fileConfig: TestFixtures.defaultConfig);
 
       // Assert
       expect(TimelineConfigurationManager.isInitialized, isTrue);
@@ -185,7 +195,8 @@ void main() {
 
     test('configuration can be accessed multiple times after initialize', () {
       // Arrange
-      TimelineConfigurationManager.initialize(fileConfig: TestFixtures.defaultConfig);
+      TimelineConfigurationManager.initialize(
+          fileConfig: TestFixtures.defaultConfig);
 
       // Act
       final config1 = TimelineConfigurationManager.configuration;
@@ -198,7 +209,8 @@ void main() {
       expect(config1.dayWidth, equals(100.0));
     });
 
-    test('StateError message is descriptive when accessing before initialize', () {
+    test('StateError message is descriptive when accessing before initialize',
+        () {
       // Act & Assert
       try {
         final _ = TimelineConfigurationManager.configuration;
@@ -220,7 +232,8 @@ void main() {
   group('TimelineConfigurationManager - utilities', () {
     test('reset() clears singleton instance', () {
       // Arrange
-      TimelineConfigurationManager.initialize(fileConfig: TestFixtures.defaultConfig);
+      TimelineConfigurationManager.initialize(
+          fileConfig: TestFixtures.defaultConfig);
       expect(TimelineConfigurationManager.isInitialized, isTrue);
 
       // Act
@@ -277,16 +290,19 @@ void main() {
       TimelineConfigurationManager.enableDebugMode();
 
       // Act - initialize should print debug info
-      TimelineConfigurationManager.initialize(fileConfig: TestFixtures.defaultConfig);
+      TimelineConfigurationManager.initialize(
+          fileConfig: TestFixtures.defaultConfig);
 
       // Assert - just verify it doesn't crash and config is loaded
       expect(TimelineConfigurationManager.isInitialized, isTrue);
       expect(ConfigurationLogger.isDebugModeEnabled, isTrue);
     });
 
-    test('enableDebugMode after initialize prints configuration immediately', () {
+    test('enableDebugMode after initialize prints configuration immediately',
+        () {
       // Arrange
-      TimelineConfigurationManager.initialize(fileConfig: TestFixtures.defaultConfig);
+      TimelineConfigurationManager.initialize(
+          fileConfig: TestFixtures.defaultConfig);
 
       // Act - enabling debug mode after init should print current config
       TimelineConfigurationManager.enableDebugMode();
@@ -306,7 +322,8 @@ void main() {
 
     test('toMap() returns correct structure after initialization', () {
       // Arrange
-      TimelineConfigurationManager.initialize(fileConfig: TestFixtures.defaultConfig);
+      TimelineConfigurationManager.initialize(
+          fileConfig: TestFixtures.defaultConfig);
 
       // Act
       final map = TimelineConfigurationManager.toMap();
@@ -330,7 +347,8 @@ void main() {
 
     test('toMap() returns all configuration parameters', () {
       // Arrange
-      TimelineConfigurationManager.initialize(fileConfig: TestFixtures.defaultConfig);
+      TimelineConfigurationManager.initialize(
+          fileConfig: TestFixtures.defaultConfig);
 
       // Act
       final map = TimelineConfigurationManager.toMap();
@@ -348,7 +366,8 @@ void main() {
 
     test('toMap() values match configuration object', () {
       // Arrange
-      TimelineConfigurationManager.initialize(fileConfig: TestFixtures.defaultConfig);
+      TimelineConfigurationManager.initialize(
+          fileConfig: TestFixtures.defaultConfig);
       final config = TimelineConfigurationManager.configuration;
 
       // Act
@@ -362,7 +381,8 @@ void main() {
       expect(map['rowHeight'], equals(config.rowHeight));
       expect(map['rowMargin'], equals(config.rowMargin));
       expect(map['bufferDays'], equals(config.bufferDays));
-      expect(map['animationDurationMs'], equals(config.animationDuration.inMilliseconds));
+      expect(map['animationDurationMs'],
+          equals(config.animationDuration.inMilliseconds));
     });
   });
 }

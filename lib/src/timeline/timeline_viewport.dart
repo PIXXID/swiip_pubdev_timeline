@@ -86,7 +86,8 @@ class TimelineViewport extends StatelessWidget {
     return SizedBox(
       width: totalWidth,
       child: Container(
-        decoration: BoxDecoration(color: colors!['primaryBackground']!.withValues(alpha: 0.80)),
+        decoration: BoxDecoration(
+            color: colors!['primaryBackground']!.withValues(alpha: 0.80)),
         child: Stack(
           clipBehavior: Clip.none,
           children: visibleWidgets,

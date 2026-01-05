@@ -99,8 +99,11 @@ class RandomDataGenerator {
       elements.add({
         'pre_id': 'elem_${i}_${_random.nextInt(1000)}',
         'type': type,
-        'start_date': baseDate.add(Duration(days: startOffset)).toIso8601String(),
-        'end_date': baseDate.add(Duration(days: startOffset + duration)).toIso8601String(),
+        'start_date':
+            baseDate.add(Duration(days: startOffset)).toIso8601String(),
+        'end_date': baseDate
+            .add(Duration(days: startOffset + duration))
+            .toIso8601String(),
         'name': 'Element $i',
         'buseff': _random.nextDouble() * 100,
       });
@@ -121,9 +124,13 @@ class RandomDataGenerator {
       stagesList.add({
         'id': 'stage_$i',
         'name': 'Stage $i',
-        'start_date': baseDate.add(Duration(days: startOffset)).toIso8601String(),
-        'end_date': baseDate.add(Duration(days: startOffset + duration)).toIso8601String(),
-        'color': '#${_random.nextInt(0xFFFFFF).toRadixString(16).padLeft(6, '0')}',
+        'start_date':
+            baseDate.add(Duration(days: startOffset)).toIso8601String(),
+        'end_date': baseDate
+            .add(Duration(days: startOffset + duration))
+            .toIso8601String(),
+        'color':
+            '#${_random.nextInt(0xFFFFFF).toRadixString(16).padLeft(6, '0')}',
       });
     }
 
