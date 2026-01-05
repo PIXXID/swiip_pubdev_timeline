@@ -95,7 +95,7 @@ void main() {
       final config = TimelineConfigurationManager.configuration;
 
       // Should use default values for invalid parameters
-      expect(config.dayWidth, equals(45.0)); // Default value
+      expect(config.dayWidth, equals(65.0)); // Default value
       expect(config.dayMargin, equals(5.0)); // Default value
       expect(config.rowHeight, equals(30.0)); // Default value
       expect(config.bufferDays, equals(5)); // Default value
@@ -110,7 +110,7 @@ void main() {
       final config = TimelineConfigurationManager.configuration;
 
       // Should use all default values
-      expect(config.dayWidth, equals(45.0));
+      expect(config.dayWidth, equals(65.0));
       expect(config.dayMargin, equals(5.0));
       expect(config.datesHeight, equals(65.0));
       expect(config.rowHeight, equals(30.0));

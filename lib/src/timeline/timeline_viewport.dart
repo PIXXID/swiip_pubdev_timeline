@@ -33,12 +33,16 @@ class TimelineViewport extends StatelessWidget {
   /// This function is called only for items within the visible range.
   final Widget Function(BuildContext context, int index) itemBuilder;
 
+  /// Color map for styling the viewport.
+  final Map<String, Color>? colors;
+
   /// Creates a [TimelineViewport] with the specified configuration.
   ///
   /// The [visibleStart] and [visibleEnd] define the range of items to render.
   /// The [centerItemIndex] is passed to the itemBuilder for highlighting.
   /// The [items] list contains all data to be rendered.
   /// The [itemBuilder] creates widgets for visible items.
+  /// The [colors] map provides styling colors (optional).
   const TimelineViewport({
     super.key,
     required this.visibleStart,
@@ -48,6 +52,7 @@ class TimelineViewport extends StatelessWidget {
     required this.itemWidth,
     required this.itemMargin,
     required this.itemBuilder,
+    this.colors,
   });
 
   @override
@@ -80,9 +85,12 @@ class TimelineViewport extends StatelessWidget {
 
     return SizedBox(
       width: totalWidth,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: visibleWidgets,
+      child: Container(
+        decoration: BoxDecoration(color: colors!['primaryBackground']!.withValues(alpha: 0.80)),
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: visibleWidgets,
+        ),
       ),
     );
   }

@@ -37,7 +37,7 @@ class TimelineConfiguration {
   ///
   /// All parameters have sensible defaults optimized for typical use cases.
   const TimelineConfiguration({
-    this.dayWidth = 45.0,
+    this.dayWidth = 65.0,
     this.dayMargin = 5.0,
     this.datesHeight = 65.0,
     this.rowHeight = 30.0,

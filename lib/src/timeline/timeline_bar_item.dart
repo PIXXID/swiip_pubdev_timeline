@@ -68,7 +68,7 @@ class _TimelineBarItemState extends State<TimelineBarItem> with SingleTickerProv
     final DateTime date = widget.day['date'];
     Color busyColor = widget.colors['secondaryText'] ?? Colors.grey;
     Color completeColor = widget.colors['primaryText'] ?? Colors.white;
-    double alphaColor = (_isInCenter) ? 1 : 0.4;
+    double alphaColor = (_isInCenter) ? 1 : 0.5;
 
     // Hauteur MAX
     final double heightLmax = widget.height - 5;
@@ -139,9 +139,6 @@ class _TimelineBarItemState extends State<TimelineBarItem> with SingleTickerProv
         child: Container(
           width: widget.dayWidth / 2,
           height: widget.height,
-          decoration: BoxDecoration(
-            color: widget.colors['primaryBackground']!.withValues(alpha: 0.8),
-          ),
           margin: EdgeInsets.only(top: 5.0, left: widget.dayWidth / 4),
           child: Column(
             children: <Widget>[
@@ -189,7 +186,7 @@ class _TimelineBarItemState extends State<TimelineBarItem> with SingleTickerProv
                           height: heightCompeff,
                           decoration: BoxDecoration(
                             borderRadius: borderRadius,
-                            color: completeColor.withValues(alpha: 0.7),
+                            color: completeColor.withValues(alpha: 0.75),
                           ),
                           child: (dayIsCompleted && heightCompeff > 0)
                               ? Center(

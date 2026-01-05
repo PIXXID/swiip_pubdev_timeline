@@ -14,7 +14,7 @@ void main() {
       expect(result.warnings, isEmpty);
 
       // Verify all default values are present
-      expect(result.validatedConfig['dayWidth'], equals(45.0));
+      expect(result.validatedConfig['dayWidth'], equals(65.0));
       expect(result.validatedConfig['dayMargin'], equals(5.0));
       expect(result.validatedConfig['datesHeight'], equals(65.0));
       expect(result.validatedConfig['rowHeight'], equals(30.0));
@@ -67,7 +67,7 @@ void main() {
       expect(result.warnings.length, equals(3));
 
       // All invalid values should be replaced with defaults
-      expect(result.validatedConfig['dayWidth'], equals(45.0)); // Default
+      expect(result.validatedConfig['dayWidth'], equals(65.0)); // Default
       expect(result.validatedConfig['bufferDays'], equals(5)); // Default
       expect(result.validatedConfig['rowHeight'], equals(30.0)); // Default
 
@@ -96,7 +96,7 @@ void main() {
       expect(result.errors.length, equals(3));
 
       // All out-of-range values should be replaced with defaults
-      expect(result.validatedConfig['dayWidth'], equals(45.0)); // Default
+      expect(result.validatedConfig['dayWidth'], equals(65.0)); // Default
       expect(result.validatedConfig['bufferDays'], equals(5)); // Default
       expect(result.validatedConfig['rowMargin'], equals(3.0)); // Default
 
@@ -126,7 +126,7 @@ void main() {
       expect(result.errors.length, equals(3));
 
       // All out-of-range values should be replaced with defaults
-      expect(result.validatedConfig['dayWidth'], equals(45.0)); // Default
+      expect(result.validatedConfig['dayWidth'], equals(65.0)); // Default
       expect(result.validatedConfig['bufferDays'], equals(5)); // Default
       expect(result.validatedConfig['rowHeight'], equals(30.0)); // Default
     });
@@ -149,7 +149,7 @@ void main() {
       expect(defaults.containsKey('animationDurationMs'), isTrue);
 
       // Verify default values match ParameterConstraints
-      expect(defaults['dayWidth'], equals(45.0));
+      expect(defaults['dayWidth'], equals(65.0));
       expect(defaults['dayMargin'], equals(5.0));
       expect(defaults['datesHeight'], equals(65.0));
       expect(defaults['rowHeight'], equals(30.0));
@@ -283,7 +283,7 @@ void main() {
       expect(result.warnings, isEmpty);
 
       // All values should be defaults
-      expect(result.validatedConfig['dayWidth'], equals(45.0));
+      expect(result.validatedConfig['dayWidth'], equals(65.0));
       expect(result.validatedConfig['dayMargin'], equals(5.0));
       expect(result.validatedConfig['datesHeight'], equals(65.0));
       expect(result.validatedConfig['rowHeight'], equals(30.0));

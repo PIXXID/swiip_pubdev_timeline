@@ -114,7 +114,7 @@ class _Timeline extends State<Timeline> {
   late TimelineConfiguration _config;
 
   // Largeur d'un item jour
-  double dayWidth = 45.0;
+  double dayWidth = 65.0;
   double dayMargin = 5;
   // Hauteut de la liste des jours
   double datesHeight = 65.0;
@@ -581,43 +581,14 @@ class _Timeline extends State<Timeline> {
                     // Padding pour que le 1er element soit au milieu de l'écran
                     padding: EdgeInsets.symmetric(horizontal: _viewportMargin),
                     child: SizedBox(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min, // Prevent Column from expanding infinitely
+                      width: days.length * (dayWidth),
+                      height: _viewportHeight,
+                      child: Stack(
                         children: [
-                          // DATES
-                          SizedBox(
-                            width: days.length * (dayWidth),
-                            height: 70,
-                            child: days.isNotEmpty
-                                ? TimelineViewport(
-                                    // Pass calculated visible range directly as parameters
-                                    // instead of using a controller with ValueNotifiers
-                                    visibleStart: _visibleStart,
-                                    visibleEnd: _visibleEnd,
-                                    // Pass center index for highlighting
-                                    centerItemIndex: _centerItemIndex,
-                                    items: days,
-                                    itemWidth: dayWidth,
-                                    itemMargin: dayMargin,
-                                    itemBuilder: (context, index) {
-                                      return TimelineDayDate(
-                                        lang: lang,
-                                        colors: widget.colors,
-                                        nowIndex: nowIndex,
-                                        index: index,
-                                        centerItemIndex: _centerItemIndex,
-                                        days: days,
-                                        dayWidth: dayWidth,
-                                        dayMargin: dayMargin,
-                                        height: datesHeight,
-                                      );
-                                    },
-                                  )
-                                : const SizedBox.shrink(), // Handle empty days
-                          ),
-                          // STAGES/ELEMENTS DYNAMIQUES - Use Expanded to take remaining space
-                          Expanded(
+                          // STAGES/ELEMENTS DYNAMIQUES - Scrollable content in the middle
+                          Positioned.fill(
+                            top: datesHeight,
+                            bottom: 0,
                             child: SingleChildScrollView(
                               controller: _controllerVertical,
                               scrollDirection: Axis.vertical,
@@ -645,34 +616,77 @@ class _Timeline extends State<Timeline> {
                                       : const SizedBox.shrink()), // Handle empty stages
                             ),
                           ),
-                          // CHARGE DYNAMIQUE
-                          SizedBox(
-                            height: barHeight,
-                            child: days.isNotEmpty
-                                ? TimelineViewport(
-                                    visibleStart: _visibleStart,
-                                    visibleEnd: _visibleEnd,
-                                    centerItemIndex: _centerItemIndex,
-                                    items: days,
-                                    itemWidth: dayWidth,
-                                    itemMargin: dayMargin,
-                                    itemBuilder: (context, index) {
-                                      return TimelineBarItem(
-                                        colors: widget.colors,
-                                        index: index,
-                                        centerItemIndex: _centerItemIndex,
-                                        centerItemIndexNotifier: _centerItemIndexNotifier,
-                                        nowIndex: nowIndex,
-                                        day: days[index],
-                                        elements: widget.elements,
-                                        dayWidth: dayWidth,
-                                        dayMargin: dayMargin,
-                                        height: barHeight,
-                                        openDayDetail: widget.openDayDetail,
-                                      );
-                                    },
-                                  )
-                                : const SizedBox.shrink(), // Handle empty days
+                          // DATES - Positioned at the top
+                          Positioned(
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            child: SizedBox(
+                              width: days.length * (dayWidth),
+                              height: datesHeight,
+                              child: days.isNotEmpty
+                                  ? TimelineViewport(
+                                      // Pass calculated visible range directly as parameters
+                                      // instead of using a controller with ValueNotifiers
+                                      visibleStart: _visibleStart,
+                                      visibleEnd: _visibleEnd,
+                                      // Pass center index for highlighting
+                                      centerItemIndex: _centerItemIndex,
+                                      items: days,
+                                      itemWidth: dayWidth,
+                                      itemMargin: dayMargin,
+                                      colors: widget.colors,
+                                      itemBuilder: (context, index) {
+                                        return TimelineDayDate(
+                                          lang: lang,
+                                          colors: widget.colors,
+                                          nowIndex: nowIndex,
+                                          index: index,
+                                          centerItemIndex: _centerItemIndex,
+                                          days: days,
+                                          dayWidth: dayWidth,
+                                          dayMargin: dayMargin,
+                                          height: datesHeight,
+                                        );
+                                      },
+                                    )
+                                  : const SizedBox.shrink(), // Handle empty days
+                            ),
+                          ),
+                          // CHARGE DYNAMIQUE - Positioned at the bottom
+                          Positioned(
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            child: SizedBox(
+                              height: barHeight,
+                              child: days.isNotEmpty
+                                  ? TimelineViewport(
+                                      visibleStart: _visibleStart,
+                                      visibleEnd: _visibleEnd,
+                                      centerItemIndex: _centerItemIndex,
+                                      items: days,
+                                      itemWidth: dayWidth,
+                                      itemMargin: dayMargin,
+                                      colors: widget.colors,
+                                      itemBuilder: (context, index) {
+                                        return TimelineBarItem(
+                                          colors: widget.colors,
+                                          index: index,
+                                          centerItemIndex: _centerItemIndex,
+                                          centerItemIndexNotifier: _centerItemIndexNotifier,
+                                          nowIndex: nowIndex,
+                                          day: days[index],
+                                          elements: widget.elements,
+                                          dayWidth: dayWidth,
+                                          dayMargin: dayMargin,
+                                          height: barHeight,
+                                          openDayDetail: widget.openDayDetail,
+                                        );
+                                      },
+                                    )
+                                  : const SizedBox.shrink(), // Handle empty days
+                            ),
                           ),
                         ],
                       ),

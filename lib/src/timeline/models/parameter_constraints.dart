@@ -69,7 +69,7 @@ class ParameterConstraints {
       type: 'double',
       min: 20.0,
       max: 100.0,
-      defaultValue: 45.0,
+      defaultValue: 65.0,
     ),
     'dayMargin': const ParameterConstraints(
       type: 'double',

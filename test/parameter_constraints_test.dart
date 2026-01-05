@@ -370,7 +370,7 @@ void main() {
       expect(dayWidth!.type, equals('double'));
       expect(dayWidth.min, equals(20.0));
       expect(dayWidth.max, equals(100.0));
-      expect(dayWidth.defaultValue, equals(45.0));
+      expect(dayWidth.defaultValue, equals(65.0));
     });
 
     test('all dayMargin constraint has correct values', () {
