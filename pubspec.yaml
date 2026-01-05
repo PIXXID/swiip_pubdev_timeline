@@ -1,6 +1,6 @@
 name: swiip_pubdev_timeline
 description: "This package provides a customizable timeline to display events or milestones in a linear or vertical layout"
-version: 1.5.1
+version: 1.5.2
 homepage: https://github.com/PIXXID/swiip_pubdev_timeline
 repository: https://github.com/PIXXID/swiip_pubdev_timeline
 

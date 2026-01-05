@@ -1,3 +1,13 @@
+## 1.5.2 - 05/01/2025
+
+### Documentation
+
+* **Comprehensive API Documentation**: Added complete Dartdoc comments for all public API elements to improve pub.dev documentation score
+  - Documented Timeline widget class with detailed usage examples
+  - Documented all 11 public parameters (colors, infos, elements, elementsDone, capacities, stages, defaultDate, callbacks)
+  - Added library-level documentation with features, usage examples, and performance characteristics
+  - Enabled `public_member_api_docs` lint rule to maintain documentation standards
+
 ## 1.5.1 - 02/01/2025
 
 ### Fix

@@ -70,6 +70,10 @@ import 'package:swiip_pubdev_timeline/src/platform/platform_language.dart';
 /// - [TimelineConfiguration] for performance tuning options
 /// - [calculateCenterDateIndex] for center item calculation
 class Timeline extends StatefulWidget {
+  /// Creates a Timeline widget.
+  ///
+  /// All required parameters must be provided. Optional callbacks can be used
+  /// to handle user interactions with timeline elements.
   const Timeline(
       {super.key,
       required this.colors,
@@ -84,16 +88,80 @@ class Timeline extends StatefulWidget {
       this.openEditElement,
       this.updateCurrentDate});
 
+  /// Color scheme for the timeline.
+  ///
+  /// A map containing color definitions for various timeline elements:
+  /// - `primaryBackground`: Main background color
+  /// - `error`: Color for error indicators and current date marker
+  /// - Additional colors for stages, elements, and UI components
   final Map<String, Color> colors;
+
+  /// Timeline metadata and date range.
+  ///
+  /// A map containing:
+  /// - `startDate`: Start date in ISO 8601 format (e.g., '2024-01-01')
+  /// - `endDate`: End date in ISO 8601 format
+  /// - `lmax`: Maximum capacity value for scaling
   final dynamic infos;
+
+  /// List of timeline elements (tasks, activities).
+  ///
+  /// Each element should contain:
+  /// - Date information
+  /// - Stage association
+  /// - Element details and metadata
   final dynamic elements;
+
+  /// List of completed elements.
+  ///
+  /// Elements marked as done, used for visual differentiation
+  /// and progress tracking.
   final dynamic elementsDone;
+
+  /// Daily capacity data.
+  ///
+  /// List of capacity values per day, used to display workload
+  /// in the bottom bar chart.
   final dynamic capacities;
+
+  /// List of project stages.
+  ///
+  /// Each stage represents a row in the timeline with:
+  /// - Stage identifier
+  /// - Project association
+  /// - Display properties
   final dynamic stages;
+
+  /// Default date to scroll to on initialization.
+  ///
+  /// If provided, the timeline will scroll to this date instead of today's date.
+  /// Format: ISO 8601 date string (e.g., '2024-06-15')
   final String? defaultDate;
+
+  /// Callback invoked when a day is clicked.
+  ///
+  /// Parameters:
+  /// - Date string
+  /// - Capacity value
+  /// - List of stage IDs
+  /// - List of elements for that day
+  /// - Additional metadata
   final Function(String, double?, List<String>?, List<dynamic>?, dynamic)? openDayDetail;
+
+  /// Callback invoked when a stage is edited.
+  ///
+  /// Receives stage details as parameters for editing operations.
   final Function(String?, String?, String?, String?, String?, double?, String?)? openEditStage;
+
+  /// Callback invoked when an element is edited.
+  ///
+  /// Receives element details as parameters for editing operations.
   final Function(String?, String?, String?, String?, String?, double?, String?)? openEditElement;
+
+  /// Callback invoked when the center date changes during scrolling.
+  ///
+  /// Receives the current center date in ISO 8601 format.
+  /// Useful for synchronizing external UI with timeline position.
   final Function(String?)? updateCurrentDate;
 
   @override
