@@ -1,3 +1,10 @@
+## 1.5.3 - 07/01/2025
+
+### Fix
+
+* Change color for completed activities
+
+
 ## 1.5.2 - 05/01/2025
 
 ### Documentation
