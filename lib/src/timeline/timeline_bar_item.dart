@@ -93,6 +93,7 @@ class _TimelineBarItemState extends State<TimelineBarItem>
       if (heightCompeff >= heightLmax) {
         heightCompeff = heightLmax;
         dayIsCompleted = true;
+        // On masque le fond
         completeColor =
             widget.colors['primaryBackground']!.withValues(alpha: 0.0);
       }
@@ -197,7 +198,7 @@ class _TimelineBarItemState extends State<TimelineBarItem>
                           height: heightCompeff,
                           decoration: BoxDecoration(
                             borderRadius: borderRadius,
-                            color: completeColor.withValues(alpha: 0.75),
+                            color: completeColor,
                           ),
                           child: (dayIsCompleted && heightCompeff > 0)
                               ? Center(
