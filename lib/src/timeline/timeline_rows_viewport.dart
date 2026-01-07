@@ -47,6 +47,8 @@ class TimelineRowsViewport extends StatefulWidget {
 
   /// Height of the viewport container.
   final double viewportHeight;
+
+  /// Width of the viewport container.
   final double viewportWidth;
 
   /// Number of rows to render as buffer above and below visible area.

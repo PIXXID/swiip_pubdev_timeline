@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 ///   ],
 /// )
 class LoadingOverlay extends StatelessWidget {
+  /// Creates a loading overlay widget.
   const LoadingOverlay({
     super.key,
   });

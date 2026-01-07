@@ -7,19 +7,41 @@ import 'package:intl/intl.dart';
 /// - Using StatelessWidget instead of StatefulWidget
 /// - Using ValueListenableBuilder for selective rebuilds
 class TimelineBarItem extends StatefulWidget {
+  /// Color scheme for the timeline item.
   final Map<String, Color> colors;
+
+  /// Index of this day in the timeline.
   final int index;
+
+  /// Current center item index in the timeline.
   final int centerItemIndex;
+
+  /// Notifier for center item index changes.
   final ValueNotifier<int> centerItemIndexNotifier;
+
+  /// Index of the current day (today).
   final int nowIndex;
+
+  /// Day data containing date, capacity, busy, completed values, and alerts.
   final Map<String, dynamic> day;
+
+  /// List of elements (tasks/activities) for this day.
   final List elements;
+
+  /// Width of each day column in pixels.
   final double dayWidth;
+
+  /// Margin between day columns in pixels.
   final double dayMargin;
+
+  /// Height of the timeline bar in pixels.
   final double height;
+
+  /// Callback when a day is tapped, providing date, progress, predecessors, elements, and indicators.
   final Function(String, double?, List<String>?, List<dynamic>, dynamic)?
       openDayDetail;
 
+  /// Creates a timeline bar item widget.
   const TimelineBarItem({
     super.key,
     required this.colors,

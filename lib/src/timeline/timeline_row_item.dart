@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
+/// Widget that displays a single stage or element item in the timeline row.
+///
+/// Shows progress bars, labels, icons, and user assignments.
 class TimelineRowItem extends StatelessWidget {
+  /// Creates a timeline row item widget.
   const TimelineRowItem(
       {super.key,
       required this.colors,
@@ -25,27 +29,68 @@ class TimelineRowItem extends StatelessWidget {
       required this.openEditStage,
       required this.openEditElement});
 
+  /// Color scheme for the item.
   final Map<String, Color> colors;
+
+  /// Width of each day column in pixels.
   final double dayWidth;
+
+  /// Margin between day columns in pixels.
   final double dayMargin;
+
+  /// Total width of this item in pixels.
   final double itemWidth;
+
+  /// Number of days this item spans.
   final int daysNumber;
+
+  /// Height of the item in pixels.
   final double height;
+
+  /// Unique identifier for this stage or element.
   final String entityId;
+
+  /// Start date in ISO format (yyyy-MM-dd).
   final String startDate;
+
+  /// End date in ISO format (yyyy-MM-dd).
   final String endDate;
+
+  /// Type of item (milestone, cycle, sequence, stage, or element type).
   final String type;
+
+  /// Display label for the item.
   final String label;
+
+  /// Optional icon emoji or character.
   final String? icon;
+
+  /// Comma-separated list of user initials.
   final String? users;
+
+  /// Progress percentage (0-100).
   final double progress;
+
+  /// Project ID this item belongs to.
   final String prjId;
+
+  /// Project name (optional).
   final String? pname;
+
+  /// Parent stage ID (for elements).
   final String parentStageId;
+
+  /// Whether this is a stage (true) or element (false).
   final bool isStage;
+
+  /// Whether the timeline displays a single project.
   final bool isUniqueProject;
+
+  /// Callback when a stage is tapped for editing.
   final Function(String?, String?, String?, String?, String?, double?, String?)?
       openEditStage;
+
+  /// Callback when an element is tapped for editing.
   final Function(String?, String?, String?, String?, String?, double?, String?)?
       openEditElement;
 

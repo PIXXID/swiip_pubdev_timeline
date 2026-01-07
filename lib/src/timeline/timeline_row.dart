@@ -11,6 +11,7 @@ import 'package:swiip_pubdev_timeline/src/tools/tools.dart';
 /// when necessary. It caches stage widgets and labels to avoid unnecessary
 /// reconstructions during scroll operations.
 class TimelineRow extends StatefulWidget {
+  /// Creates a timeline row widget.
   const TimelineRow({
     super.key,
     required this.colors,
@@ -25,16 +26,35 @@ class TimelineRow extends StatefulWidget {
     this.openEditElement,
   });
 
+  /// Color scheme for the row.
   final Map<String, Color> colors;
+
+  /// List of stages and elements to display.
   final List stagesList;
+
+  /// Notifier for center item index changes.
   final ValueNotifier<int> centerItemIndexNotifier;
+
+  /// Notifier for visible range changes.
   final ValueNotifier<VisibleRange> visibleRangeNotifier;
+
+  /// Width of each day column in pixels.
   final double dayWidth;
+
+  /// Margin between day columns in pixels.
   final double dayMargin;
+
+  /// Height of the row in pixels.
   final double height;
+
+  /// Whether the timeline displays a single project.
   final bool isUniqueProject;
+
+  /// Callback when a stage is tapped for editing.
   final Function(String?, String?, String?, String?, String?, double?, String?)?
       openEditStage;
+
+  /// Callback when an element is tapped for editing.
   final Function(String?, String?, String?, String?, String?, double?, String?)?
       openEditElement;
 

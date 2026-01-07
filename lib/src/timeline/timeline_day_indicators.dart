@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
-/*
-* Affichage des informations lors du survol d'une journée
-* Permet d'afficher la séquence, les informations de progressions
-* et la date survolée
-*/
+/// Widget that displays day indicators showing capacity, busy, and completed hours.
+///
+/// Shows three badges with:
+/// - Capacity hours (capeff)
+/// - Busy hours (buseff)
+/// - Completed hours (compeff)
 class TimelineDayIndicators extends StatelessWidget {
+  /// Creates a timeline day indicators widget.
   const TimelineDayIndicators({
     super.key,
     required this.day,
@@ -13,8 +15,13 @@ class TimelineDayIndicators extends StatelessWidget {
     required this.elements,
   });
 
+  /// Color scheme for the indicators.
   final Map<String, Color> colors;
+
+  /// Day data containing capacity, busy, and completed values.
   final dynamic day;
+
+  /// List of elements (tasks/activities) for this day.
   final List elements;
 
   @override

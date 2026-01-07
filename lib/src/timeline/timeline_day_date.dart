@@ -1,17 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+/// Widget that displays the date header for a timeline day.
+///
+/// Shows the day of week, date, and optional weather icon.
 class TimelineDayDate extends StatefulWidget {
+  /// Language code for date formatting (e.g., 'fr-FR', 'en-US').
   final String lang;
+
+  /// Color scheme for the date display.
   final Map<String, Color> colors;
+
+  /// Index of the current day (today).
   final int nowIndex;
+
+  /// Index of this day in the timeline.
   final int index;
+
+  /// Current center item index in the timeline.
   final int centerItemIndex;
+
+  /// List of all days in the timeline.
   final List days;
+
+  /// Width of each day column in pixels.
   final double dayWidth;
+
+  /// Margin between day columns in pixels.
   final double dayMargin;
+
+  /// Height of the date header in pixels.
   final double height;
 
+  /// Creates a timeline day date widget.
   const TimelineDayDate(
       {super.key,
       required this.lang,
